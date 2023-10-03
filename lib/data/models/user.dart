@@ -1,6 +1,6 @@
-import 'package:sportsapp/models/notification.dart';
-import 'package:sportsapp/models/photo.dart';
-import 'package:sportsapp/models/match.dart';
+import 'package:sportsapp/data/models/photo.dart';
+import 'package:sportsapp/data/models/match.dart';
+import 'package:sportsapp/data/models/notification.dart' as MyAppNotification;
 
 class User {
   final String email;
@@ -12,7 +12,7 @@ class User {
   final String gender;
   final Photo photo;
   final List<Match> matches;
-  final List<Notification> notifications;
+  final List<MyAppNotification.Notification> notifications;
 
   User({
     required this.email,
@@ -37,10 +37,10 @@ class User {
       bornDate: DateTime.parse(json['bornDate']),
       gender: json['gender'],
       photo: Photo.fromJson(json['photo']),
-      matches: (json['matches'] as List).map((e) => Match.fromJson(e)).toList(),
-      notifications: (json['notifications'] as List)
-          .map((e) => Notification.fromJson(e))
-          .toList(),
+      matches: List<Match>.from(json['matches'].map((x) => Match.fromJson(x))),
+      notifications: List<MyAppNotification.Notification>.from(
+          json['notifications']
+              .map((x) => MyAppNotification.Notification.fromJson(x))),
     );
   }
 }

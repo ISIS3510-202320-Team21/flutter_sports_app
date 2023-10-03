@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sportsapp/models/level.dart';
-import 'package:sportsapp/models/sport.dart';
+import 'package:sportsapp/data/models/level.dart';
+import 'package:sportsapp/data/models/sport.dart';
 
 class Match {
   final DateTime date;
