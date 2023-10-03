@@ -4,8 +4,16 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AuthRepository {
-  Future<User?> signUp(
-      {required String email, required String password}) async {
+  Future<User?> signUp({
+    required String email,
+    required String password,
+    required String name,
+    required String phoneNumber,
+    required String role,
+    required String university,
+    required String bornDate,
+    required String gender,
+  }) async {
     final backendUrl = dotenv.env['BACKEND_URL'];
 
     final response = await http.post(
@@ -13,7 +21,16 @@ class AuthRepository {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{'email': email, 'password': password}),
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+        'name': name,
+        'phoneNumber': phoneNumber,
+        'role': role,
+        'university': university,
+        'bornDate': bornDate,
+        'gender': gender,
+      }),
     );
 
     if (response.statusCode == 200) {

@@ -26,11 +26,23 @@ completar la acción
 class SignUpRequested extends AuthenticationEvent {
   final String email;
   final String password;
-  // final String birthDate;
-  // final String phoneNumber;
-  // final String fullName;
+  final String name;
+  final String bornDate;
+  final String phoneNumber;
+  final String role;
+  final String university;
+  final String gender;
 
-  SignUpRequested(this.email, this.password);
+  SignUpRequested({
+    required this.email,
+    required this.password,
+    required this.name,
+    required this.bornDate,
+    required this.phoneNumber,
+    required this.role,
+    required this.university,
+    required this.gender,
+  });
 }
 
 /*

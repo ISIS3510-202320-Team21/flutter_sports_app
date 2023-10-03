@@ -38,12 +38,17 @@ class AuthenticationBloc
     on<SignUpRequested>((event, emit) async {
       emit(AuthLoading());
       try {
-        await AuthRepository()
-            .signUp(email: event.email, password: event.password
-                // fullName: event.fullName,
-                // birthDate: event.birthDate,
-                // phoneNumber: event.phoneNumber);
-                );
+        await AuthRepository().signUp(
+          email: event.email,
+          password: event.password,
+          name: event.name,
+          bornDate: event.bornDate,
+          phoneNumber: event.phoneNumber,
+          role: event.role, // Asumo que tienes este campo en tu evento
+          university:
+              event.university, // Asumo que tienes este campo en tu evento
+          gender: event.gender, // Asumo que tienes este campo en tu evento
+        );
       } catch (e) {
         emit(AuthError(e.toString().replaceAll("Exception: ", "")));
         emit(UnAuthenticated());

@@ -10,7 +10,14 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
-  String _email = '', _password = '';
+  String _email = '',
+      _password = '',
+      _name = '',
+      _bornDate = '',
+      _phoneNumber = '',
+      _role = '',
+      _university = '',
+      _gender = '';
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +43,15 @@ class _SignUpViewState extends State<SignUpView> {
 
   Widget _signUpForm() => Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
             const SizedBox(height: 60),
             const Text('Welcome to my sports app!',
                 textAlign: TextAlign.center, style: TextStyle(fontSize: 40)),
+            TextField(
+                decoration: const InputDecoration(
+                    labelText: 'Name', border: OutlineInputBorder()),
+                onChanged: (val) => _name = val),
             TextField(
                 decoration: const InputDecoration(
                     labelText: 'E-mail', border: OutlineInputBorder()),
@@ -50,6 +61,26 @@ class _SignUpViewState extends State<SignUpView> {
                     labelText: 'Password', border: OutlineInputBorder()),
                 onChanged: (val) => _password = val,
                 obscureText: true),
+            TextField(
+                decoration: const InputDecoration(
+                    labelText: 'Born Date', border: OutlineInputBorder()),
+                onChanged: (val) => _bornDate = val),
+            TextField(
+                decoration: const InputDecoration(
+                    labelText: 'Phone Number', border: OutlineInputBorder()),
+                onChanged: (val) => _phoneNumber = val),
+            TextField(
+                decoration: const InputDecoration(
+                    labelText: 'Role', border: OutlineInputBorder()),
+                onChanged: (val) => _role = val),
+            TextField(
+                decoration: const InputDecoration(
+                    labelText: 'University', border: OutlineInputBorder()),
+                onChanged: (val) => _university = val),
+            TextField(
+                decoration: const InputDecoration(
+                    labelText: 'Gender', border: OutlineInputBorder()),
+                onChanged: (val) => _gender = val),
             ElevatedButton(
                 onPressed: _authenticateWithEmailAndPassword,
                 child: const Text('SignUp')),
@@ -61,7 +92,17 @@ class _SignUpViewState extends State<SignUpView> {
       );
 
   void _authenticateWithEmailAndPassword() {
-    BlocProvider.of<AuthenticationBloc>(context)
-        .add(SignUpRequested(_email, _password));
+    BlocProvider.of<AuthenticationBloc>(context).add(
+      SignUpRequested(
+        email: _email,
+        password: _password,
+        name: _name,
+        bornDate: _bornDate,
+        phoneNumber: _phoneNumber,
+        role: _role,
+        university: _university,
+        gender: _gender,
+      ),
+    );
   }
 }
