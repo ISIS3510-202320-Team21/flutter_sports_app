@@ -46,6 +46,7 @@ dependencies:
   sentry_flutter: ^6.11.2
   provider: 
   equatable:
+  flutter_dotenv: ^5.0.2
 
   
   uri_to_file: ^0.2.0
