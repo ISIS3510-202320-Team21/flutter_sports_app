@@ -1,16 +1,15 @@
 import 'dart:convert';
+import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:sportsapp/data/models/user.dart';
 
 class AuthRepository {
   Future<User?> signUp(
       {required String email, required String password}) async {
-    final backendUrl = dotenv.env[
-        'BACKEND_URL']; // Obtén la URL del backend desde las variables de entorno
-    print(backendUrl);
+    final backendUrl = dotenv.env['BACKEND_URL'];
+
     final response = await http.post(
-      Uri.parse('$backendUrl/api/signup'), // Utiliza la URL del backend
+      Uri.parse('$backendUrl/users'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

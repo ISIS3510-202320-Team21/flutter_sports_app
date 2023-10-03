@@ -1,4 +1,4 @@
-name: sportsapp
+name: flutter_app_sports
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -30,35 +30,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  settings_ui: ^2.0.2
-  carousel_slider: ^4.1.1
   email_validator: ^2.1.16
   image_picker: ^0.8.6
   path_provider: ^2.0.1
-  firebase_core:
-  cloud_firestore:
-  firebase_auth: 
   http: ^0.13.5
-  location: ^4.4.0
-  sentry_flutter: ^6.11.2
   provider: 
   equatable:
   flutter_dotenv: ^5.0.2
-
-  
-  uri_to_file: ^0.2.0
-  tuple: ^2.0.1
-  google_ml_kit: ^0.12.0
-  bloc: ^8.1.0
-  connectivity_plus:
   flutter_bloc: 
-  shared_preferences: ^2.0.15
   json_cache:
-  localstorage:
-
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +61,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  assets:
+    - .env
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

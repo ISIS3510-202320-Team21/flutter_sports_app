@@ -1,6 +1,7 @@
-import 'package:sportsapp/data/models/photo.dart';
-import 'package:sportsapp/data/models/match.dart';
-import 'package:sportsapp/data/models/notification.dart' as MyAppNotification;
+import 'package:flutter_app_sports/data/models/photo.dart';
+import 'package:flutter_app_sports/data/models/match.dart';
+import 'package:flutter_app_sports/data/models/notification.dart'
+    as MyAppNotification;
 
 class User {
   final String email;

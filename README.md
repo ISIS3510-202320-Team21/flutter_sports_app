@@ -1,4 +1,4 @@
-# sportsapp
+# flutter_app_sports
 
 A new Flutter project.
 

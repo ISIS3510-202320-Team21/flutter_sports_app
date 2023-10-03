@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_app_sports/data/models/user.dart';
+import 'package:flutter_app_sports/data/repositories/auth_repository.dart';
 import 'package:meta/meta.dart';
-import 'package:sportsapp/data/models/user.dart';
-import 'package:sportsapp/data/repositories/auth_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';

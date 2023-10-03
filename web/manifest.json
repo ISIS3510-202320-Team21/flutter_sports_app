@@ -1,6 +1,6 @@
 {
-    "name": "sportsapp",
-    "short_name": "sportsapp",
+    "name": "flutter_app_sports",
+    "short_name": "flutter_app_sports",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

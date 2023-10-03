@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sportsapp/presentation/screens/home_view.dart';
-import 'package:sportsapp/presentation/screens/login_view.dart';
-import 'package:sportsapp/presentation/screens/signUp_view.dart';
+import 'package:flutter_app_sports/presentation/screens/home_view.dart';
+import 'package:flutter_app_sports/presentation/screens/login_view.dart';
+import 'package:flutter_app_sports/presentation/screens/signUp_view.dart';
 
 class AppRouter {
   MaterialPageRoute? onGenerateRoute(RouteSettings settings) {
@@ -17,11 +17,11 @@ class AppRouter {
 
       case "/signUp":
         return MaterialPageRoute(
-          builder: (_) => SignUpView(),
+          builder: (_) => const SignUpView(),
         );
       case '/home':
         return MaterialPageRoute(
-          builder: (_) => HomeView(),
+          builder: (_) => const HomeView(),
         );
 
       default:
