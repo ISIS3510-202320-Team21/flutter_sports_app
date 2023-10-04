@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'bottombar.dart';
+import 'bottom_bar.dart';
 
 class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});
