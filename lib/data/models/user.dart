@@ -1,47 +1,46 @@
-import 'package:flutter_app_sports/data/models/photo.dart';
-import 'package:flutter_app_sports/data/models/match.dart';
-import 'package:flutter_app_sports/data/models/notification.dart'
-    as MyAppNotification;
-
 class User {
   final String email;
-  final String password;
+  final String university;
   final String name;
   final String phoneNumber;
   final String role;
   final DateTime bornDate;
   final String gender;
-  final Photo photo;
-  final List<Match> matches;
-  final List<MyAppNotification.Notification> notifications;
+  final String imageUrl;
 
-  User({
-    required this.email,
-    required this.password,
-    required this.name,
-    required this.phoneNumber,
-    required this.role,
-    required this.bornDate,
-    required this.gender,
-    required this.photo,
-    required this.matches,
-    required this.notifications,
-  });
+  User(
+      {required this.university,
+      required this.email,
+      required this.name,
+      required this.phoneNumber,
+      required this.role,
+      required this.bornDate,
+      required this.gender,
+      required this.imageUrl});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+    final dateParts = json['bornDate'].split('/');
+    final day = int.parse(dateParts[0]);
+    final month = int.parse(dateParts[1]);
+    final year = int.parse(dateParts[2]);
+    final parsedDate = DateTime(year + 2000, month, day);
+
+    // make a user variable
+    if (json['imageUrl'] == null) {
+      json['imageUrl'] = "";
+    }
+
+    final user = User(
+      university: json['university'],
       email: json['email'],
-      password: json['password'],
       name: json['name'],
       phoneNumber: json['phoneNumber'],
       role: json['role'],
-      bornDate: DateTime.parse(json['bornDate']),
+      bornDate: parsedDate,
       gender: json['gender'],
-      photo: Photo.fromJson(json['photo']),
-      matches: List<Match>.from(json['matches'].map((x) => Match.fromJson(x))),
-      notifications: List<MyAppNotification.Notification>.from(
-          json['notifications']
-              .map((x) => MyAppNotification.Notification.fromJson(x))),
+      imageUrl: json["imageUrl"],
     );
+
+    return user;
   }
 }

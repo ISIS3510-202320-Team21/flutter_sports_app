@@ -18,15 +18,12 @@ class AuthenticationBloc
     on<LoginRequested>((event, emit) async {
       emit(AuthLoading());
       try {
-        await AuthRepository()
+        User? usuario = await AuthRepository()
             .signIn(email: event.email, password: event.password);
-        User? usuario = await AuthRepository().findUserByEmail(event.email);
-        emit(Authenticated(
-            usuario!, event.email)); //emite el estado de exito: autenticado
+        emit(Authenticated(usuario!, event.email));
       } catch (e) {
-        emit(AuthError(e.toString().replaceAll("Exception: ",
-            ""))); //emite el estado de error y muestra el mensaje
-        emit(UnAuthenticated()); //vuelve al estado inicial: no autenticado
+        emit(AuthError(e.toString().replaceAll("Exception: ", "")));
+        emit(UnAuthenticated());
       }
     });
 
@@ -38,23 +35,22 @@ class AuthenticationBloc
     on<SignUpRequested>((event, emit) async {
       emit(AuthLoading());
       try {
-        await AuthRepository().signUp(
+        User? usuario = await AuthRepository().signUp(
           email: event.email,
           password: event.password,
           name: event.name,
           bornDate: event.bornDate,
           phoneNumber: event.phoneNumber,
-          role: event.role, // Asumo que tienes este campo en tu evento
-          university:
-              event.university, // Asumo que tienes este campo en tu evento
-          gender: event.gender, // Asumo que tienes este campo en tu evento
+          role: event.role,
+          university: event.university,
+          gender: event.gender,
         );
+        emit(Authenticated(usuario!, event.email));
       } catch (e) {
         emit(AuthError(e.toString().replaceAll("Exception: ", "")));
         emit(UnAuthenticated());
       }
     });
-
     /*
     Maneja el evento que se lanza al oprimir el boton de signout
     Y emite un estado de no autenticado
