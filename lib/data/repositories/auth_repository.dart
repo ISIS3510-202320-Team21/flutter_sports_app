@@ -43,7 +43,7 @@ class AuthRepository {
   Future<User?> signIn(
       {required String email, required String password}) async {
     final response = await http.post(
-      Uri.parse('$backendUrl/api/signin'),
+      Uri.parse('$backendUrl/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
