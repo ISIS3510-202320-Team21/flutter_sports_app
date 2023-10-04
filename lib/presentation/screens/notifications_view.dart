@@ -23,7 +23,7 @@ class _NotificationsViewState extends State<NotificationsView> {
           style: TextStyle(fontSize: 24),
         ),
       ),
-        bottomNavigationBar: const BottomNavigationBarExample()
+        bottomNavigationBar: const BottomNavigationBarView()
     );
   }
 }

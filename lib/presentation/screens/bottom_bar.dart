@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-/// Flutter code sample for [BottomNavigationBar].
-class BottomNavigationBarExample extends StatefulWidget {
-  const BottomNavigationBarExample({super.key});
+class BottomNavigationBarView extends StatefulWidget {
+  const BottomNavigationBarView({super.key});
 
   @override
-  State<BottomNavigationBarExample> createState() =>
-      _BottomNavigationBarExampleState();
+  State<BottomNavigationBarView> createState() =>
+      _BottomNavigationBarViewState();
 }
 
-class _BottomNavigationBarExampleState
-    extends State<BottomNavigationBarExample> {
+class _BottomNavigationBarViewState
+    extends State<BottomNavigationBarView> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);

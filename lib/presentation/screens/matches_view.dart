@@ -23,7 +23,7 @@ class _MatchesViewState extends State<MatchesView> {
             style: TextStyle(fontSize: 24),
           ),
         ),
-        bottomNavigationBar: const BottomNavigationBarExample()
+        bottomNavigationBar: const BottomNavigationBarView()
     );
   }
 }
