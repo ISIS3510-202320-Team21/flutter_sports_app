@@ -15,6 +15,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeBloc, HomeState>(
@@ -24,21 +25,16 @@ class _HomeViewState extends State<HomeView> {
       listener: (context, state) {
         if (state is HomeNavigateToNotificationState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsView()));
-        }
-        else if (state is HomeNavigateToReservationState) {
+        } else if (state is HomeNavigateToReservationState) {
           final url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
-        }
-        else if (state is HomeNavigateToManageMatchesState) {
+        } else if (state is HomeNavigateToManageMatchesState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchesView()));
-        }
-        else if (state is HomeNavigateToQuickMatchState) {
+        } else if (state is HomeNavigateToQuickMatchState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchesView()));
-        }
-        else if (state is HomeNavigateToNewMatchState) {
+        } else if (state is HomeNavigateToNewMatchState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchesView()));
-        }
-        else if (state is HomeNavigateToProfileState) {
+        } else if (state is HomeNavigateToProfileState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileView()));
         }
       },
@@ -59,59 +55,61 @@ class _HomeViewState extends State<HomeView> {
               
             ) 
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Welcome back Camilo',
-                  style: TextStyle(fontSize: 20),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'What would you like to do today?',
-                  style: TextStyle(fontSize: 16),
-                ),
-                SizedBox(height: 32),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildActionButton(
-                      title: 'Go to field reservation',
-                      imageAsset: 'field_reservation.png',
-                      onPressed: goToFieldReservation,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildActionButton(
-                      title: 'Manage your matches',
-                      imageAsset: 'manage_matches.png',
-                      onPressed: goToManageMatches,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildActionButton(
-                      title: 'New match',
-                      imageAsset: 'new_match1.png',
-                      onPressed: goToNewMatch,
-                    ),
-                    SizedBox(width: 16),
-                    _buildActionButton(
-                      title: 'New match',
-                      imageAsset:'new_match2.png',
-                      onPressed: goToNewMatch,
-                    ),
-                  ],
-                ),
-              ],
+          body: SingleChildScrollView( // Added SingleChildScrollView to prevent overflow
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Welcome back Camilo',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'What would you like to do today?',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 32),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildActionButton(
+                        title: 'Go to field reservation',
+                        imageAsset: 'assets/field_reservation.png', 
+                        onPressed: goToFieldReservation,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildActionButton(
+                        title: 'Manage your matches',
+                        imageAsset: 'assets/manage_matches.png', 
+                        onPressed: goToManageMatches,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildActionButton(
+                        title: 'New match',
+                        imageAsset: 'assets/new_match1.png', 
+                        onPressed: goToNewMatch,
+                      ),
+                      SizedBox(width: 16),
+                      _buildActionButton(
+                        title: 'New match',
+                        imageAsset: 'assets/new_match2.png', 
+                        onPressed: goToNewMatch,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -130,12 +128,13 @@ class _HomeViewState extends State<HomeView> {
       label: Text(title),
     );
   }
+
   void goToFieldReservation() {
     homeBloc.add(HomeReservationButtonClickedEvent());
   }
 
   void goToManageMatches() {
-   homeBloc.add(HomeManageMatchesButtonClickedEvent());
+    homeBloc.add(HomeManageMatchesButtonClickedEvent());
   }
 
   void goToNewMatch() {
