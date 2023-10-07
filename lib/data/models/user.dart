@@ -7,6 +7,8 @@ class User {
   final DateTime bornDate;
   final String gender;
   final String imageUrl;
+  final String latitude;
+  final String longitude;
 
   User(
       {required this.university,

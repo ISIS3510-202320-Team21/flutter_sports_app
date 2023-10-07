@@ -63,7 +63,7 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       _buildActionButton(
                         title: 'Go to field reservation',
-                        imageAsset: 'assets/field_reservation.png', // Corrected asset path
+                        imageAsset: 'assets/field_reservation.png', 
                         onPressed: goToFieldReservation,
                       ),
                     ],
@@ -74,7 +74,7 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       _buildActionButton(
                         title: 'Manage your matches',
-                        imageAsset: 'assets/manage_matches.png', // Corrected asset path
+                        imageAsset: 'assets/manage_matches.png', 
                         onPressed: goToManageMatches,
                       ),
                     ],
@@ -85,13 +85,13 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       _buildActionButton(
                         title: 'New match',
-                        imageAsset: 'assets/new_match1.png', // Corrected asset path
+                        imageAsset: 'assets/new_match1.png', 
                         onPressed: goToNewMatch,
                       ),
                       SizedBox(width: 16),
                       _buildActionButton(
                         title: 'New match',
-                        imageAsset: 'assets/new_match2.png', // Corrected asset path
+                        imageAsset: 'assets/new_match2.png', 
                         onPressed: goToNewMatch,
                       ),
                     ],
