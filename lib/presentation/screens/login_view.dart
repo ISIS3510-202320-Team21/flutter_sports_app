@@ -67,8 +67,8 @@ class LoginView extends StatelessWidget {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.02,
                       ),
-                      _buildTextField(context, _passwordController, 'Password...',
-                          (text) {
+                      _buildTextField(
+                          context, _passwordController, 'Password...', (text) {
                         if (text == null || text.isEmpty) {
                           return 'Can\'t be empty';
                         }
@@ -126,9 +126,10 @@ class LoginView extends StatelessWidget {
                             textAlign: TextAlign.center,
                             text: TextSpan(
                               style: textTheme.titleLarge?.copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
-                              ),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  fontWeight: FontWeight.bold),
                               children: [
                                 const TextSpan(text: 'Or sign up using'),
                                 const TextSpan(text: '\n'),
