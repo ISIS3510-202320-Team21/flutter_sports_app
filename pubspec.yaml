@@ -68,6 +68,13 @@ flutter:
     - assets/manage_matches.png
     - assets/new_match1.png
     - assets/new_match2.png
+
+  fonts:
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
+        - asset: assets/fonts/Lato-Bold.ttf
+          weight: 700
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

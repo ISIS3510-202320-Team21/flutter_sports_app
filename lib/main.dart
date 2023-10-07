@@ -29,6 +29,7 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
+            fontFamily: 'Lato',
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
           onGenerateRoute: _appRouter.onGenerateRoute,
