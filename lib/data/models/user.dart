@@ -1,24 +1,27 @@
 class User {
   final String email;
-  final String university;
+  final String? university; 
   final String name;
-  final String phoneNumber;
+  final String? phoneNumber; 
   final String role;
   final DateTime bornDate;
   final String gender;
-  final String imageUrl;
-  final String latitude;
-  final String longitude;
+  final String? imageUrl; 
+  final String? latitude; 
+  final String? longitude; 
 
-  User(
-      {required this.university,
-      required this.email,
-      required this.name,
-      required this.phoneNumber,
-      required this.role,
-      required this.bornDate,
-      required this.gender,
-      required this.imageUrl});
+  User({
+    required this.email,
+    this.university, 
+    required this.name,
+    this.phoneNumber, 
+    required this.role,
+    required this.bornDate,
+    required this.gender,
+    this.imageUrl, 
+    this.latitude, 
+    this.longitude, 
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
     final dateParts = json['bornDate'].split('/');
@@ -27,11 +30,7 @@ class User {
     final year = int.parse(dateParts[2]);
     final parsedDate = DateTime(year + 2000, month, day);
 
-    if (json['imageUrl'] == null) {
-      json['imageUrl'] = "";
-    }
-
-    final user = User(
+    return User(
       university: json['university'],
       email: json['email'],
       name: json['name'],
@@ -40,8 +39,8 @@ class User {
       bornDate: parsedDate,
       gender: json['gender'],
       imageUrl: json["imageUrl"],
+      latitude: json["latitude"],
+      longitude: json["longitude"],
     );
-
-    return user;
   }
 }
