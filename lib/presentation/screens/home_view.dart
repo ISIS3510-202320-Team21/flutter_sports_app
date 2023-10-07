@@ -5,7 +5,6 @@ import 'package:flutter_app_sports/presentation/screens/notifications_view.dart'
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -25,25 +24,25 @@ class _HomeViewState extends State<HomeView> {
       buildWhen: (previous, current) => current is! HomeActionState,
       listener: (context, state) {
         if (state is HomeNavigateToNotificationState) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsView()));
         } else if (state is HomeNavigateToReservationState) {
           const url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MatchesView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchesView()));
         } else if (state is HomeNavigateToQuickMatchState) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MatchesView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchesView()));
         } else if (state is HomeNavigateToNewMatchState) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MatchesView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const MatchesView()));
         } else if (state is HomeNavigateToProfileState) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfileView()));
         }
       },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
-            title: Align(
+            title: const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'HOME',

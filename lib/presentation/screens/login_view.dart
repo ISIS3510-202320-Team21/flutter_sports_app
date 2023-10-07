@@ -18,6 +18,7 @@ class LoginView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.0, // Esto quitará la sombra
         title: Text(
           "LOGIN",
           style: textTheme.headlineSmall?.copyWith(
@@ -25,7 +26,7 @@ class LoginView extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
         toolbarHeight: 0.1 * ScreenUtil().screenHeight,
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
       body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
@@ -40,7 +41,9 @@ class LoginView extends StatelessWidget {
           if (state is AuthLoading) return const CircularProgressIndicator();
 
           return Container(
-            color: Theme.of(context).colorScheme.onSecondary,
+            constraints: BoxConstraints
+                .expand(), // Esto hará que el Container se expanda
+            color: Theme.of(context).colorScheme.background,
             child: Form(
               key: _formKey,
               child: Padding(
@@ -75,7 +78,7 @@ class LoginView extends StatelessWidget {
                         return null;
                       }, isObscure: true),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
+                        height: MediaQuery.of(context).size.height * 0.03,
                       ),
                       ElevatedButton(
                         onPressed: () => _login(context),
@@ -175,7 +178,7 @@ class LoginView extends StatelessWidget {
         contentPadding: const EdgeInsets.only(left: 18, top: 15, bottom: 15),
         labelText: labelText,
         filled: true,
-        fillColor: Theme.of(context).colorScheme.background,
+        fillColor: Theme.of(context).colorScheme.surface.withOpacity(1),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,
