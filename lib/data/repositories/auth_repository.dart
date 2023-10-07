@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_app_sports/data/services/config_service.dart';
 
 class AuthRepository {
-  final String? backendUrl = dotenv.env['BACKEND_URL'];
+  final String? backendUrl = ConfigService.backendUrl;
 
   Future<User?> signUp({
     required String email,
