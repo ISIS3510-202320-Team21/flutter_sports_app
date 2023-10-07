@@ -39,6 +39,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   flutter_bloc: 
   flutter_form_builder: 
+  url_launcher: ^6.1.14
 
 dev_dependencies:
   flutter_test:

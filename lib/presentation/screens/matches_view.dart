@@ -19,7 +19,7 @@ class _MatchesViewState extends State<MatchesView> {
         ),
         body: const Center(
           child: Text(
-            'Hello, World!',
+            'Hello, Matches!',
             style: TextStyle(fontSize: 24),
           ),
         ),

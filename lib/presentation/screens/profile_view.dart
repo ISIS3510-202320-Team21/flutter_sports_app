@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 
 import 'bottom_bar.dart';
 
-class NotificationsView extends StatefulWidget {
-  const NotificationsView({super.key});
+class ProfileView extends StatefulWidget {
+  const ProfileView({super.key});
 
   @override
-  _NotificationsViewState createState() => _NotificationsViewState();
+  _ProfileViewState createState() => _ProfileViewState();
 }
 
-class _NotificationsViewState extends State<NotificationsView> {
+class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications view'),
+        title: const Text('Profile view'),
         backgroundColor: const Color.fromRGBO(170, 62, 152, 1),
       ),
       body: const Center(
         child: Text(
-          'Hello, Notifications!',
+          'Hello, Profile!',
           style: TextStyle(fontSize: 24),
         ),
       ),
