@@ -5,6 +5,7 @@ import 'package:flutter_app_sports/presentation/screens/notifications_view.dart'
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -26,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
         if (state is HomeNavigateToNotificationState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsView()));
         } else if (state is HomeNavigateToReservationState) {
-          final url = 'https://centrodeportivo.bookeau.com/#/login';
+          const url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => MatchesView()));
@@ -55,21 +56,22 @@ class _HomeViewState extends State<HomeView> {
               
             ) 
           ),
+          
           body: SingleChildScrollView( // Added SingleChildScrollView to prevent overflow
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Welcome back Camilo',
                     style: TextStyle(fontSize: 20),
                   ),
-                  SizedBox(height: 16),
-                  Text(
+                  const SizedBox(height: 16),
+                  const Text(
                     'What would you like to do today?',
                     style: TextStyle(fontSize: 16),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -80,7 +82,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -91,7 +93,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -100,10 +102,10 @@ class _HomeViewState extends State<HomeView> {
                         imageAsset: 'assets/new_match1.png', 
                         onPressed: goToNewMatch,
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       _buildActionButton(
                         title: 'New match',
-                        imageAsset: 'assets/new_match2.png', 
+                        imageAsset: 'assets/loginIcon.png', 
                         onPressed: goToNewMatch,
                       ),
                     ],

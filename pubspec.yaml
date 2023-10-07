@@ -40,6 +40,9 @@ dependencies:
   flutter_bloc: 
   flutter_form_builder: 
   url_launcher: ^6.1.14
+  flutter_svg: ^2.0.5
+  flutter_screenutil: ^5.0.8
+
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +62,6 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo1.png"
 
 flutter:
   assets:
@@ -68,7 +70,8 @@ flutter:
     - assets/manage_matches.png
     - assets/new_match1.png
     - assets/new_match2.png
-
+    - assets/loginIcon.png
+    - assets/icons/loginIcon.svg
   fonts:
     - family: Lato
       fonts:
