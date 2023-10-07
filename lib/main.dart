@@ -28,11 +28,30 @@ class _MyAppState extends State<MyApp> {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
+          onGenerateRoute: _appRouter.onGenerateRoute,
           theme: ThemeData(
             fontFamily: 'Lato',
+            primaryColor: const Color(0xFF19647E),
+            colorScheme: const ColorScheme(
+              primary: Color(0xFF19647E),
+              secondary: Color(0xFF28AFB0),
+              background: Color(0xFFF5F5F5),
+              surface: Color(0x00ebebeb),
+              onPrimary: Color(0xFFFFFFFF),
+              onSecondary: Color(0x00f5f5f5),
+              onBackground: Color(0xFF37392E),
+              onSurface: Color(0xFF37392E),
+              onError: Color(0xFF000000),
+              error: Color(0xFF000000), brightness: Brightness.light,
+            ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(color: Color(0xFF37392E)),
+              bodyMedium: TextStyle(color: Color(0xFF000000)),
+              bodySmall: TextStyle(color: Color(0xFF000000)),
+              headlineLarge: TextStyle(color: Color(0xFF37392E)),
+            ),
           ),
-          onGenerateRoute: _appRouter.onGenerateRoute,
         ));
   }
 }
