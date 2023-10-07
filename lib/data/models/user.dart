@@ -25,7 +25,6 @@ class User {
     final year = int.parse(dateParts[2]);
     final parsedDate = DateTime(year + 2000, month, day);
 
-    // make a user variable
     if (json['imageUrl'] == null) {
       json['imageUrl'] = "";
     }
