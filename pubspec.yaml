@@ -56,9 +56,18 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo1.png"
+
 flutter:
   assets:
     - .env
+    - assets/field_reservation.png
+    - assets/manage_matches.png
+    - assets/new_match1.png
+    - assets/new_match2.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
