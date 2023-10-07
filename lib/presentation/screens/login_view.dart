@@ -67,7 +67,7 @@ class LoginView extends StatelessWidget {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.02,
                       ),
-                      _buildTextField(context, _passwordController, 'Password',
+                      _buildTextField(context, _passwordController, 'Password...',
                           (text) {
                         if (text == null || text.isEmpty) {
                           return 'Can\'t be empty';
