@@ -41,6 +41,8 @@ class LoginView extends StatelessWidget {
           if (state is AuthLoading) return const CircularProgressIndicator();
 
           return Container(
+            constraints: BoxConstraints
+                .expand(), // Esto hará que el Container se expanda
             color: Theme.of(context).colorScheme.background,
             child: Form(
               key: _formKey,
@@ -176,7 +178,7 @@ class LoginView extends StatelessWidget {
         contentPadding: const EdgeInsets.only(left: 18, top: 15, bottom: 15),
         labelText: labelText,
         filled: true,
-        fillColor: Theme.of(context).colorScheme.background,
+        fillColor: Theme.of(context).colorScheme.surface.withOpacity(1),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,
