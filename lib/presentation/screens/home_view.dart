@@ -42,8 +42,19 @@ class _HomeViewState extends State<HomeView> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('HOME')
-            
+            backgroundColor: Colors.white,
+            title: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'HOME',
+                style: TextStyle(
+                  color: Color(0xFF37392E),
+                  fontSize: 29,
+                  fontFamily: 'Lato',
+                ),
+              ),
+              
+            ) 
           ),
           
           body: SingleChildScrollView( // Added SingleChildScrollView to prevent overflow
