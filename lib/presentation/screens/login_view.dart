@@ -21,7 +21,7 @@ class LoginView extends StatelessWidget {
         elevation: 0.0, // Esto quitará la sombra
         title: Text(
           "LOGIN",
-          style: textTheme.headlineSmall?.copyWith(
+          style: textTheme.headlineSmall?.copyWith( 
               color: Theme.of(context).colorScheme.onBackground,
               fontWeight: FontWeight.bold),
         ),

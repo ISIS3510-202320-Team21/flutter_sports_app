@@ -64,16 +64,34 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    BlocProvider.of<AuthenticationBloc>(context).userName != null
-                      ? 'Welcome back ${BlocProvider.of<AuthenticationBloc>(context).userName}'
-                      : 'Welcome ',
-                    style: TextStyle(fontSize: 20),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Welcome back ',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xFF28AFB0),
+                            fontFamily: 'Lato',
+                           ), // Color para "Welcome back"
+                        ),
+                        TextSpan(
+                          text: BlocProvider.of<AuthenticationBloc>(context).userName != null
+                            ? '${BlocProvider.of<AuthenticationBloc>(context).userName}'
+                            : 'User',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Color(0xFF19647E),
+                            fontFamily: 'Lato',
+                          ), // Color para el nombre de usuario
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 3),
                   const Text(
                     'What would you like to do today?',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, fontFamily: 'Lato'),
                   ),
                   const SizedBox(height: 32),
                   Row(
@@ -92,7 +110,7 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       _buildActionButton(
                         title: 'Manage your matches',
-                        imageAsset: 'assets/manage_matches.png', 
+                        imageAsset: 'assets/reserva_1.png', 
                         onPressed: goToManageMatches,
                       ),
                     ],
@@ -103,13 +121,13 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       _buildActionButton2(
                         title: 'New Tennis Match',
-                        imageAsset: 'assets/new_match1.png', 
+                        imageAsset: 'assets/tenis_1.png', 
                         onPressed: goToNewMatch,
                       ),
                       const SizedBox(width: 16),
                       _buildActionButton2(
-                        title: 'New Basketball Match',
-                        imageAsset: 'assets/loginIcon.png', 
+                        title: 'New Soccer Match',
+                        imageAsset: 'assets/ajedrez_1.png', 
                         onPressed: goToNewMatch,
                       ),
                     ],
@@ -123,61 +141,69 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-Widget _buildActionButton({required String title, required String imageAsset, required VoidCallback onPressed}) {
+  Widget _buildActionButton({required String title, required String imageAsset, required VoidCallback onPressed}) {
     return ElevatedButton(
       onPressed: onPressed, 
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 16), // Ajusta el espacio horizontal aquí
+        backgroundColor: Color(0xFFEAEAEA),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
+          borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Alinea la imagen y el texto hacia la izquierda
-        children: [
-          Image.asset(
-            imageAsset,
-            width: 100, // Ancho de la imagen
-            height: 100, // Alto de la imagen
-          ),
-          SizedBox(width: 16), // Espacio entre la imagen y el texto
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
+      child: SizedBox(
+        width: 300, // Establece el ancho máximo deseado
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset(
+              imageAsset,
+              width: 100,
+              height: 100,
             ),
-          ),
-        ],
+            SizedBox(width: 16),
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.black, // Color del texto
+                fontSize: 17,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildActionButton2({required String title, required String imageAsset, required VoidCallback onPressed}) {
-    return ElevatedButton(
-      onPressed: onPressed, 
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 16), // Ajusta el espacio horizontal aquí
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
-        ),
-      ),
-      child: Row(
-        children: [
-          Image.asset(
-            imageAsset,
-            width: 50, // Ancho de la imagen
-            height: 100, // Alto de la imagen
+    return Container(
+      width: 155, // Establece el ancho máximo deseado
+      child: ElevatedButton(
+        onPressed: onPressed, 
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFFEAEAEA),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          SizedBox(width: 16), // Espacio entre la imagen y el texto
-          Expanded( // Esto permite que el texto se ajuste sin hacer el botón más ancho
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              imageAsset,
+              width: 50,
+              height: 100,
+            ),
+            SizedBox(width: 16), // Espacio horizontal entre la imagen y el texto
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.black, // Color del texto
+                  fontSize: 17,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -208,3 +234,63 @@ Widget _buildActionButton({required String title, required String imageAsset, re
   }
 
 }
+
+// Widget _buildActionButton({required String title, required String imageAsset, required VoidCallback onPressed}) {
+//     return ElevatedButton(
+//       onPressed: onPressed, 
+//       style: ElevatedButton.styleFrom(
+//         backgroundColor: Color(0xFFEAEAEA),
+//         padding: EdgeInsets.symmetric(horizontal: 16), // Ajusta el espacio horizontal aquí
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
+//         ),
+//       ),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.start, // Alinea la imagen y el texto hacia la izquierda
+//         children: [
+//           Image.asset(
+//             imageAsset,
+//             width: 100, // Ancho de la imagen
+//             height: 100, // Alto de la imagen
+//           ),
+//           SizedBox(width: 16), // Espacio entre la imagen y el texto
+//           Text(
+//             title,
+//             style: TextStyle(
+//               fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Widget _buildActionButton2({required String title, required String imageAsset, required VoidCallback onPressed}) {
+//     return ElevatedButton(
+//       onPressed: onPressed, 
+//       style: ElevatedButton.styleFrom(
+//         padding: EdgeInsets.symmetric(horizontal: 8), // Ajusta el espacio horizontal aquí
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
+//         ),
+//       ),
+//       child: Row(
+//         children: [
+//           Image.asset(
+//             imageAsset,
+//             width: 50, // Ancho de la imagen
+//             height: 100, // Alto de la imagen
+//           ),
+//           SizedBox(width: 16), // Espacio entre la imagen y el texto
+//           Expanded( // Esto permite que el texto se ajuste sin hacer el botón más ancho
+//             child: Text(
+//               title,
+//               style: TextStyle(
+//                 fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
