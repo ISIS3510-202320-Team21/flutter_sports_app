@@ -55,7 +55,7 @@ class _SignUpViewState extends State<SignUpView> {
             return const Center(child: CircularProgressIndicator());
           }
           return Container(
-            constraints: BoxConstraints.expand(),
+            constraints: const BoxConstraints.expand(),
             color: Theme.of(context).colorScheme.background,
             child: Form(
               key: _formKey,
@@ -69,7 +69,7 @@ class _SignUpViewState extends State<SignUpView> {
                         padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.05),
                         child: Image.asset(
-                            'assets/loginIcon.png'), // Cambia a tu imagen de registro si la tienes
+                            'assets/loginIcon.png'), 
                       ),
                       _buildTextField(context, _nameController, 'Name', (text) {
                         if (text == null || text.isEmpty) {
@@ -257,8 +257,9 @@ Widget _buildPhoneNumberField() {
     'Phone Number',
     (val) {
       if (val == null || val.isEmpty) return 'Can\'t be empty';
-      if (!RegExp(r'^[0-9]+$').hasMatch(val))
+      if (!RegExp(r'^[0-9]+$').hasMatch(val)) {
         return 'Enter a valid phone number';
+      }
       return null;
     },
     keyboardType: TextInputType.phone,
@@ -269,7 +270,7 @@ Widget _buildPhoneNumberField() {
 Widget _buildDatePicker() {
   return TextFormField(
     readOnly: true,
-    decoration: InputDecoration(
+    decoration: const InputDecoration(
       labelText: 'Born Date',
       border: OutlineInputBorder(),
       suffixIcon: Icon(Icons.calendar_today),
@@ -302,11 +303,11 @@ Widget _buildDatePicker() {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
       value: controller.text.isEmpty ? null : controller.text,
       items: items
-          .map((item) => DropdownMenuItem(child: Text(item), value: item))
+          .map((item) => DropdownMenuItem(value: item, child: Text(item)))
           .toList(),
       onChanged: (value) => setState(() => controller.text = value!),
       validator: (value) {
