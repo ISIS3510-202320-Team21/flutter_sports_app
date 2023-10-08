@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
-
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
 
@@ -14,6 +13,9 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  List<String> roles = [];
+  List<String> universities = [];
+  List<String> genders = [];
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
@@ -23,6 +25,16 @@ class _SignUpViewState extends State<SignUpView> {
   final _genderController = TextEditingController();
   var _bornDate;
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Lanza los eventos para cargar los datos al iniciar la vista
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchRolesRequested());
+    BlocProvider.of<AuthenticationBloc>(context)
+        .add(FetchUniversitiesRequested());
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +61,20 @@ class _SignUpViewState extends State<SignUpView> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.error)));
           }
+          if (state is RolesLoaded) {
+            roles = state.roles;
+          }
+          if (state is UniversitiesLoaded) {
+            universities = state.universities;
+          }
+          if (state is GendersLoaded) {
+            genders = state.genders;
+          }
         },
         builder: (context, state) {
+          if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
           if (state is AuthLoading) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -68,8 +92,7 @@ class _SignUpViewState extends State<SignUpView> {
                       Padding(
                         padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.05),
-                        child: Image.asset(
-                            'assets/loginIcon.png'), 
+                        child: Image.asset('assets/loginIcon.png'),
                       ),
                       _buildTextField(context, _nameController, 'Name', (text) {
                         if (text == null || text.isEmpty) {
@@ -111,18 +134,16 @@ class _SignUpViewState extends State<SignUpView> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.02,
                       ),
-                      _buildDropdown(
-                          'Role', _roleController, ['Role 1', 'Role 2']),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildDropdown('University', _universityController,
-                          ['Universidad de los Andes', 'Universidad Nacional']),
+                      _buildDropdown('Role', _roleController, roles),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.02,
                       ),
                       _buildDropdown(
-                          'Gender', _genderController, ['Male', 'Female']),
+                          'University', _universityController, universities),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                      _buildDropdown('Gender', _genderController, genders),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.03,
                       ),
@@ -205,98 +226,97 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-Widget _buildTextField(
-  BuildContext context,
-  TextEditingController controller,
-  String labelText,
-  String? Function(String?) validator, {
-  bool isObscure = false,
-  TextInputType keyboardType = TextInputType.text,
-}) {
-  return TextFormField(
-    controller: controller,
-    validator: validator,
-    obscureText: isObscure,
-    keyboardType: keyboardType,
-    decoration: InputDecoration(
-      contentPadding: const EdgeInsets.only(left: 18, top: 15, bottom: 15),
-      labelText: labelText,
-      filled: true,
-      fillColor: Theme.of(context).colorScheme.surface.withOpacity(1),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide.none,
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: BorderSide(
-          color: Theme.of(context).colorScheme.primary,
+  Widget _buildTextField(
+    BuildContext context,
+    TextEditingController controller,
+    String labelText,
+    String? Function(String?) validator, {
+    bool isObscure = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      obscureText: isObscure,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.only(left: 18, top: 15, bottom: 15),
+        labelText: labelText,
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.surface.withOpacity(1),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(
+            color: Colors.red,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: const BorderSide(
+            color: Colors.red,
+          ),
         ),
       ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: const BorderSide(
-          color: Colors.red,
-        ),
+    );
+  }
+
+  Widget _buildPhoneNumberField() {
+    return _buildTextField(
+      context,
+      _phoneNumberController,
+      'Phone Number',
+      (val) {
+        if (val == null || val.isEmpty) return 'Can\'t be empty';
+        if (!RegExp(r'^[0-9]+$').hasMatch(val)) {
+          return 'Enter a valid phone number';
+        }
+        return null;
+      },
+      keyboardType: TextInputType.phone,
+    );
+  }
+
+  Widget _buildDatePicker() {
+    return TextFormField(
+      readOnly: true,
+      decoration: const InputDecoration(
+        labelText: 'Born Date',
+        border: OutlineInputBorder(),
+        suffixIcon: Icon(Icons.calendar_today),
       ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20),
-        borderSide: const BorderSide(
-          color: Colors.red,
-        ),
-      ),
-    ),
-  );
-}
-
-
-Widget _buildPhoneNumberField() {
-  return _buildTextField(
-    context,
-    _phoneNumberController,
-    'Phone Number',
-    (val) {
-      if (val == null || val.isEmpty) return 'Can\'t be empty';
-      if (!RegExp(r'^[0-9]+$').hasMatch(val)) {
-        return 'Enter a valid phone number';
-      }
-      return null;
-    },
-    keyboardType: TextInputType.phone,
-  );
-}
-
-
-Widget _buildDatePicker() {
-  return TextFormField(
-    readOnly: true,
-    decoration: const InputDecoration(
-      labelText: 'Born Date',
-      border: OutlineInputBorder(),
-      suffixIcon: Icon(Icons.calendar_today),
-    ),
-    onTap: () async {
-      DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1900),
-        lastDate: DateTime.now(),
-      );
-      if (pickedDate != null) {
-        setState(() {
-          _bornDate = pickedDate;
-        });
-      }
-    },
-    controller: TextEditingController(
-        text: _bornDate != null ? DateFormat('dd/MM/yy').format(_bornDate!) : ''),
-    validator: (val) {
-      if (val == null || val.isEmpty) return 'Please select a date';
-      return null;
-    },
-  );
-}
-
+      onTap: () async {
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+        );
+        if (pickedDate != null) {
+          setState(() {
+            _bornDate = pickedDate;
+          });
+        }
+      },
+      controller: TextEditingController(
+          text: _bornDate != null
+              ? DateFormat('dd/MM/yy').format(_bornDate!)
+              : ''),
+      validator: (val) {
+        if (val == null || val.isEmpty) return 'Please select a date';
+        return null;
+      },
+    );
+  }
 
   Widget _buildDropdown(
       String label, TextEditingController controller, List<String> items) {
