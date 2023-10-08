@@ -73,6 +73,7 @@ flutter:
     - assets/new_match2.png
     - assets/loginIcon.png
     - assets/icons/loginIcon.svg
+    - assets/matchButton.png
   fonts:
     - family: Lato
       fonts:
