@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/presentation/widgets/CustomBottomNavigationBar.dart';
 
 class MatchesView extends StatefulWidget {
   const MatchesView({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _MatchesViewState createState() => _MatchesViewState();
 }
 
 class _MatchesViewState extends State<MatchesView> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   Widget _iconButtonWithBackground(IconData iconData, VoidCallback onPressed) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -25,10 +17,13 @@ class _MatchesViewState extends State<MatchesView> {
         color: colorScheme.surface.withOpacity(0.5),
         borderRadius: BorderRadius.circular(8.0),
       ),
-      margin: const EdgeInsets.fromLTRB(8.0, 8.0, 8,
-          8.0), 
+      margin: const EdgeInsets.all(4.0), 
       child: IconButton(
-        icon: Icon(iconData, color: colorScheme.onBackground),
+        icon: Icon(
+          iconData, 
+          color: colorScheme.onBackground,
+          size: 30, // Aumentado el tamaño para que se vea más grueso
+        ),
         onPressed: onPressed,
       ),
     );
@@ -62,37 +57,26 @@ class _MatchesViewState extends State<MatchesView> {
           }),
         ],
       ),
-      body: const SafeArea(
-        child: Center(
-          child: Text(
-            'Hello, Matches!',
-            style: TextStyle(fontSize: 24),
+      body: Stack(
+        children: [
+          const SafeArea(
+            child: Center(
+              child: Text(
+                'Hello, Matches!',
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
           ),
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 0.0,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: colorScheme.onBackground),
-            activeIcon: Icon(Icons.home, color: colorScheme.primary),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: colorScheme.onBackground),
-            activeIcon: Icon(Icons.search, color: colorScheme.primary),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: colorScheme.onBackground),
-            activeIcon: Icon(Icons.person, color: colorScheme.primary),
-            label: 'Profile',
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _iconButtonWithBackground(Icons.add, () {
+                // Acción para el ícono de +
+              }),
+            ),
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: colorScheme.primary,
-        unselectedItemColor: colorScheme.onBackground,
-        onTap: _onItemTapped,
       ),
     );
   }

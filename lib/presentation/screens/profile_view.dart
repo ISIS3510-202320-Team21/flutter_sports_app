@@ -34,7 +34,6 @@ class _ProfileViewState extends State<ProfileView> {
           style: TextStyle(fontSize: 24),
         ),
       ),
-        bottomNavigationBar: const BottomNavigationBarView()
     );
   }
 }
