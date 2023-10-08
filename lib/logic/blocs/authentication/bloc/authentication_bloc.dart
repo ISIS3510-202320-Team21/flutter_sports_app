@@ -10,8 +10,9 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-      String? _userName; 
-      String? get userName => _userName;
+  String? _userName; 
+  String? get userName => _userName;
+  final AuthRepository _authRepository = AuthRepository();
   AuthenticationBloc() : super(UnAuthenticated()) {
     /*
     Maneja el evento que se lanza al oprimir el boton de login
@@ -63,6 +64,36 @@ class AuthenticationBloc
       emit(AuthLoading());
       await AuthRepository().signOut();
       emit(UnAuthenticated());
+    });
+
+    on<FetchRolesRequested>((event, emit) async {
+      emit(RolesLoading());
+      try {
+        List<String> roles = await _authRepository.fetchRoles();
+        emit(RolesLoaded(roles));
+      } catch (e) {
+        emit(FetchError(e.toString().replaceAll("Exception: ", "")));
+      }
+    });
+
+    on<FetchUniversitiesRequested>((event, emit) async {
+      emit(UniversitiesLoading());
+      try {
+        List<String> universities = await _authRepository.fetchUniversities();
+        emit(UniversitiesLoaded(universities));
+      } catch (e) {
+        emit(FetchError(e.toString().replaceAll("Exception: ", "")));
+      }
+    });
+
+    on<FetchGendersRequested>((event, emit) async {
+      emit(GendersLoading());
+      try {
+        List<String> genders = await _authRepository.fetchGenders();
+        emit(GendersLoaded(genders));
+      } catch (e) {
+        emit(FetchError(e.toString().replaceAll("Exception: ", "")));
+      }
     });
   }
 }
