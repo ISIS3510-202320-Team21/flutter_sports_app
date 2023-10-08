@@ -4,6 +4,7 @@ part of 'authentication_bloc.dart';
 abstract class AuthenticationEvent extends Equatable {
   @override
   List<Object> get props => [];
+  
 }
 
 /*
@@ -51,3 +52,24 @@ se lanza este evento y el repositorio de autenticacion es llamado para
 completar la acción
 */
 class SignOutRequested extends AuthenticationEvent {}
+
+/*
+Cuando se necesita obtener la lista de roles disponibles
+se lanza este evento y el repositorio de autenticación es llamado para 
+completar la acción
+*/
+class FetchRolesRequested extends AuthenticationEvent {}
+
+/*
+Cuando se necesita obtener la lista de universidades disponibles
+se lanza este evento y el repositorio de autenticación es llamado para 
+completar la acción
+*/
+class FetchUniversitiesRequested extends AuthenticationEvent {}
+
+/*
+Cuando se necesita obtener la lista de géneros disponibles
+se lanza este evento y el repositorio de autenticación es llamado para 
+completar la acción
+*/
+class FetchGendersRequested extends AuthenticationEvent {}

@@ -30,7 +30,7 @@ class AuthRepository {
         'university': university,
         'bornDate': bornDate,
         'gender': gender
-        }),
+      }),
     );
 
     if (response.statusCode == 200) {
@@ -62,5 +62,53 @@ class AuthRepository {
 
   Future<void> signOut() async {
     // TODO: Implementa la lógica para cerrar sesión si es necesario.
+  }
+
+  Future<List<String>> fetchRoles() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/roles/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> rolesList = jsonDecode(response.body);
+      return rolesList.cast<String>();
+    } else {
+      throw Exception('Failed to fetch roles: ${response.statusCode}');
+    }
+  }
+
+  Future<List<String>> fetchUniversities() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/universities/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> universitiesList = jsonDecode(response.body);
+      return universitiesList.cast<String>();
+    } else {
+      throw Exception('Failed to fetch universities: ${response.statusCode}');
+    }
+  }
+
+  Future<List<String>> fetchGenders() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/genders/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> gendersList = jsonDecode(response.body);
+      return gendersList.cast<String>();
+    } else {
+      throw Exception('Failed to fetch genders: ${response.statusCode}');
+    }
   }
 }
