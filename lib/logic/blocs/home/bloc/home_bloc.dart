@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter_app_sports/data/models/user.dart';
-import 'package:flutter_app_sports/data/repositories/auth_repository.dart';
+//import 'package:equatable/equatable.dart';
+//import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:meta/meta.dart';
 
 part 'home_event.dart';

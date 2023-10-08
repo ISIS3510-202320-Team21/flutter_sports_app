@@ -10,6 +10,8 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
+      String? _userName; 
+      String? get userName => _userName;
   AuthenticationBloc() : super(UnAuthenticated()) {
     /*
     Maneja el evento que se lanza al oprimir el boton de login
@@ -21,6 +23,7 @@ class AuthenticationBloc
       try {
         User? usuario = await AuthRepository()
             .signIn(email: event.email, password: event.password);
+            _userName = usuario?.name;
         emit(Authenticated(usuario!, event.email));
       } catch (e) {
         emit(AuthError(e.toString().replaceAll("Exception: ", "")));

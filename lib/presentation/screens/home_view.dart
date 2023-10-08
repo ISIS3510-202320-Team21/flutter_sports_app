@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/data/models/user.dart';
+import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
@@ -15,6 +17,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
+  //User? currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +64,10 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Welcome back Camilo',
+                  Text(
+                    BlocProvider.of<AuthenticationBloc>(context).userName != null
+                      ? 'Welcome back ${BlocProvider.of<AuthenticationBloc>(context).userName}'
+                      : 'Welcome ',
                     style: TextStyle(fontSize: 20),
                   ),
                   const SizedBox(height: 16),
@@ -96,14 +101,14 @@ class _HomeViewState extends State<HomeView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildActionButton(
-                        title: 'New match',
+                      _buildActionButton2(
+                        title: 'New Tennis Match',
                         imageAsset: 'assets/new_match1.png', 
                         onPressed: goToNewMatch,
                       ),
                       const SizedBox(width: 16),
-                      _buildActionButton(
-                        title: 'New match',
+                      _buildActionButton2(
+                        title: 'New Basketball Match',
                         imageAsset: 'assets/loginIcon.png', 
                         onPressed: goToNewMatch,
                       ),
@@ -118,17 +123,65 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildActionButton({required String title, required String imageAsset, required VoidCallback onPressed}) {
-    return ElevatedButton.icon(
+Widget _buildActionButton({required String title, required String imageAsset, required VoidCallback onPressed}) {
+    return ElevatedButton(
       onPressed: onPressed, 
-      icon: Image.asset(
-        imageAsset,
-        width: 40,
-        height: 40,
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 16), // Ajusta el espacio horizontal aquí
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
+        ),
       ),
-      label: Text(title),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start, // Alinea la imagen y el texto hacia la izquierda
+        children: [
+          Image.asset(
+            imageAsset,
+            width: 100, // Ancho de la imagen
+            height: 100, // Alto de la imagen
+          ),
+          SizedBox(width: 16), // Espacio entre la imagen y el texto
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
+            ),
+          ),
+        ],
+      ),
     );
   }
+
+  Widget _buildActionButton2({required String title, required String imageAsset, required VoidCallback onPressed}) {
+    return ElevatedButton(
+      onPressed: onPressed, 
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 16), // Ajusta el espacio horizontal aquí
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
+        ),
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            imageAsset,
+            width: 50, // Ancho de la imagen
+            height: 100, // Alto de la imagen
+          ),
+          SizedBox(width: 16), // Espacio entre la imagen y el texto
+          Expanded( // Esto permite que el texto se ajuste sin hacer el botón más ancho
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   void goToFieldReservation() {
     homeBloc.add(HomeReservationButtonClickedEvent());
@@ -153,4 +206,5 @@ class _HomeViewState extends State<HomeView> {
   void goToNotifications() {
     homeBloc.add(HomeNotificationButtonClickedEvent());
   }
+
 }
