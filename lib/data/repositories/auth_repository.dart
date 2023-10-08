@@ -17,7 +17,7 @@ class AuthRepository {
     required String gender,
   }) async {
     final response = await http.post(
-      Uri.parse('$backendUrl/users'),
+      Uri.parse('$backendUrl/users/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -29,8 +29,8 @@ class AuthRepository {
         'role': role,
         'university': university,
         'bornDate': bornDate,
-        'gender': gender,
-      }),
+        'gender': gender
+        }),
     );
 
     if (response.statusCode == 200) {

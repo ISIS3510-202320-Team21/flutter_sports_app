@@ -3,9 +3,9 @@ class User {
   final String? university; 
   final String name;
   final String? phoneNumber; 
-  final String role;
-  final DateTime bornDate;
-  final String gender;
+  final String? role;
+  final DateTime? bornDate;
+  final String? gender;
   final String? imageUrl; 
   final String? latitude; 
   final String? longitude; 
@@ -15,9 +15,9 @@ class User {
     this.university, 
     required this.name,
     this.phoneNumber, 
-    required this.role,
-    required this.bornDate,
-    required this.gender,
+    this.role,
+    this.bornDate,
+    this.gender,
     this.imageUrl, 
     this.latitude, 
     this.longitude, 

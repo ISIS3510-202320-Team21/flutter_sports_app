@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/data/repositories/auth_repository.dart';
 import 'package:meta/meta.dart';
+import 'package:intl/intl.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -35,14 +36,16 @@ class AuthenticationBloc
     on<SignUpRequested>((event, emit) async {
       emit(AuthLoading());
       try {
+
+
         User? usuario = await AuthRepository().signUp(
           email: event.email,
           password: event.password,
           name: event.name,
-          bornDate: event.bornDate,
           phoneNumber: event.phoneNumber,
           role: event.role,
           university: event.university,
+          bornDate: DateFormat('dd/MM/yy').format(event.bornDate),
           gender: event.gender,
         );
         emit(Authenticated(usuario!, event.email));
