@@ -54,36 +54,6 @@ class _HomeViewState extends State<HomeView> {
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: colorScheme.onPrimary,
-            elevation: 0.0,
-            title: Text(
-              "HOME",
-              style: textTheme.headlineSmall?.copyWith(
-                color: colorScheme.onBackground,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            toolbarHeight: 0.1 * ScreenUtil().screenHeight,
-            iconTheme: IconThemeData(
-              color: colorScheme.onBackground,
-            ),
-            actions: [
-              SquareIconButton(
-                iconData: Icons.message,
-                onPressed: () {
-                  // Acción para el ícono de mensajes
-                },
-              ),
-              SquareIconButton(
-                iconData: Icons.notifications,
-                onPressed: () {
-                  // Acción para el ícono de notificaciones
-                },
-              ),
-            ],
-          ),
           body: Center(
             // <-- Añadimos el widget Center aquí
             child: SingleChildScrollView(

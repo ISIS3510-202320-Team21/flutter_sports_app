@@ -4,7 +4,7 @@ import 'package:flutter_app_sports/presentation/screens/login_view.dart';
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/signUp_view.dart';
-import 'package:flutter_app_sports/presentation/widgets/MainLayout.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 
 class AppRouter {
   MaterialPageRoute? onGenerateRoute(RouteSettings settings) {

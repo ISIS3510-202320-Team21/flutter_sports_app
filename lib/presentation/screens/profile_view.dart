@@ -32,42 +32,9 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-    ScreenUtil.init(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: colorScheme.onPrimary,
-        elevation: 0.0,
-        title: Text(
-          "MY PROFILE",
-          style: textTheme.headlineSmall?.copyWith(
-            color: colorScheme.onBackground,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        toolbarHeight: 0.1 * ScreenUtil().screenHeight,
-        iconTheme: IconThemeData(
-          color: colorScheme.onBackground,
-        ),
-        actions: [
-          SquareIconButton(
-            iconData: Icons.message,
-            onPressed: () {
-              // Acción para el ícono de mensajes
-            },
-          ),
-          SquareIconButton(
-            iconData: Icons.notifications,
-            onPressed: () {
-              // Acción para el ícono de notificaciones
-            },
-          ),
-        ],
-      ),
-      body: const Stack(
+    return const Scaffold(
+      body: Stack(
         children: [
           SafeArea(
             child: Center(
