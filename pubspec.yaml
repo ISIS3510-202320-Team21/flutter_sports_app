@@ -74,6 +74,10 @@ flutter:
     - assets/loginIcon.png
     - assets/icons/loginIcon.svg
     - assets/matchButton.png
+    - assets/ajedrez_1.png
+    - assets/tenis_1.png
+    - assets/reserva_1.png
+    
   fonts:
     - family: Lato
       fonts:
