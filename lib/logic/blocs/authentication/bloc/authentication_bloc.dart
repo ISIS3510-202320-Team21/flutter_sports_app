@@ -36,8 +36,6 @@ class AuthenticationBloc
     on<SignUpRequested>((event, emit) async {
       emit(AuthLoading());
       try {
-
-
         User? usuario = await AuthRepository().signUp(
           email: event.email,
           password: event.password,
