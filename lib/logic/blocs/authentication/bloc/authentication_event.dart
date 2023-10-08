@@ -27,7 +27,7 @@ class SignUpRequested extends AuthenticationEvent {
   final String email;
   final String password;
   final String name;
-  final String bornDate;
+  final DateTime bornDate;
   final String phoneNumber;
   final String role;
   final String university;
@@ -37,11 +37,11 @@ class SignUpRequested extends AuthenticationEvent {
     required this.email,
     required this.password,
     required this.name,
-    required this.bornDate,
     required this.phoneNumber,
     required this.role,
     required this.university,
     required this.gender,
+    required this.bornDate,
   });
 }
 
