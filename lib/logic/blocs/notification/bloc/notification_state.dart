@@ -19,5 +19,3 @@ class NotificationLoadedSuccessState extends NotificationState {
 class NotificationErrorState extends NotificationState {}
 
 class NotificationClickActionState extends NotificationActionState {}
-
-class NewNotificationNavigateActionState extends NotificationActionState {}
