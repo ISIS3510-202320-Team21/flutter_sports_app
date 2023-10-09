@@ -10,6 +10,8 @@ import 'package:flutter_app_sports/presentation/widgets/SquareIconButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'notifications_view.dart';
+
 class MainLayout extends StatefulWidget {
   @override
   _MainLayoutState createState() => _MainLayoutState();
@@ -20,7 +22,7 @@ class _MainLayoutState extends State<MainLayout> {
   final List<String> _titles = [
     "HOME",
     "MATCHES",
-    "MY PROFILE",
+    "MY PROFILE"
   ];
 
   @override
@@ -61,16 +63,17 @@ class _MainLayoutState extends State<MainLayout> {
                 iconData: Icons.notifications,
                 onPressed: () {
                   // Acción para el ícono de notificaciones
+                  Navigator.of(context).pushNamed('/notifications');
                 },
               ),
             ],
           ),
           body: IndexedStack(
             index: _selectedIndex,
-            children: [
+            children: const [
               HomeView(),
               MatchesView(),
-              ProfileView(),
+              ProfileView()
             ],
           ),
           bottomNavigationBar: CustomBottomNavigationBar(

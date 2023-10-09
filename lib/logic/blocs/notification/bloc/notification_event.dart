@@ -11,5 +11,3 @@ class NotificationClickedEvent extends NotificationEvent {
     required this.notification,
   });
 }
-
-class NewNotificationNavigateEvent extends NotificationEvent {}

@@ -11,7 +11,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc() : super(NotificationInitial()) {
     on<NotificationInitialEvent>(notificationInitialEvent);
     on<NotificationClickedEvent>(notificationClickedEvent);
-    on<NewNotificationNavigateEvent>(newNotificationNavigateEvent);
   }
 
   FutureOr<void> notificationInitialEvent(NotificationInitialEvent event, Emitter<NotificationState> emit) async {
@@ -28,10 +27,5 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   FutureOr<void> notificationClickedEvent(NotificationClickedEvent event, Emitter<NotificationState> emit) {
     print('Notification clicked');
     emit(NotificationClickActionState());
-  }
-
-  FutureOr<void> newNotificationNavigateEvent(NewNotificationNavigateEvent event, Emitter<NotificationState> emit) {
-    print('New notification navigate');
-    emit(NewNotificationNavigateActionState());
   }
 }
