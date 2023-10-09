@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bottom_bar.dart';
+import '../widgets/NotificationTile.dart';
 
 class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});
@@ -10,31 +12,54 @@ class NotificationsView extends StatefulWidget {
 }
 
 class _NotificationsViewState extends State<NotificationsView> {
+  final NotificationBloc notificationBloc = NotificationBloc();
+
+  @override
+  void initState() {
+    notificationBloc.add(NotificationInitialEvent());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'NOTIFICATIONS',
-                style: TextStyle(
-                  color: Color(0xFF37392E),
-                  fontSize: 29,
-                  fontFamily: 'Lato',
-                ),
+    return BlocConsumer<NotificationBloc,NotificationState>(
+      bloc: notificationBloc,
+      listenWhen: (previous, current) => current is NotificationActionState,
+      buildWhen: (previous, current) => current is! NotificationActionState,
+      listener: (context, state) {},
+      builder: (context, state) {
+        switch (state.runtimeType) {
+          case NotificationLoadingState:
+            return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ));
+          case NotificationLoadedSuccessState:
+            final successState = state as NotificationLoadedSuccessState;
+            return Scaffold(
+              body: Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      //add padding between the items
+                      itemCount: successState.notifications.length,
+                      itemBuilder: (context, index) {
+                        return NotificationTile(
+                          notification: successState.notifications[index],
+                          notificationBloc: notificationBloc,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-              
-            ) 
-          ),
-      body: const Center(
-        child: Text(
-          'Hello, Notifications!',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-        bottomNavigationBar: const BottomNavigationBarView()
+            );
+          case NotificationErrorState:
+            return const Scaffold(body: Center(child: Text('Error')));
+          default:
+            return const SizedBox();
+        }
+      },
     );
   }
 }

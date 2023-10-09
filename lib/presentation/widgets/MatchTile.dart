@@ -1,7 +1,7 @@
 //implement stateless widget that returns a container to display a match
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
-import 'package:flutter_app_sports/logic/blocs/match/bloc/bloc/match_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 
 class MatchTile extends StatelessWidget {
   final Match match;
