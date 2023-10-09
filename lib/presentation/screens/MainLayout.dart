@@ -33,7 +33,6 @@ class _MainLayoutState extends State<MainLayout> {
       builder: (context, state) {
         if (state is NavigationState) {
           _selectedIndex = state.selectedIndex;
-          print("puta mierda");
         }
         return Scaffold(
           appBar: AppBar(
