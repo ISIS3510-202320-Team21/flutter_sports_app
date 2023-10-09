@@ -38,13 +38,33 @@ class _MatchesViewState extends State<MatchesView> {
           case MatchLoadedSuccessState:
             final successState = state as MatchLoadedSuccessState;
             return Scaffold(
-              body: ListView.builder(
-                  itemCount: successState.matches.length,
-                  itemBuilder: (context, index) {
-                    return MatchTile(
-                        matchBloc: matchBloc,
-                        match: successState.matches[index]);
-                  }),
+              body: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SquareIconButton(
+                        iconData: Icons.add,
+                        onPressed: () {
+                          matchBloc.add(NewMatchNavigateEvent());
+                        },
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      //add padding between the items
+                      itemCount: successState.matches.length,
+                      itemBuilder: (context, index) {
+                        return MatchTile(
+                          match: successState.matches[index],
+                          matchBloc: matchBloc,
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             );
           case MatchErrorState:
             return const Scaffold(body: Center(child: Text('Error')));

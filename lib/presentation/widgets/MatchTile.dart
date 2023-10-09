@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/bloc/match_bloc.dart';
 
-import 'SquareIconButton.dart';
-
 class MatchTile extends StatelessWidget {
   final Match match;
   final MatchBloc matchBloc;
@@ -15,57 +13,49 @@ class MatchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     //return a container with the match info
-    return Container(
-      margin: const EdgeInsets.all(8.0),
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-          color: colorScheme.secondary,
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SquareIconButton(
-                iconData: Icons.add,
-                onPressed: () {
-                  // Acción para el ícono de notificaciones
-                },
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
+    return InkWell(
+      child: Container(
+        //add action if container is clicked
+        margin: const EdgeInsets.only(top: 7.5, bottom:7.5),
+        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        decoration: BoxDecoration(
+          color: colorScheme.background,
+        ),
+        child: Column(
+          children: [
+            Center(
+              child: Text(
                 "Match of ${match.sport.name} on the way!",
-                style: const TextStyle(
-                    fontSize: 18.0,
-                    letterSpacing: 1.2),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const Text(
-                "Status: ",
                 style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 1.2),
+                    fontSize: 20,
+                    color: colorScheme.onBackground),
               ),
-              Text(
-                match.status,
-                style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 1.2,
-                    color: colorScheme.primary),
-              ),
-            ],
-          ),
-        ],
+            ),
+            Row(
+              //center children
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                //display the date
+                Text(
+                  "Status: ",
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: colorScheme.onBackground),
+                ),
+                Text(
+                  match.status,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: colorScheme.primary),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
+      onTap: () {
+        matchBloc.add(MatchClickedEvent(match: match));
+      },
     );
-
   }
 }

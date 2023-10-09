@@ -17,3 +17,7 @@ class MatchLoadedSuccessState extends MatchState {
 }
 
 class MatchErrorState extends MatchState {}
+
+class MatchClickActionState extends MatchActionState {}
+
+class NewMatchNavigateActionState extends MatchActionState {}
