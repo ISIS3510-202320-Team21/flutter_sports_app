@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
 
-import '../../../../../data/repositories/match_repository.dart';
+import '../../../../data/repositories/match_repository.dart';
 
 part 'match_event.dart';
 part 'match_state.dart';
