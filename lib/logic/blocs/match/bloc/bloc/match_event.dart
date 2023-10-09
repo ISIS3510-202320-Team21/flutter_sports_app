@@ -1,8 +1,15 @@
 part of 'match_bloc.dart';
 
-sealed class MatchEvent extends Equatable {
-  const MatchEvent();
+@immutable
+abstract class MatchEvent {}
 
-  @override
-  List<Object> get props => [];
+final class MatchInitialEvent extends MatchEvent {}
+
+class MatchClickedEvent extends MatchEvent {
+  final Match match;
+  MatchClickedEvent({
+    required this.match,
+  });
 }
+
+class NewMatchNavigateEvent extends MatchEvent {}

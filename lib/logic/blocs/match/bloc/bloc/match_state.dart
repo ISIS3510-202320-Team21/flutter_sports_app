@@ -1,10 +1,23 @@
 part of 'match_bloc.dart';
 
-sealed class MatchState extends Equatable {
-  const MatchState();
-  
-  @override
-  List<Object> get props => [];
+@immutable
+abstract class MatchState  {}
+
+abstract class MatchActionState extends MatchState {}
+
+class MatchInitial extends MatchState {}
+
+class MatchLoadingState extends MatchState {}
+
+class MatchLoadedSuccessState extends MatchState {
+  final List<Match> matches;
+  MatchLoadedSuccessState({
+    required this.matches,
+  });
 }
 
-final class MatchInitial extends MatchState {}
+class MatchErrorState extends MatchState {}
+
+class MatchClickActionState extends MatchActionState {}
+
+class NewMatchNavigateActionState extends MatchActionState {}
