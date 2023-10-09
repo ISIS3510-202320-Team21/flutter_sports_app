@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
-import 'package:flutter_app_sports/presentation/widgets/SquareIconButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,15 +15,16 @@ class HomeView extends StatefulWidget {
 
   @override
   State<HomeView> createState() => _HomeViewState();
+  void goToManageMatches() {}
 }
 
 class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
+  final GlobalBloc globalBloc = GlobalBloc();
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     ScreenUtil.init(context);
     return BlocConsumer<HomeBloc, HomeState>(
       bloc: homeBloc,
@@ -39,8 +40,7 @@ class _HomeViewState extends State<HomeView> {
           const url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const MatchesView()));
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(1));
         } else if (state is HomeNavigateToQuickMatchState) {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const MatchesView()));
@@ -55,11 +55,9 @@ class _HomeViewState extends State<HomeView> {
       builder: (context, state) {
         return Scaffold(
           body: Center(
-            // <-- Añadimos el widget Center aquí
             child: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment
-                    .center, // <-- Centramos los widgets en la columna
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SingleChildScrollView(
                     child: Center(
@@ -247,63 +245,3 @@ class _HomeViewState extends State<HomeView> {
     homeBloc.add(HomeNotificationButtonClickedEvent());
   }
 }
-
-// Widget _buildActionButton({required String title, required String imageAsset, required VoidCallback onPressed}) {
-//     return ElevatedButton(
-//       onPressed: onPressed, 
-//       style: ElevatedButton.styleFrom(
-//         backgroundColor: Color(0xFFEAEAEA),
-//         padding: EdgeInsets.symmetric(horizontal: 16), // Ajusta el espacio horizontal aquí
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
-//         ),
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.start, // Alinea la imagen y el texto hacia la izquierda
-//         children: [
-//           Image.asset(
-//             imageAsset,
-//             width: 100, // Ancho de la imagen
-//             height: 100, // Alto de la imagen
-//           ),
-//           SizedBox(width: 16), // Espacio entre la imagen y el texto
-//           Text(
-//             title,
-//             style: TextStyle(
-//               fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildActionButton2({required String title, required String imageAsset, required VoidCallback onPressed}) {
-//     return ElevatedButton(
-//       onPressed: onPressed, 
-//       style: ElevatedButton.styleFrom(
-//         padding: EdgeInsets.symmetric(horizontal: 8), // Ajusta el espacio horizontal aquí
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(8.0), // Ajusta esto según tu preferencia
-//         ),
-//       ),
-//       child: Row(
-//         children: [
-//           Image.asset(
-//             imageAsset,
-//             width: 50, // Ancho de la imagen
-//             height: 100, // Alto de la imagen
-//           ),
-//           SizedBox(width: 16), // Espacio entre la imagen y el texto
-//           Expanded( // Esto permite que el texto se ajuste sin hacer el botón más ancho
-//             child: Text(
-//               title,
-//               style: TextStyle(
-//                 fontSize: 18, // Ajusta el tamaño de fuente según tus necesidades
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
