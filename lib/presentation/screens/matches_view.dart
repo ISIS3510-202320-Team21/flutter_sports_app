@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/logic/blocs/match/bloc/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/presentation/widgets/SquareIconButton.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../widgets/MatchTile.dart';
 
 class MatchesView extends StatefulWidget {
   const MatchesView({super.key});
@@ -9,32 +13,45 @@ class MatchesView extends StatefulWidget {
 }
 
 class _MatchesViewState extends State<MatchesView> {
+  final MatchBloc matchBloc = MatchBloc();
+
+  @override
+  void initState() {
+    matchBloc.add(MatchInitialEvent());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          const SafeArea(
-            child: Center(
-              child: Text(
-                'Hello, Matches!',
-                style: TextStyle(fontSize: 24),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SquareIconButton(
-                  iconData: Icons.add,
-                  onPressed: () {
-                    // Acción para el ícono de notificaciones
-                  },
-                )),
-          ),
-        ],
-      ),
+    return BlocConsumer<MatchBloc,MatchState>(
+      bloc: matchBloc,
+      listenWhen: (previous, current) => current is MatchActionState,
+      buildWhen: (previous, current) => current is! MatchActionState,
+      listener: (context, state) {},
+      builder: (context, state) {
+        switch (state.runtimeType) {
+          case MatchLoadingState:
+            return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ));
+          case MatchLoadedSuccessState:
+            final successState = state as MatchLoadedSuccessState;
+            return Scaffold(
+              body: ListView.builder(
+                  itemCount: successState.matches.length,
+                  itemBuilder: (context, index) {
+                    return MatchTile(
+                        matchBloc: matchBloc,
+                        match: successState.matches[index]);
+                  }),
+            );
+          case MatchErrorState:
+            return const Scaffold(body: Center(child: Text('Error')));
+          default:
+            return const SizedBox();
+        }
+      },
     );
   }
 }

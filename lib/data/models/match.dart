@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/level.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
+import 'package:intl/intl.dart';
 
 class Match {
   final DateTime date;
-  final TimeOfDay time;
-  final double rate;
+  final String time;
+  final double? rate;
   final String status;
-  final String place;
+  final String court;
   final Sport sport;
   final Level level;
 
@@ -16,19 +17,18 @@ class Match {
     required this.time,
     required this.rate,
     required this.status,
-    required this.place,
+    required this.court,
     required this.sport,
     required this.level,
   });
 
   factory Match.fromJson(Map<String, dynamic> json) {
     return Match(
-      date: DateTime.parse(json['date']),
-      time: TimeOfDay.fromDateTime(DateTime.parse(json[
-          'time'])), // Asume que 'time' viene en formato de fecha completo.
+      date: DateFormat("dd/MM/yyyy").parse(json['date']),
+      time: json['time'],
       rate: json['rate'],
       status: json['status'],
-      place: json['place'],
+      court: json['court'],
       sport: Sport.fromJson(json['sport']),
       level: Level.fromJson(json['level']),
     );
