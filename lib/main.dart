@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/presentation/router/app_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -25,6 +27,7 @@ class _MyAppState extends State<MyApp> {
         providers: [
           BlocProvider<AuthenticationBloc>(
               create: (context) => AuthenticationBloc()),
+          BlocProvider(create: (context) => GlobalBloc()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -42,7 +45,8 @@ class _MyAppState extends State<MyApp> {
               onBackground: Color(0xFF37392E),
               onSurface: Color(0xFF37392E),
               onError: Color(0xFF000000),
-              error: Color(0xFF000000), brightness: Brightness.light,
+              error: Color(0xFF000000),
+              brightness: Brightness.light,
             ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
             textTheme: const TextTheme(

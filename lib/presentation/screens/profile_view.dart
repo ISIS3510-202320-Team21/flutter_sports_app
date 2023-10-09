@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'bottom_bar.dart';
-
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
 
@@ -10,31 +8,45 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  Widget _iconButtonWithBackground(IconData iconData, VoidCallback onPressed) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      margin: const EdgeInsets.all(4.0),
+      child: IconButton(
+        icon: Icon(
+          iconData,
+          color: colorScheme.onBackground,
+          size: 30, // Aumentado el tamaño para que se vea más grueso
+        ),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Align(
-              alignment: Alignment.centerLeft,
+
+    return const Scaffold(
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Center(
               child: Text(
-                'MY PROFILE',
-                style: TextStyle(
-                  color: Color(0xFF37392E),
-                  fontSize: 29,
-                  fontFamily: 'Lato',
-                ),
+                'Hello, Profile!',
+                style: TextStyle(fontSize: 24),
               ),
-              
-            ) 
+            ),
           ),
-      body: const Center(
-        child: Text(
-          'Hello, Profile!',
-          style: TextStyle(fontSize: 24),
-        ),
+          Align(
+            alignment: Alignment.topRight,
+          ),
+        ],
       ),
-        bottomNavigationBar: const BottomNavigationBarView()
     );
   }
 }

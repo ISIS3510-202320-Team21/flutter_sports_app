@@ -4,6 +4,7 @@ import 'package:flutter_app_sports/presentation/screens/login_view.dart';
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/signUp_view.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 
 class AppRouter {
   MaterialPageRoute? onGenerateRoute(RouteSettings settings) {
@@ -12,27 +13,19 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => LoginView(),
         );
-      case '/login':
-        return MaterialPageRoute(
-          builder: (_) => LoginView(),
-        );
-
       case "/signUp":
         return MaterialPageRoute(
           builder: (_) => const SignUpView(),
         );
       case '/home':
         return MaterialPageRoute(
-          builder: (_) => const HomeView(),
+          builder: (_) => MainLayout(),
         );
       case '/notifications':
         return MaterialPageRoute(
           builder: (_) => const NotificationsView(),
         );
-      case '/matches':
-        return MaterialPageRoute(
-          builder: (_) => const MatchesView(),
-        );
+
       default:
         return null;
     }
