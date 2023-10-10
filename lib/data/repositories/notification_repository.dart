@@ -7,7 +7,7 @@ class NotificationRepository {
   final String? backendUrl = ConfigService.backendUrl;
 
   //create future to get matches of one user
-  Future<List<Notification>?> getNotifications({required userid}) async {
+  Future<List<Notification>?> getNotifications({required int userid}) async {
     final response = await http.get(
       Uri.parse('$backendUrl/users/$userid/notifications/'),
       headers: <String, String>{
