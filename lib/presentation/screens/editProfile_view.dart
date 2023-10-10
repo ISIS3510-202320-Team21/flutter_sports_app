@@ -29,7 +29,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   final _formKey = GlobalKey<FormState>();
 
   final EditProfileBloc editProfileBloc = EditProfileBloc();
-  final AuthenticationBloc authenticationBloc = AuthenticationBloc();
 
   @override
   void initState() {
