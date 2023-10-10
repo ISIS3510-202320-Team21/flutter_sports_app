@@ -21,15 +21,23 @@ class NotificationTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.background,
         ),
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Center(
+            Expanded(
               child: Text(
                 notification.name,
                 style: TextStyle(
-                    fontSize: 20,
-                    color: colorScheme.onBackground),
+                  color: colorScheme.onBackground, // Color del texto
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
               ),
+            ),
+            Image.asset(
+              "assets/arrow_1.png",
+              width: 40,
+              height: 40,
             ),
           ],
         ),

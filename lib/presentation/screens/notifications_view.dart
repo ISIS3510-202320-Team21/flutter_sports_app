@@ -39,6 +39,10 @@ class _NotificationsViewState extends State<NotificationsView> {
             return Scaffold(
               body: Column(
                 children: [
+                  //add padding to the top
+                  const Padding(
+                    padding: EdgeInsets.only(top: 15.0),
+                  ),
                   Expanded(
                     child: ListView.builder(
                       //add padding between the items
