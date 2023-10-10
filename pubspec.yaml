@@ -80,6 +80,7 @@ flutter:
     - assets/tenis_1.png
     - assets/reserva_1.png
     - assets/arrow_1.png
+    - assets/profile_image.png
     
   fonts:
     - family: Lato

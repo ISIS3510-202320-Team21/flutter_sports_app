@@ -9,7 +9,6 @@ import 'package:flutter_app_sports/presentation/screens/notifications_view.dart'
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
 import 'package:flutter_app_sports/presentation/widgets/MyLocationWidget.dart';
-import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
