@@ -1,8 +1,8 @@
 // global_state.dart
 abstract class GlobalState {}
 
-class NavigationState extends GlobalState {
+class NavigationStateButtons extends GlobalState {
   final int selectedIndex;
 
-  NavigationState(this.selectedIndex);
+  NavigationStateButtons(this.selectedIndex);
 }

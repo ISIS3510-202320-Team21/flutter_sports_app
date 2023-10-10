@@ -3,14 +3,14 @@ import 'global_event.dart';
 import 'global_state.dart';
 
 class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
-  GlobalBloc() : super(NavigationState(0)) {
+  GlobalBloc() : super(NavigationStateButtons(0)) {
     on<NavigateToIndexEvent>(_navigateToIndexEvent);
   }
 
   Future<void> _navigateToIndexEvent(
       NavigateToIndexEvent event, Emitter<GlobalState> emit) async {
     // Actualiza el estado con el nuevo índice
-    emit(NavigationState(event.index));
+    emit(NavigationStateButtons(event.index));
   }
 
   @override
