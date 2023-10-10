@@ -7,6 +7,9 @@ import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bl
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
+import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
+import 'package:flutter_app_sports/presentation/widgets/MyLocationWidget.dart';
+import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,11 +26,22 @@ class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
   final GlobalBloc globalBloc = GlobalBloc();
   final _notification.NotificationBloc notificationBloc = _notification.NotificationBloc();
+  double latitude = 0;
+  double longitude = 0;
 
   @override
   void initState() {
     super.initState();
     notificationBloc.add(_notification.NotificationInitialEvent());
+    _getLocation();
+  }
+
+  void _getLocation() {
+    setState(() {
+      // Actualiza la ubicación
+      latitude = 0; // Establece valores predeterminados
+      longitude = 0;
+    });
   }
 
   @override
@@ -99,6 +113,18 @@ class _HomeViewState extends State<HomeView> {
                         onPressed: goToNotifications,
                       );
                     },
+                  ),
+                  MyLocationWidget(
+                    onLocationChanged: (lat, lon) {
+                      setState(() {
+                        latitude = lat;
+                        longitude = lon;
+                      });
+                    },
+                  ),
+                  WeatherDisplay(
+                    latitude: latitude,
+                    longitude: longitude,
                   ),
                   SingleChildScrollView(
                     child: Center(
