@@ -1,3 +1,5 @@
+import 'package:flutter_app_sports/data/models/notification.dart';
+
 class User {
   final int? id;
   final String email;
@@ -9,7 +11,8 @@ class User {
   final String? gender;
   final String? imageUrl; 
   final String? latitude; 
-  final String? longitude; 
+  final String? longitude;
+  final List<Notification>? notifications;
 
   User({
     this.id,
@@ -22,7 +25,8 @@ class User {
     this.gender,
     this.imageUrl, 
     this.latitude, 
-    this.longitude, 
+    this.longitude,
+    this.notifications
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -44,6 +48,7 @@ class User {
       imageUrl: json["imageUrl"],
       latitude: json["latitude"],
       longitude: json["longitude"],
+      notifications: json["notifications"] != null ? (json["notifications"] as List).map((i) => Notification.fromJson(i)).toList() : null,
     );
   }
 }
