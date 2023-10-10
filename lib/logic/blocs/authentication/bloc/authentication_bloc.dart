@@ -11,6 +11,7 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   User? get user => state is Authenticated ? (state as Authenticated).usuario : null;
+
   final AuthRepository _authRepository = AuthRepository();
   AuthenticationBloc() : super(UnAuthenticated()) {
     /*

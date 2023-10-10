@@ -6,7 +6,7 @@ class MatchRepository {
   final String? backendUrl = ConfigService.backendUrl;
 
   //create future to get matches of one user
-  Future<List<Match>?> getMatches({required userid}) async {
+  Future<List<Match>?> getMatches({required int userid}) async {
     final response = await http.get(
       Uri.parse('$backendUrl/users/$userid/matches/'),
       headers: <String, String>{

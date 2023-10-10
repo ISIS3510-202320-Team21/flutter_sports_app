@@ -32,6 +32,10 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
     notificationBloc.add(_notification.NotificationInitialEvent(userId: userId!));
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchRolesRequested());
+    BlocProvider.of<AuthenticationBloc>(context)
+        .add(FetchUniversitiesRequested());
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
     _getLocation();
   }
 
