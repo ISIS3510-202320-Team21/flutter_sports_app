@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../logic/blocs/authentication/bloc/authentication_bloc.dart';
 import '../widgets/NotificationTile.dart';
 
 class NotificationsView extends StatefulWidget {
@@ -16,12 +17,14 @@ class _NotificationsViewState extends State<NotificationsView> {
 
   @override
   void initState() {
-    notificationBloc.add(NotificationInitialEvent());
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
+    notificationBloc.add(NotificationInitialEvent(userId: userId!));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
     return BlocConsumer<NotificationBloc,NotificationState>(
       bloc: notificationBloc,
       listenWhen: (previous, current) => current is NotificationActionState,

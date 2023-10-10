@@ -19,7 +19,7 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
   FutureOr<void> matchInitialEvent(MatchInitialEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      List<Match>? matches = await MatchRepository().getMatches(userid: 1);
+      List<Match>? matches = await MatchRepository().getMatches(userid: event.userId);
       emit(MatchLoadedSuccessState(matches: matches!));
     } catch (e) {
       print(e);

@@ -31,7 +31,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    notificationBloc.add(_notification.NotificationInitialEvent());
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
+    notificationBloc.add(_notification.NotificationInitialEvent(userId: userId!));
     _getLocation();
   }
 

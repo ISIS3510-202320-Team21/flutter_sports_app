@@ -1,4 +1,5 @@
 class User {
+  final int? id;
   final String email;
   final String? university; 
   final String name;
@@ -11,6 +12,7 @@ class User {
   final String? longitude; 
 
   User({
+    this.id,
     required this.email,
     this.university, 
     required this.name,
@@ -31,6 +33,7 @@ class User {
     final parsedDate = DateTime(year + 2000, month, day);
 
     return User(
+      id: json['id'],
       university: json['university'],
       email: json['email'],
       name: json['name'],

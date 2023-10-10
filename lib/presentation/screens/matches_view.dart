@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/presentation/widgets/SquareIconButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +19,8 @@ class _MatchesViewState extends State<MatchesView> {
 
   @override
   void initState() {
-    matchBloc.add(MatchInitialEvent());
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
+    matchBloc.add(MatchInitialEvent(userId: userId!));
     super.initState();
   }
 

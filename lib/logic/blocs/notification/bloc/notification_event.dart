@@ -3,7 +3,12 @@ part of 'notification_bloc.dart';
 @immutable
 abstract class NotificationEvent {}
 
-final class NotificationInitialEvent extends NotificationEvent {}
+final class NotificationInitialEvent extends NotificationEvent {
+  final int userId;
+  NotificationInitialEvent({
+    required this.userId,
+  });
+}
 
 class NotificationClickedEvent extends NotificationEvent {
   final _notification.Notification notification;
