@@ -16,7 +16,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   FutureOr<void> notificationInitialEvent(NotificationInitialEvent event, Emitter<NotificationState> emit) async {
     emit(NotificationLoadingState());
     try {
-      List<_notification.Notification>? notifications = await NotificationRepository().getNotifications(userid: 3);
+      List<_notification.Notification>? notifications = await NotificationRepository().getNotifications(userid: 1);
       emit(NotificationLoadedSuccessState(notifications: notifications!));
     } catch (e) {
       print(e);

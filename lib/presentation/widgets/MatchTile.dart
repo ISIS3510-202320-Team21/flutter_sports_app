@@ -21,34 +21,46 @@ class MatchTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.background,
         ),
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Center(
-              child: Text(
-                "Match of ${match.sport.name} on the way!",
-                style: TextStyle(
-                    fontSize: 20,
-                    color: colorScheme.onBackground),
+            Expanded(
+              child: Column(
+                children: [
+                  Center(
+                    child: Text(
+                      "Match of ${match.sport.name} on the way!",
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: colorScheme.onBackground),
+                    ),
+                  ),
+                  Row(
+                    //center children
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //display the date
+                      Text(
+                        "Status: ",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: colorScheme.onBackground),
+                      ),
+                      Text(
+                        match.status,
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: colorScheme.primary),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Row(
-              //center children
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                //display the date
-                Text(
-                  "Status: ",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: colorScheme.onBackground),
-                ),
-                Text(
-                  match.status,
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: colorScheme.primary),
-                ),
-              ],
+            Image.asset(
+              "assets/arrow_1.png",
+              width: 40,
+              height: 40,
             ),
           ],
         ),
