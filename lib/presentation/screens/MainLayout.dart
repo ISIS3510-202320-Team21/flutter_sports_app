@@ -4,13 +4,13 @@ import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.d
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_state.dart';
 import 'package:flutter_app_sports/presentation/screens/home_view.dart';
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
+import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/CustomBottomNavigationBar.dart';
 import 'package:flutter_app_sports/presentation/widgets/SquareIconButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'notifications_view.dart';
 
 class MainLayout extends StatefulWidget {
   @override
@@ -18,11 +18,13 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _selectedIndex = 0;
+  int _selectedIndex = -1;  // -1 indica que ningún ítem está seleccionado
+
   final List<String> _titles = [
     "HOME",
     "MATCHES",
-    "MY PROFILE"
+    "MY PROFILE",
+    "NOTIFICATIONS",
   ];
 
   @override
@@ -33,16 +35,17 @@ class _MainLayoutState extends State<MainLayout> {
 
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        if (state is NavigationState) {
+        if (state is NavigationStateButtons) {
           _selectedIndex = state.selectedIndex;
         }
+
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: colorScheme.onPrimary,
             elevation: 0.0,
             title: Text(
-              _titles[_selectedIndex],
+              _titles[_selectedIndex >= 0 ? _selectedIndex : 3],  // Usar el índice 3 (NOTIFICATIONS) si ningún ítem está seleccionado
               style: textTheme.headlineSmall?.copyWith(
                 color: colorScheme.onBackground,
                 fontWeight: FontWeight.bold,
@@ -59,21 +62,23 @@ class _MainLayoutState extends State<MainLayout> {
                   // Acción para el ícono de mensajes
                 },
               ),
-              SquareIconButton(
-                iconData: Icons.notifications,
-                onPressed: () {
-                  // Acción para el ícono de notificaciones
-                  Navigator.of(context).pushNamed('/notifications');
-                },
-              ),
+              if (_selectedIndex != 3)  // Mostrar el ícono de notificaciones solo si no estamos en la pantalla de notificaciones
+                SquareIconButton(
+                  iconData: Icons.notifications,
+                  onPressed: () {
+                    BlocProvider.of<GlobalBloc>(context)
+                        .add(NavigateToIndexEvent(3));  
+                  },
+                ),
             ],
           ),
           body: IndexedStack(
-            index: _selectedIndex,
+            index: _selectedIndex >= 0 ? _selectedIndex : 3,  // Usar el índice 3 (NOTIFICATIONS) si ningún ítem está seleccionado
             children: const [
               HomeView(),
               MatchesView(),
-              ProfileView()
+              ProfileView(),
+              NotificationsView(),
             ],
           ),
           bottomNavigationBar: CustomBottomNavigationBar(
