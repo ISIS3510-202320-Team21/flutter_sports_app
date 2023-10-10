@@ -77,6 +77,7 @@ flutter:
     - assets/ajedrez_1.png
     - assets/tenis_1.png
     - assets/reserva_1.png
+    - assets/arrow_1.png
     
   fonts:
     - family: Lato

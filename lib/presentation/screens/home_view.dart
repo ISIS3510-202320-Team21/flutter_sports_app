@@ -3,6 +3,7 @@ import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authenticatio
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as _notification;
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
@@ -21,12 +22,26 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
   final GlobalBloc globalBloc = GlobalBloc();
+  final _notification.NotificationBloc notificationBloc = _notification.NotificationBloc();
+
+  @override
+  void initState() {
+    super.initState();
+    notificationBloc.add(_notification.NotificationInitialEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
-    return BlocConsumer<HomeBloc, HomeState>(
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<HomeBloc>(create: (context) => homeBloc),
+        BlocProvider<GlobalBloc>(create: (context) => globalBloc),
+        BlocProvider<_notification.NotificationBloc>(create: (context) => notificationBloc),
+      ],
+    child: BlocConsumer<HomeBloc, HomeState>(
       bloc: homeBloc,
       listenWhen: (previous, current) => current is HomeActionState,
       buildWhen: (previous, current) => current is! HomeActionState,
@@ -41,6 +56,7 @@ class _HomeViewState extends State<HomeView> {
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(1));
+          
         } else if (state is HomeNavigateToQuickMatchState) {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const MatchesView()));
@@ -59,6 +75,31 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                   BlocBuilder<_notification.NotificationBloc, _notification.NotificationState>(
+                    builder: (context, notificationState) {
+                      
+                      if (notificationState is _notification.NotificationLoadedSuccessState) {
+                        
+                        if (notificationState.notifications.isNotEmpty) {
+                          
+                          final lastNotification = notificationState.notifications.last;
+                          return CustomButtonNotifications(
+                            title: lastNotification.name,
+                            imageAsset: "assets/arrow_1.png",
+                            onPressed: goToNotifications,
+                          );
+                        }
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                      // En caso de no haber notificaciones o un error
+                      return CustomButtonNotifications(
+                        title: "Aca se deben cambiar el texto a las notificaciones",
+                        imageAsset: "assets/arrow_1.png",
+                        onPressed: goToNotifications,
+                      );
+                    },
+                  ),
                   SingleChildScrollView(
                     child: Center(
                       child: Column(
@@ -142,8 +183,9 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -243,5 +285,56 @@ class _HomeViewState extends State<HomeView> {
 
   void goToNotifications() {
     homeBloc.add(HomeNotificationButtonClickedEvent());
+  }
+}
+
+class CustomButtonNotifications extends StatelessWidget {
+  final String title;
+  final String imageAsset;
+  final VoidCallback onPressed;
+
+  const CustomButtonNotifications({
+    required this.title,
+    required this.imageAsset,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 340,
+      height: 60,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          elevation: 0, // Sin sombra
+          padding: EdgeInsets.zero, // Sin relleno interno
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0), // Sin bordes redondeados
+          ),
+          backgroundColor: Color(0xFFEAEAEA), // Color de fondo
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.black, // Color del texto
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Image.asset(
+              imageAsset,
+              width: 40,
+              height: 40,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
