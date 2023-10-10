@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
-import 'package:flutter_app_sports/presentation/screens/editProfile_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
+
+import '../../logic/blocs/global_events/bloc/global_bloc.dart';
+import '../../logic/blocs/global_events/bloc/global_event.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -24,17 +25,15 @@ class _ProfileViewState extends State<ProfileView> {
       buildWhen: (previous, current) => current is! ProfileActionState,
       listener: (context, state) {
         if (state is ProfileNavigateToEditState) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const EditProfileView()));
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => const EditProfileView()));
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(4));
         }
       },
       builder: (context, state) {
         return Scaffold(
           body: Stack(
             children: [
-              Container(
-                color: colorScheme.background,
-              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
