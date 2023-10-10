@@ -32,7 +32,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
     notificationBloc.add(_notification.NotificationInitialEvent(userId: userId!));
     _getLocation();
   }
@@ -61,17 +61,12 @@ class _HomeViewState extends State<HomeView> {
       buildWhen: (previous, current) => current is! HomeActionState,
       listener: (context, state) {
         if (state is HomeNavigateToNotificationState) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const NotificationsView()));
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(3));
         } else if (state is HomeNavigateToReservationState) {
           const url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
-          print("estado_fixed");
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(1));
-          
         } else if (state is HomeNavigateToQuickMatchState) {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const MatchesView()));
@@ -145,9 +140,9 @@ class _HomeViewState extends State<HomeView> {
                                 TextSpan(
                                   text: BlocProvider.of<AuthenticationBloc>(
                                                   context)
-                                              .userName !=
+                                              .user !=
                                           null
-                                      ? '${BlocProvider.of<AuthenticationBloc>(context).userName}'
+                                      ? '${BlocProvider.of<AuthenticationBloc>(context).user?.name}'
                                       : 'User',
                                   style: TextStyle(
                                     fontSize: 20,

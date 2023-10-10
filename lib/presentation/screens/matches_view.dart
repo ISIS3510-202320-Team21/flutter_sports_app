@@ -19,7 +19,7 @@ class _MatchesViewState extends State<MatchesView> {
 
   @override
   void initState() {
-    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
     matchBloc.add(MatchInitialEvent(userId: userId!));
     super.initState();
   }
