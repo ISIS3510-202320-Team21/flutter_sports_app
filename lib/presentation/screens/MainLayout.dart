@@ -79,7 +79,6 @@ class _MainLayoutState extends State<MainLayout> {
           bottomNavigationBar: CustomBottomNavigationBar(
             selectedIndex: _selectedIndex,
             onItemTapped: (index) {
-              // Emite un evento para cambiar la vista seleccionada
               BlocProvider.of<GlobalBloc>(context)
                   .add(NavigateToIndexEvent(index));
             },

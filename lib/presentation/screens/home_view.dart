@@ -38,7 +38,6 @@ class _HomeViewState extends State<HomeView> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeBloc>(create: (context) => homeBloc),
-        BlocProvider<GlobalBloc>(create: (context) => globalBloc),
         BlocProvider<_notification.NotificationBloc>(create: (context) => notificationBloc),
       ],
     child: BlocConsumer<HomeBloc, HomeState>(
@@ -55,6 +54,7 @@ class _HomeViewState extends State<HomeView> {
           const url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
+          print("estado_fixed");
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(1));
           
         } else if (state is HomeNavigateToQuickMatchState) {
