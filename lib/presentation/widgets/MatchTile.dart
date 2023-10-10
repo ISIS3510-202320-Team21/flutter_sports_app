@@ -44,12 +44,14 @@ class MatchTile extends StatelessWidget {
                         "Status: ",
                         style: TextStyle(
                             fontSize: 20,
+                            fontWeight: FontWeight.bold,
                             color: colorScheme.onBackground),
                       ),
                       Text(
                         match.status,
                         style: TextStyle(
                             fontSize: 20,
+                            fontWeight: FontWeight.bold,
                             color: colorScheme.primary),
                       ),
                     ],
