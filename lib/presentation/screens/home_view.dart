@@ -5,11 +5,9 @@ import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.d
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as _notification;
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
-import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
 import 'package:flutter_app_sports/presentation/widgets/MyLocationWidget.dart';
-import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -89,7 +87,8 @@ class _HomeViewState extends State<HomeView> {
                     builder: (context, notificationState) {
                       
                       if (notificationState is _notification.NotificationLoadedSuccessState) {
-                        
+                        // Notification? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
+                        print(BlocProvider.of<AuthenticationBloc>(context).user?.notifications);
                         if (notificationState.notifications.isNotEmpty) {
                           
                           final lastNotification = notificationState.notifications.last;
