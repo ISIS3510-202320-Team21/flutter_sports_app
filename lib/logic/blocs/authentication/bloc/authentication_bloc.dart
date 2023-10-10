@@ -10,10 +10,7 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  String? _userName;
-  int? _userId;
-  int? get userId => _userId;
-  String? get userName => _userName;
+  User? get user => state is Authenticated ? (state as Authenticated).usuario : null;
   final AuthRepository _authRepository = AuthRepository();
   AuthenticationBloc() : super(UnAuthenticated()) {
     /*
@@ -26,8 +23,6 @@ class AuthenticationBloc
       try {
         User? usuario = await AuthRepository()
             .signIn(email: event.email, password: event.password);
-        _userName = usuario?.name;
-        _userId = usuario?.id;
         // Store value to session
         emit(Authenticated(usuario!, event.email));
       } catch (e) {

@@ -17,14 +17,13 @@ class _NotificationsViewState extends State<NotificationsView> {
 
   @override
   void initState() {
-    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
     notificationBloc.add(NotificationInitialEvent(userId: userId!));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    int? userId = BlocProvider.of<AuthenticationBloc>(context).userId;
     return BlocConsumer<NotificationBloc,NotificationState>(
       bloc: notificationBloc,
       listenWhen: (previous, current) => current is NotificationActionState,
