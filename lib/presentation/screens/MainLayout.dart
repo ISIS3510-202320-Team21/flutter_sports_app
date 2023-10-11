@@ -13,6 +13,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class MainLayout extends StatefulWidget {
+  const MainLayout({super.key});
+
   @override
   _MainLayoutState createState() => _MainLayoutState();
 }

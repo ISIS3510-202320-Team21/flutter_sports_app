@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_sports/presentation/screens/home_view.dart';
 import 'package:flutter_app_sports/presentation/screens/login_view.dart';
-import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/signUp_view.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
@@ -19,7 +17,7 @@ class AppRouter {
         );
       case '/home':
         return MaterialPageRoute(
-          builder: (_) => MainLayout(),
+          builder: (_) => const MainLayout(),
         );
       case '/notifications':
         return MaterialPageRoute(
