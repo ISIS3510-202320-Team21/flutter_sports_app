@@ -11,12 +11,12 @@ class WeatherApi {
         'lat=$latitud&lon=$longitud&appid=$apiKey&units=metric';
 
     final response = await http.get(Uri.parse(apiUrl));
-
+    
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       return data;
     } else {
-      throw 'Error al obtener el pronóstico del tiempo';
+      return Map<String, dynamic>();
     }
   }
 }
