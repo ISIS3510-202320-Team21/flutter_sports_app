@@ -3,7 +3,7 @@ import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authenticatio
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
-import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as notification;
+import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as _notification;
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
@@ -31,7 +31,8 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
-        .add(FetchUniversitiesRequested());
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchUniversitiesRequested());
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchRolesRequested());
     BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
     _getLocation();
   }
@@ -45,13 +46,14 @@ class _HomeViewState extends State<HomeView> {
   }
 
   @override
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
 
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeBloc>(create: (context) => homeBloc),
-        BlocProvider<notification.NotificationBloc>(create: (context) => notificationBloc),
+        BlocProvider<_notification.NotificationBloc>(create: (context) => notificationBloc),
       ],
     child: BlocConsumer<HomeBloc, HomeState>(
       bloc: homeBloc,
@@ -83,7 +85,7 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   BlocBuilder<notification.NotificationBloc, notification.NotificationState>(
+                   BlocBuilder<_notification.NotificationBloc, _notification.NotificationState>(
                     builder: (context, notificationState) {
                       
                       if (notificationState is _notification.NotificationLoadedSuccessState) {
