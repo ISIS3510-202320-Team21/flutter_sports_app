@@ -5,8 +5,9 @@ import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.d
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as notification;
 import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
-import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
+import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
+import 'package:flutter_app_sports/presentation/widgets/MyLocationWidget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,16 +23,28 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
   final GlobalBloc globalBloc = GlobalBloc();
-  final notification.NotificationBloc notificationBloc = notification.NotificationBloc();
+  final _notification.NotificationBloc notificationBloc = _notification.NotificationBloc();
+  double latitude = 0;
+  double longitude = 0;
 
   @override
   void initState() {
     super.initState();
-    notificationBloc.add(notification.NotificationInitialEvent());
+    int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
+        .add(FetchUniversitiesRequested());
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
+    _getLocation();
+  }
+
+  void _getLocation() {
+    setState(() {
+      // Actualiza la ubicación
+      latitude = 0; // Establece valores predeterminados
+      longitude = 0;
+    });
   }
 
   @override
-  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
 
@@ -46,17 +59,12 @@ class _HomeViewState extends State<HomeView> {
       buildWhen: (previous, current) => current is! HomeActionState,
       listener: (context, state) {
         if (state is HomeNavigateToNotificationState) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const NotificationsView()));
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(3));
         } else if (state is HomeNavigateToReservationState) {
           const url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
-          print("estado_fixed");
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(1));
-          
         } else if (state is HomeNavigateToQuickMatchState) {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const MatchesView()));
@@ -78,8 +86,9 @@ class _HomeViewState extends State<HomeView> {
                    BlocBuilder<notification.NotificationBloc, notification.NotificationState>(
                     builder: (context, notificationState) {
                       
-                      if (notificationState is notification.NotificationLoadedSuccessState) {
-                        
+                      if (notificationState is _notification.NotificationLoadedSuccessState) {
+                        // Notification? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
+                        print(BlocProvider.of<AuthenticationBloc>(context).user?.notifications);
                         if (notificationState.notifications.isNotEmpty) {
                           
                           final lastNotification = notificationState.notifications.last;
@@ -100,6 +109,18 @@ class _HomeViewState extends State<HomeView> {
                       );
                     },
                   ),
+                  MyLocationWidget(
+                    onLocationChanged: (lat, lon) {
+                      setState(() {
+                        latitude = lat;
+                        longitude = lon;
+                      });
+                    },
+                  ),
+                  WeatherDisplay(
+                    latitude: latitude,
+                    longitude: longitude,
+                  ),
                   SingleChildScrollView(
                     child: Center(
                       child: Column(
@@ -118,9 +139,9 @@ class _HomeViewState extends State<HomeView> {
                                 TextSpan(
                                   text: BlocProvider.of<AuthenticationBloc>(
                                                   context)
-                                              .userName !=
+                                              .user !=
                                           null
-                                      ? '${BlocProvider.of<AuthenticationBloc>(context).userName}'
+                                      ? '${BlocProvider.of<AuthenticationBloc>(context).user?.name}'
                                       : 'User',
                                   style: TextStyle(
                                     fontSize: 20,

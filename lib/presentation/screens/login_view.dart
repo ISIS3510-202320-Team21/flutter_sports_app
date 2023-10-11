@@ -54,7 +54,8 @@ class LoginView extends StatelessWidget {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.05),
+                            top: MediaQuery.of(context).size.height * 0.05,
+                            bottom: MediaQuery.of(context).size.height * 0.03),
                         child: Image.asset('assets/loginIcon.png'),
                       ),
                       _buildTextField(context, _emailController, 'Email...',

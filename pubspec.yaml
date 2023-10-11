@@ -43,6 +43,8 @@ dependencies:
   flutter_svg: ^2.0.5
   flutter_screenutil: ^5.0.8
   intl:
+  geolocator: ^10.1.0
+  permission_handler: ^11.0.1
 
 
 dev_dependencies:
@@ -78,6 +80,7 @@ flutter:
     - assets/tenis_1.png
     - assets/reserva_1.png
     - assets/arrow_1.png
+    - assets/profile_image.png
     
   fonts:
     - family: Lato

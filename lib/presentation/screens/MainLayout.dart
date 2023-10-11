@@ -11,6 +11,8 @@ import 'package:flutter_app_sports/presentation/widgets/SquareIconButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'editProfile_view.dart';
+
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -27,6 +29,7 @@ class _MainLayoutState extends State<MainLayout> {
     "MATCHES",
     "MY PROFILE",
     "NOTIFICATIONS",
+    "EDIT PROFILE"
   ];
 
   @override
@@ -47,7 +50,7 @@ class _MainLayoutState extends State<MainLayout> {
             backgroundColor: colorScheme.onPrimary,
             elevation: 0.0,
             title: Text(
-              _titles[_selectedIndex >= 0 ? _selectedIndex : 3],  // Usar el índice 3 (NOTIFICATIONS) si ningún ítem está seleccionado
+              _titles[_selectedIndex >= 0 ? _selectedIndex : 4],  // Usar el índice 3 (NOTIFICATIONS) si ningún ítem está seleccionado
               style: textTheme.headlineSmall?.copyWith(
                 color: colorScheme.onBackground,
                 fontWeight: FontWeight.bold,
@@ -75,12 +78,13 @@ class _MainLayoutState extends State<MainLayout> {
             ],
           ),
           body: IndexedStack(
-            index: _selectedIndex >= 0 ? _selectedIndex : 3,  // Usar el índice 3 (NOTIFICATIONS) si ningún ítem está seleccionado
+            index: _selectedIndex >= 0 ? _selectedIndex : 4,  // Usar el índice 3 (NOTIFICATIONS) si ningún ítem está seleccionado
             children: const [
               HomeView(),
               MatchesView(),
               ProfileView(),
               NotificationsView(),
+              EditProfileView(),
             ],
           ),
           bottomNavigationBar: CustomBottomNavigationBar(
