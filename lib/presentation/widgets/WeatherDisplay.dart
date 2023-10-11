@@ -17,7 +17,7 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
   @override
   void initState() {
     super.initState();
-    final weatherApi = WeatherApi(apiKey: 'TU_CLAVE_DE_API'); // Reemplaza con tu clave de API
+    final weatherApi = WeatherApi(apiKey: 'c88d220f89270fcc8a34541b3c6eb52b'); // Reemplaza con tu clave de API
     pronosticoClima = weatherApi.obtenerPronosticoClima(widget.latitude, widget.longitude);
   }
 
@@ -37,7 +37,10 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
           // utilizando los datos en snapshot.data
           // Ejemplo:
           final climaData = snapshot.data;
+          print(climaData);
           //return something that works
+
+
           final temperatura = climaData!['main']['temp'];
           final descripcion = climaData['weather'][0]['description'];
           return Text('Temperatura: $temperatura°C, Descripción: $descripcion');

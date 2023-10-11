@@ -2,21 +2,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class WeatherApi {
-  String apiKey = '02788d36472def97753cd483ee2dd7fa';
+  String apiKey;
 
   WeatherApi({required this.apiKey});
 
-  Future<Map<String, dynamic>> obtenerPronosticoClima(double latitud, double longitud) async {
-    final apiUrl = 'https://api.openweathermap.org/data/2.5/weather?'
-        'lat=$latitud&lon=$longitud&appid=$apiKey&units=metric';
+  Future<Map<String, dynamic>> obtenerPronosticoClima(
+      double latitud, double longitud) async {
+    final apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?appid=$apiKey'
+        '&lat=$latitud&lon=$longitud';
 
     final response = await http.get(Uri.parse(apiUrl));
     
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return data;
+      return json.decode(response.body);;
     } else {
-      return Map<String, dynamic>();
+      throw 'Error al obtener el pronóstico del tiempo';
     }
   }
 }
