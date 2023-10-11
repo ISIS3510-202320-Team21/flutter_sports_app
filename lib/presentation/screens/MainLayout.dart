@@ -40,6 +40,8 @@ final Map<AppScreens, Widget> screenViews = {
 };
 
 class MainLayout extends StatefulWidget {
+  const MainLayout({super.key});
+
   @override
   _MainLayoutState createState() => _MainLayoutState();
 }
