@@ -38,8 +38,8 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
           // Ejemplo:
           final climaData = snapshot.data;
           //return something that works
-          final temperatura = 1;
-          final descripcion = "xd";
+          final temperatura = climaData!['main']['temp'];
+          final descripcion = climaData['weather'][0]['description'];
           return Text('Temperatura: $temperatura°C, Descripción: $descripcion');
         }
       },
