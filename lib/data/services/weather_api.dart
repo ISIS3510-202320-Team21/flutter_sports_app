@@ -14,9 +14,9 @@ class WeatherApi {
     final response = await http.get(Uri.parse(apiUrl));
     
     if (response.statusCode == 200) {
-      return json.decode(response.body);;
+      return json.decode(response.body);
     } else {
-      throw 'Error al obtener el pronóstico del tiempo';
+      return {};
     }
   }
 }

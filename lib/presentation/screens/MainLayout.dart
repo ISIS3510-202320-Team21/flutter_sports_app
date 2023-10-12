@@ -23,7 +23,7 @@ enum AppScreens {
 
 final Map<AppScreens, String> screenTitles = {
   AppScreens.Home: "HOME",
-  AppScreens.Matches: "NEW MATCHES",
+  AppScreens.Matches: "NEW MATCH",
   AppScreens.Profile: "MY PROFILE",
   AppScreens.Notifications: "NOTIFICATIONS",
   AppScreens.EditProfile: "EDIT PROFILE",

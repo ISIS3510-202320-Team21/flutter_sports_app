@@ -1,5 +1,6 @@
 // Archivo: new_matches_view.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/sport/bloc/bloc/sport_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/sport/bloc/bloc/sport_event.dart';
 import 'package:flutter_app_sports/logic/blocs/sport/bloc/bloc/sport_state.dart';
@@ -13,8 +14,17 @@ class NewMatchesView extends StatefulWidget {
 }
 
 class _NewMatchesViewState extends State<NewMatchesView> {
+  String? userName;
+  void initState() {
+    super.initState();
+    userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return BlocProvider(
       create: (context) {
         final sportBloc = SportBloc();
@@ -30,68 +40,106 @@ class _NewMatchesViewState extends State<NewMatchesView> {
           }
         },
         builder: (context, state) {
-          if (state is FetchingSports) {
-            return const Scaffold(
-                body: Center(child: CircularProgressIndicator()));
-          } else if (state is SportsLoaded) {
-            return Scaffold(
-              body: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.5,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemCount: state.sports.length,
-                  itemBuilder: (context, index) {
-                    final sport = state.sports[index];
-                    return Card(
-                      elevation: 5,
-                      child: Stack(
+          return Scaffold(
+            body: ListView(
+              children: [
+                // Sección de bienvenida
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
                         children: [
-                          Positioned(
-                            top: 8.0,
-                            right: 8.0,
-                            child: Text(
-                              sport.name,
-                              style: const TextStyle(fontSize: 18),
+                          TextSpan(
+                            text: userName != null ? '$userName' : 'User',
+                            style: TextStyle(
+                              fontSize: textTheme.titleLarge?.fontSize,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.primary,
                             ),
                           ),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: CircleAvatar(
-                                  backgroundImage: NetworkImage(sport.image),
-                                  radius: 40,
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(
-                                      8.0), // Añade un relleno a la flecha
-                                  child: Container(
-                                    alignment: Alignment.bottomRight,
-                                    child: const Icon(
-                                      Icons.arrow_forward,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          TextSpan(
+                            text:
+                                ', please choose one of your sports, or add a new one:',
+                            style: TextStyle(
+                              fontSize: textTheme.titleLarge?.fontSize,
+                              fontWeight: FontWeight.w300,
+                              color: colorScheme.secondary,
+                            ),
                           ),
                         ],
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
-              ),
-            );
-          }
-          return const SizedBox(); // Añadir un estado por defecto
+
+                if (state is FetchingSports)
+                  const Center(child: CircularProgressIndicator())
+                else if (state is SportsLoaded)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.5,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                      ),
+                      itemCount: state.sports.length,
+                      itemBuilder: (context, index) {
+                        final sport = state.sports[index];
+                        return Card(
+                          elevation: 5,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: 8.0,
+                                right: 8.0,
+                                child: Text(
+                                  sport.name,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          NetworkImage(sport.image),
+                                      radius: 40,
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        alignment: Alignment.bottomRight,
+                                        child: const Icon(
+                                          Icons.arrow_forward,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                else
+                  const SizedBox(),
+              ],
+            ),
+          );
         },
       ),
     );
