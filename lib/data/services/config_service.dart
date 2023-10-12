@@ -10,7 +10,7 @@ class ConfigService {
     if (kIsWeb || Platform.isIOS || Platform.isMacOS || Platform.isWindows) {
       return dotenv.env['BACKEND_URL_IOS_Windows']!;
     }
-    else if (Platform.isAndroid); {
+    else if (Platform.isAndroid) {} {
       return dotenv.env['BACKEND_URL_ANDROID']!;
     }
   }

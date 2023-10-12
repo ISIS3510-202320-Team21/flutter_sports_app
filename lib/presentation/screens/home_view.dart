@@ -31,10 +31,8 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
-    notificationBloc.add(_notification.NotificationInitialEvent(userId: userId!));
+    BlocProvider.of<AuthenticationBloc>(context).add(FetchUniversitiesRequested());
     BlocProvider.of<AuthenticationBloc>(context).add(FetchRolesRequested());
-    BlocProvider.of<AuthenticationBloc>(context)
-        .add(FetchUniversitiesRequested());
     BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
     _getLocation();
   }
@@ -221,7 +219,7 @@ class _HomeViewState extends State<HomeView> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFFEAEAEA),
+        backgroundColor: const Color(0xFFEAEAEA),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
@@ -236,10 +234,10 @@ class _HomeViewState extends State<HomeView> {
               width: 100,
               height: 100,
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black, // Color del texto
                 fontSize: 17,
               ),
@@ -254,12 +252,12 @@ class _HomeViewState extends State<HomeView> {
       {required String title,
       required String imageAsset,
       required VoidCallback onPressed}) {
-    return Container(
+    return SizedBox(
       width: 155, // Establece el ancho máximo deseado
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFEAEAEA),
+          backgroundColor: const Color(0xFFEAEAEA),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -271,12 +269,12 @@ class _HomeViewState extends State<HomeView> {
               width: 50,
               height: 100,
             ),
-            SizedBox(
+            const SizedBox(
                 width: 16), // Espacio horizontal entre la imagen y el texto
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black, // Color del texto
                   fontSize: 17,
                 ),
@@ -318,7 +316,7 @@ class CustomButtonNotifications extends StatelessWidget {
   final String imageAsset;
   final VoidCallback onPressed;
 
-  const CustomButtonNotifications({
+  const CustomButtonNotifications({super.key, 
     required this.title,
     required this.imageAsset,
     required this.onPressed,
@@ -337,7 +335,7 @@ class CustomButtonNotifications extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0), // Sin bordes redondeados
           ),
-          backgroundColor: Color(0xFFEAEAEA), // Color de fondo
+          backgroundColor: const Color(0xFFEAEAEA), // Color de fondo
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -345,7 +343,7 @@ class CustomButtonNotifications extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black, // Color del texto
                   fontSize: 16,
                 ),
