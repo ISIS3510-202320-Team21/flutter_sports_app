@@ -3,6 +3,8 @@ part of 'match_bloc.dart';
 @immutable
 abstract class MatchEvent {}
 
+class NewMatchNavigateEvent extends MatchEvent {}
+
 final class MatchInitialEvent extends MatchEvent {
   final int userId;
   MatchInitialEvent({
@@ -17,4 +19,9 @@ class MatchClickedEvent extends MatchEvent {
   });
 }
 
-class NewMatchNavigateEvent extends MatchEvent {}
+class FetchMatchesSportsEvent extends MatchEvent {
+  final int sportId;
+  final DateTime? date;
+  FetchMatchesSportsEvent(this.sportId,this.date); 
+}
+
