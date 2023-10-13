@@ -1,6 +1,8 @@
 // Archivo: new_matches_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/sport/bloc/bloc/sport_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/sport/bloc/bloc/sport_event.dart';
 import 'package:flutter_app_sports/logic/blocs/sport/bloc/bloc/sport_state.dart';
@@ -92,44 +94,53 @@ class _NewMatchesViewState extends State<NewMatchesView> {
                       itemCount: state.sports.length,
                       itemBuilder: (context, index) {
                         final sport = state.sports[index];
-                        return Card(
-                          elevation: 5,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 8.0,
-                                right: 8.0,
-                                child: Text(
-                                  sport.name,
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(sport.image),
-                                      radius: 40,
-                                      backgroundColor: Colors.transparent,
-                                    ),
+
+                        return InkWell(
+                          onTap: () {
+                            print("Tapped on sport ${sport.name}");
+                            BlocProvider.of<GlobalBloc>(context).add(NavigateToSportEvent(sport));
+                          },
+                          splashColor: Colors.blueAccent
+                              .withOpacity(0.5), // Color de la salpicadura
+                          child: Card(
+                            elevation: 5,
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  top: 8.0,
+                                  right: 8.0,
+                                  child: Text(
+                                    sport.name,
+                                    style: const TextStyle(fontSize: 18),
                                   ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                        alignment: Alignment.bottomRight,
-                                        child: const Icon(
-                                          Icons.arrow_forward,
-                                          color: Colors.grey,
+                                ),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(sport.image),
+                                        radius: 40,
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          alignment: Alignment.bottomRight,
+                                          child: const Icon(
+                                            Icons.arrow_forward,
+                                            color: Colors.grey,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },

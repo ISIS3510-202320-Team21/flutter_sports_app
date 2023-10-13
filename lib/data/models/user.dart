@@ -1,7 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter_app_sports/data/models/notification.dart';
 
 class User {
-  final int? id;
+  final int id;
   final String email;
   final String? university; 
   final String name;
@@ -15,7 +17,7 @@ class User {
   final List<Notification>? notifications;
 
   User({
-    this.id,
+    required this.id,
     required this.email,
     this.university, 
     required this.name,

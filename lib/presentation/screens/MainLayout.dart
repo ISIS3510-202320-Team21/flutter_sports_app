@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_state.dart';
 import 'package:flutter_app_sports/presentation/screens/editProfile_view.dart';
 import 'package:flutter_app_sports/presentation/screens/home_view.dart';
-import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
-import 'package:flutter_app_sports/presentation/screens/new_matches_view.dart';
+import 'package:flutter_app_sports/presentation/screens/match/matches_view.dart';
+import 'package:flutter_app_sports/presentation/screens/match/new_matches_view.dart';
+import 'package:flutter_app_sports/presentation/screens/match/sport_match_options_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/CustomBottomNavigationBar.dart';
@@ -18,6 +20,7 @@ enum AppScreens {
   Profile,
   Notifications,
   EditProfile,
+  SportMatchOptions,
   // Agrega nuevas pantallas aquí
 }
 
@@ -27,6 +30,7 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.Profile: "MY PROFILE",
   AppScreens.Notifications: "NOTIFICATIONS",
   AppScreens.EditProfile: "EDIT PROFILE",
+  AppScreens.SportMatchOptions: "MATCH OPTIONS",
   // ...
 };
 
@@ -36,6 +40,12 @@ final Map<AppScreens, Widget> screenViews = {
   AppScreens.Profile: const ProfileView(),
   AppScreens.Notifications: const NotificationsView(),
   AppScreens.EditProfile: const EditProfileView(),
+  AppScreens.SportMatchOptions: SportMatchOptionsView(
+      sport: Sport(
+    id: 1,
+    name: "Fútbol",
+    image: "https://i.ibb.co/0j3h2ZC/football.png",
+  )),
   // ...
 };
 
@@ -47,7 +57,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  AppScreens _selectedScreen = AppScreens.Home; 
+  AppScreens _selectedScreen = AppScreens.Home;
 
   Widget iconButtonWithRoundedSquare(
       BuildContext context, IconData icon, VoidCallback onPressed) {
@@ -59,14 +69,13 @@ class _MainLayoutState extends State<MainLayout> {
         child: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .surface
-                .withOpacity(1.0), 
+            color: Theme.of(context).colorScheme.surface.withOpacity(1.0),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: Theme.of(context).colorScheme.onBackground,
-          size: 28,
+          child: Icon(
+            icon,
+            color: Theme.of(context).colorScheme.onBackground,
+            size: 28,
           ),
         ),
       ),
@@ -83,6 +92,12 @@ class _MainLayoutState extends State<MainLayout> {
       builder: (context, state) {
         if (state is NavigationStateButtons) {
           _selectedScreen = AppScreens.values[state.selectedIndex];
+        }
+
+        if (state is NavigationSportState) {
+          _selectedScreen = AppScreens.SportMatchOptions;
+          screenViews[AppScreens.SportMatchOptions] =
+              SportMatchOptionsView(sport: state.sport);
         }
 
         return Scaffold(
@@ -109,7 +124,7 @@ class _MainLayoutState extends State<MainLayout> {
             ],
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(0.01 * ScreenUtil().screenHeight),
-              child: const SizedBox(),  
+              child: const SizedBox(),
             ),
           ),
           body: IndexedStack(

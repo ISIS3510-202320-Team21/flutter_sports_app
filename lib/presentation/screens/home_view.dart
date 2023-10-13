@@ -4,7 +4,7 @@ import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.da
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as _notification;
-import 'package:flutter_app_sports/presentation/screens/matches_view.dart';
+import 'package:flutter_app_sports/presentation/screens/match/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
 import 'package:flutter_app_sports/presentation/widgets/MyLocationWidget.dart';

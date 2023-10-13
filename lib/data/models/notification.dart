@@ -4,9 +4,11 @@ class Notification {
   final String redirectTo;
   final bool seen;
   final DateTime creationDate;
+  final int id;
 
   Notification(
-      {required this.name, required this.type, required this.redirectTo, required this.seen, required this.creationDate});
+      {required this.name, required this.type, required this.redirectTo, required this.seen, required this.creationDate,
+        required this.id});
 
   factory Notification.fromJson(Map<String, dynamic> json) {
     return Notification(
@@ -14,7 +16,8 @@ class Notification {
       type: json['type'],
       redirectTo: json['redirectTo'],
       seen: json['seen'],
-      creationDate: DateTime.parse(json['creationDate'])
+      creationDate: DateTime.parse(json['creationDate']),
+      id: json['id'],
     );
   }
 }

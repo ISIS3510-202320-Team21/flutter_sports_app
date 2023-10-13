@@ -5,7 +5,7 @@ import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/presentation/widgets/SquareIconButton.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/MatchTile.dart';
+import '../../widgets/MatchTile.dart';
 
 class MatchesView extends StatefulWidget {
   const MatchesView({super.key});
