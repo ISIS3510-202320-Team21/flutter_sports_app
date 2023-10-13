@@ -44,8 +44,8 @@ class Match {
       level: Level.fromJson(json['level']),
       userCreated: userCreated!,
       // user
-      userJoined: json['user_joined_id'] != null
-          ? User.fromJson(json['user_joined_id']) 
+      userJoined: json['user_joined'] != null
+          ? User.fromJson(json['user_joined']) 
           : null,
       id: json['id'],
     );

@@ -22,8 +22,14 @@ class MatchClickActionState extends MatchActionState {}
 
 class NewMatchNavigateActionState extends MatchActionState {}
 
-class MatchesLoadedForSportEvent extends MatchState {
+class MatchesLoadedForSportState extends MatchState {
   final List<Match> matches;
 
-  MatchesLoadedForSportEvent(this.matches);
+  MatchesLoadedForSportState(this.matches);
+}
+
+class MatchesLoadedForUserState extends MatchState {
+  final List<Match> matches;
+
+  MatchesLoadedForUserState(this.matches);
 }

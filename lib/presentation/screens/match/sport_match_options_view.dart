@@ -35,7 +35,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
               builder: (context, state) {
                 if (state is MatchLoadingState) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (state is MatchesLoadedForSportEvent) {
+                } else if (state is MatchesLoadedForSportState) {
                   return ListView(
                     children: [
                       Padding(

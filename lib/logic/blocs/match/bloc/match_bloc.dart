@@ -16,6 +16,7 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     on<MatchClickedEvent>(matchClickedEvent);
     on<NewMatchNavigateEvent>(newMatchNavigateEvent);
     on<FetchMatchesSportsEvent>(_handleFetchPlayersForSportEvent);
+    on<FetchMatchesUserEvent>(_handleFetchPlayersForUserEvent);
   }
 
   FutureOr<void> matchInitialEvent(MatchInitialEvent event, Emitter<MatchState> emit) async {
@@ -32,7 +33,18 @@ FutureOr<void> _handleFetchPlayersForSportEvent(FetchMatchesSportsEvent event, E
     emit(MatchLoadingState());
     try {
       List<Match>? matches = await MatchRepository(userRepository: UserRepository()).getMatchesForSport(sportId: event.sportId, date: event.date);
-      emit(MatchesLoadedForSportEvent(matches!));
+      emit(MatchesLoadedForSportState(matches!));
+    } catch (e) {
+      print(e);
+      emit(MatchErrorState());
+    }
+  }
+
+FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emitter<MatchState> emit) async {
+    emit(MatchLoadingState());
+    try {
+      List<Match>? matches = await MatchRepository(userRepository: UserRepository()).getMatchesForUser(userid: event.userId);
+      emit(MatchesLoadedForUserState(matches!));
     } catch (e) {
       print(e);
       emit(MatchErrorState());
