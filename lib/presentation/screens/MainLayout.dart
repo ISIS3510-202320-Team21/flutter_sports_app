@@ -4,7 +4,7 @@ import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.d
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_state.dart';
 import 'package:flutter_app_sports/presentation/screens/editProfile_view.dart';
 import 'package:flutter_app_sports/presentation/screens/home_view.dart';
-import 'package:flutter_app_sports/presentation/screens/match/matches_view.dart';
+import 'package:flutter_app_sports/presentation/screens/match/my_matches.dart';
 import 'package:flutter_app_sports/presentation/screens/match/new_matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/match/sport_match_options_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
@@ -20,6 +20,7 @@ enum AppScreens {
   Profile,
   Notifications,
   EditProfile,
+  MyMatches,
   SportMatchOptions,
   // Agrega nuevas pantallas aquí
 }
@@ -30,8 +31,9 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.Profile: "MY PROFILE",
   AppScreens.Notifications: "NOTIFICATIONS",
   AppScreens.EditProfile: "EDIT PROFILE",
+  AppScreens.MyMatches: "MY MATCHES",
   AppScreens.SportMatchOptions: "MATCH OPTIONS",
-  // ...
+
 };
 
 final Map<AppScreens, Widget> screenViews = {
@@ -40,13 +42,13 @@ final Map<AppScreens, Widget> screenViews = {
   AppScreens.Profile: const ProfileView(),
   AppScreens.Notifications: const NotificationsView(),
   AppScreens.EditProfile: const EditProfileView(),
+  AppScreens.MyMatches: const MyMatches(),
   AppScreens.SportMatchOptions: SportMatchOptionsView(
       sport: Sport(
     id: 1,
     name: "Fútbol",
     image: "https://i.ibb.co/0j3h2ZC/football.png",
-  )),
-  // ...
+  ))
 };
 
 class MainLayout extends StatefulWidget {
@@ -91,11 +93,14 @@ class _MainLayoutState extends State<MainLayout> {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         if (state is NavigationStateButtons) {
+          print(state.selectedIndex);
           _selectedScreen = AppScreens.values[state.selectedIndex];
         }
 
         if (state is NavigationSportState) {
+          
           _selectedScreen = AppScreens.SportMatchOptions;
+          print("selected screen sports");
           screenViews[AppScreens.SportMatchOptions] =
               SportMatchOptionsView(sport: state.sport);
         }

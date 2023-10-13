@@ -4,6 +4,7 @@ import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.da
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as _notification;
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_app_sports/presentation/screens/match/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
@@ -66,7 +67,8 @@ class _HomeViewState extends State<HomeView> {
           const url = 'https://centrodeportivo.bookeau.com/#/login';
           launchUrl(Uri.parse(url));
         } else if (state is HomeNavigateToManageMatchesState) {
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(1));
+                            BlocProvider.of<GlobalBloc>(context).add(
+                      NavigateToIndexEvent(AppScreens.MyMatches.index));
         } else if (state is HomeNavigateToQuickMatchState) {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const MatchesView()));

@@ -11,6 +11,8 @@ class MatchRepository {
   MatchRepository({required this.userRepository});
 
   Future<List<Match>?> getMatchesForUser({required int userid}) async {
+    print("userid");
+    print(userid);
     final response = await http.get(
       Uri.parse('$backendUrl/users/$userid/matches/'),
       headers: <String, String>{
@@ -42,20 +44,16 @@ class MatchRepository {
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
       List<Match> matches = [];
+
       for (var item in jsonData) {
         Match matchItem = await Match.createFromJson(item, userRepository);
-
-        // If date is provided, only add matches for the given date
         if (date == null ||
             (matchItem.date?.day == date.day &&
                 matchItem.date?.month == date.month &&
-                matchItem.date?.year == date.year)
-                ) {
+                matchItem.date?.year == date.year)) {
           matches.add(matchItem);
         }
       }
-      
-      print(sportId);
 
       return matches;
     } else {

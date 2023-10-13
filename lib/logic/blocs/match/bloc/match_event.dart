@@ -25,3 +25,13 @@ class FetchMatchesSportsEvent extends MatchEvent {
   FetchMatchesSportsEvent(this.sportId,this.date); 
 }
 
+class FetchMatchesUserEvent extends MatchEvent {
+  final int userId;
+  FetchMatchesUserEvent(this.userId); 
+}
+
+class MatchesLoadedForUserEvent extends MatchEvent {
+  final List<Match> matches;
+  MatchesLoadedForUserEvent(this.matches); 
+}
+

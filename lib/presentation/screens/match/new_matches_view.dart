@@ -45,7 +45,6 @@ class _NewMatchesViewState extends State<NewMatchesView> {
           return Scaffold(
             body: ListView(
               children: [
-                // Sección de bienvenida
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
