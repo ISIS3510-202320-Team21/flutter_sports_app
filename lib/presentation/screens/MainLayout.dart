@@ -14,6 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'camera_view.dart';
+
 enum AppScreens {
   Home,
   Matches,
@@ -22,6 +24,7 @@ enum AppScreens {
   EditProfile,
   MyMatches,
   SportMatchOptions,
+  CameraScreen
   // Agrega nuevas pantallas aquí
 }
 
@@ -33,7 +36,7 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.EditProfile: "EDIT PROFILE",
   AppScreens.MyMatches: "MY MATCHES",
   AppScreens.SportMatchOptions: "MATCH OPTIONS",
-
+  AppScreens.CameraScreen: "CAMERA",
 };
 
 final Map<AppScreens, Widget> screenViews = {
@@ -48,7 +51,8 @@ final Map<AppScreens, Widget> screenViews = {
     id: 1,
     name: "Fútbol",
     image: "https://i.ibb.co/0j3h2ZC/football.png",
-  ))
+  )),
+  AppScreens.CameraScreen: const TakePictureScreen(),
 };
 
 class MainLayout extends StatefulWidget {

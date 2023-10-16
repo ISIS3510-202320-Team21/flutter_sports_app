@@ -29,6 +29,9 @@ class _ProfileViewState extends State<ProfileView> {
           //     context, MaterialPageRoute(builder: (context) => const EditProfileView()));
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(4));
         }
+        else if (state is ProfileNavigateToAddProfilePictureState){
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(7));
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -44,6 +47,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ElevatedButton(
                         onPressed: () {
                           // Acción cuando se presiona el botón de perfil
+                          _profileBloc.add(ProfileAddProfilePictureButtonClickedEvent());
                         },
                         style: ElevatedButton.styleFrom(
                           shape: CircleBorder(),
