@@ -76,11 +76,6 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                           ),
                         ),
                       ),
-
-                      // Display the matches
-// Listado de estados que deseas omitir
-
-// Filtrado de matches
                       ...state.matches
                           .where((match) =>
                               !omittedStatuses.contains(match.status))
@@ -115,7 +110,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(
-            match.userCreated.imageUrl ?? 'https://picsum.photos/200'),
+            match.userCreated.imageUrl ?? 'https://thumbs.dreamstime.com/b/vector-de-usuario-redes-sociales-perfil-avatar-predeterminado-retrato-vectorial-del-176194876.jpg'),
       ),
       title: Text(match.userCreated.name),
       subtitle: Text(match.level.name),
