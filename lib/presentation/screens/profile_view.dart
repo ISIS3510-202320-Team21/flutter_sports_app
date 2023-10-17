@@ -29,6 +29,9 @@ class _ProfileViewState extends State<ProfileView> {
           //     context, MaterialPageRoute(builder: (context) => const EditProfileView()));
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(4));
         }
+        else if (state is ProfileNavigateToAddProfilePictureState){
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(7));
+        }
       },
       builder: (context, state) {
         return Scaffold(
@@ -44,19 +47,21 @@ class _ProfileViewState extends State<ProfileView> {
                       ElevatedButton(
                         onPressed: () {
                           // Acción cuando se presiona el botón de perfil
+                          _profileBloc.add(ProfileAddProfilePictureButtonClickedEvent());
                         },
                         style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(16.0),
-                          backgroundColor: Colors.white,
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(16.0),
+                          backgroundColor: colorScheme.background,
+                          shadowColor: Colors.transparent,
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.account_circle,
                           size: 80.0,
                           color: Colors.black87,
                         ),
                       ),
-                      SizedBox(height: 30), // Espacio reducido entre el botón de perfil y el texto
+                      const SizedBox(height: 20), // Espacio reducido entre el botón de perfil y el texto
                       Text(
                         'Nombre del usuario',
                         style: textTheme.titleLarge!.copyWith(
@@ -66,7 +71,7 @@ class _ProfileViewState extends State<ProfileView> {
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 20.0), // Espacio entre el nombre y los botones
+                      const SizedBox(height: 40.0), // Espacio entre el nombre y los botones
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Column(
