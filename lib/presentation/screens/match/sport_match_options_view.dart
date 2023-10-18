@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
+import 'package:flutter_app_sports/data/models/user.dart';
+import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
@@ -22,7 +24,16 @@ class SportMatchOptionsView extends StatefulWidget {
 
 class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   DateTime? selectedDate;
-  final List<String> omittedStatuses = ['Finished', 'Out of Date'];
+  User? user;
+
+  final List<String> omittedStatuses = ['Finished', 'Out of Date', 'Approved'];
+
+  @override
+  void initState() {
+    super.initState();
+    user = BlocProvider.of<AuthenticationBloc>(context).user;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Provider<MatchBloc>(
@@ -87,7 +98,8 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                       ),
                       ...state.matches
                           .where((match) =>
-                              !omittedStatuses.contains(match.status))
+                              !omittedStatuses.contains(match.status) &&
+                              match.userCreated?.id != user?.id)
                           .map((match) => _buildMatchTile(match))
                           .toList(),
                       ListTile(
@@ -126,14 +138,28 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   }
 
   Widget _buildMatchTile(Match match) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(match.userCreated?.imageUrl ??
-            'https://thumbs.dreamstime.com/b/vector-de-usuario-redes-sociales-perfil-avatar-predeterminado-retrato-vectorial-del-176194876.jpg'),
+    return InkWell(
+      onTap: () => _onMatchSelected(match),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(match.userCreated?.imageUrl ??
+              'https://thumbs.dreamstime.com/b/vector-de-usuario-redes-sociales-perfil-avatar-predeterminado-retrato-vectorial-del-176194876.jpg'),
+        ),
+        title: Text(match.userCreated!.name),
+        subtitle: Text(match.level!.name),
+        trailing: Text(match.time),
       ),
-      title: Text(match.userCreated!.name),
-      subtitle: Text(match.level!.name),
-      trailing: Text(match.time),
     );
+  }
+
+  void _onMatchSelected(Match match) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Match seleccionado: ${match.userCreated!.name}'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+    // Aquí puedes añadir la lógica para navegar a la vista de detalles del match.
+    BlocProvider.of<GlobalBloc>(context).add(NavigateToMatchEvent(match));
   }
 }

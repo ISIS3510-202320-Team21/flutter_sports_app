@@ -56,7 +56,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
         } else if (state is MatchCreatedState) {
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('Waiting for a match!')));
+                .showSnackBar(const SnackBar(content: Text('Waiting for a match!')));
           });
         }
         return Padding(
@@ -256,4 +256,5 @@ class _PreferedMatchState extends State<PreferedMatch> {
       }),
     );
   }
+
 }

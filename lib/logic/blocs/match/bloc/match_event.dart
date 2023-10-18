@@ -45,3 +45,8 @@ class CreateMatchEvent extends MatchEvent {
   CreateMatchEvent(this.match,this.userId); 
 }
 
+class addUserToMatchEvent extends MatchEvent {
+  final int userId;
+  final int matchId;
+  addUserToMatchEvent(this.userId,this.matchId); 
+}

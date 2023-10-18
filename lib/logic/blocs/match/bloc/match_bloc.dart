@@ -21,6 +21,7 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     on<FetchMatchesUserEvent>(_handleFetchPlayersForUserEvent);
     on<FetchLevelsEvent>(_handleFetchLevelsEvent);
     on<CreateMatchEvent>(_handleCreateMatchEvent);
+    on<addUserToMatchEvent>(_handleAddUserToMatchEvent);
   }
   
   FutureOr<void> matchInitialEvent(MatchInitialEvent event, Emitter<MatchState> emit) async {
@@ -82,6 +83,17 @@ FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emit
     try {
       Match? match = await MatchRepository(userRepository: UserRepository()).createMatch(event.match,event.userId);
       emit(MatchCreatedState(match!));
+    } catch (e) {
+      print(e);
+      emit(MatchErrorState());
+    }
+  }
+
+  FutureOr<void> _handleAddUserToMatchEvent(addUserToMatchEvent event, Emitter<MatchState> emit) async {
+    emit(MatchLoadingState());
+    try {
+      Match? match = await MatchRepository(userRepository: UserRepository()).addUserToMatch(event.userId,event.matchId);
+      emit(MatchUpdatedMatchState(match!));
     } catch (e) {
       print(e);
       emit(MatchErrorState());

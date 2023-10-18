@@ -29,7 +29,7 @@ class Match {
       this.level,
       required this.userCreated,
       this.userJoined,
-      id});
+      this.id});
 
   static Future<Match> createFromJson(
       Map<String, dynamic> json, UserRepository userRepository) async {
@@ -44,6 +44,7 @@ class Match {
     List<Level>? levels = await matchRepository.getLevels();
     Sport? sport;
     Level? level;
+
     if (json['sport_id'] != null) {
       sport = sports?.firstWhere((element) => element.id == json['sport_id']);
     } else {
@@ -61,6 +62,7 @@ class Match {
       status: json['status'],
       city: json['city'],
       court: json['court'],
+      id: json['id'],
       sport: sport,
       level: level,
       userCreated: userCreated!,

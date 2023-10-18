@@ -33,6 +33,21 @@ class MatchRepository {
     }
   }
 
+  Future<void> changeStatusMatch(int matchId, String status) async {
+    final response = await http.put(
+      Uri.parse('$backendUrl/matches/$matchId/status?status=$status/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 307) {
+      return;
+    } else {
+      throw Exception('Failed to change status match: ${response.statusCode}');
+    }
+  }
+
   Future<List<Match>?> getMatchesForSport(
       {required int sportId, required DateTime? date}) async {
     final response = await http.get(
@@ -64,8 +79,6 @@ class MatchRepository {
   }
 
   Future<Match?> createMatch(Match match,int UserId) async {
-    print("userid");
-    print(UserId);
     final response = await http.post(
       Uri.parse('$backendUrl/users/$UserId/matches/'),
       headers: <String, String>{
@@ -101,6 +114,22 @@ class MatchRepository {
       return levels;
     } else {
       throw Exception('Failed to get levels for sport: ${response.statusCode}');
+    }
+  }
+
+  Future<Match?> addUserToMatch(int userId, int matchId) async {
+    final response = await http.put(
+      Uri.parse('$backendUrl/matches/$matchId/users/$userId/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      changeStatusMatch(matchId, "Approved");
+      return Match.createFromJson(jsonDecode(response.body), userRepository);
+    } else {
+      throw Exception('Failed to add user to match: ${response.statusCode}');
     }
   }
 }

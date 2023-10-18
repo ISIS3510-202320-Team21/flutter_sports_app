@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/data/models/level.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
+import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_state.dart';
 import 'package:flutter_app_sports/presentation/screens/editProfile_view.dart';
 import 'package:flutter_app_sports/presentation/screens/home_view.dart';
+import 'package:flutter_app_sports/presentation/screens/match/individual_match.dart';
 import 'package:flutter_app_sports/presentation/screens/match/my_matches.dart';
 import 'package:flutter_app_sports/presentation/screens/match/new_matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/match/prefered_match.dart';
@@ -26,7 +29,8 @@ enum AppScreens {
   MyMatches,
   SportMatchOptions,
   CameraScreen,
-  PreferedMatch
+  PreferedMatch,
+  MatchDetails
   // Agrega nuevas pantallas aquí
 }
 
@@ -39,7 +43,8 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.MyMatches: "MY MATCHES",
   AppScreens.SportMatchOptions: "MATCH OPTIONS",
   AppScreens.CameraScreen: "CAMERA",
-  AppScreens.PreferedMatch: "PREFERED MATCH"
+  AppScreens.PreferedMatch: "PREFERED MATCH",
+  AppScreens.MatchDetails: "MATCH DETAILS"
 };
 
 final Map<AppScreens, Widget> screenViews = {
@@ -56,15 +61,31 @@ final Map<AppScreens, Widget> screenViews = {
     image: "https://i.ibb.co/0j3h2ZC/football.png",
   )),
   AppScreens.CameraScreen: const HomeView(),
-  AppScreens.PreferedMatch: PreferedMatch(selectedSport: Sport 
-  (
-    id: 1,
-    name: "Fútbol",
-    image: null,
+  AppScreens.PreferedMatch: PreferedMatch(
+    selectedSport: Sport(
+      id: 1,
+      name: "Fútbol",
+      image: null,
+    ),
+    selectedDate: DateTime.now(),
   ),
-  selectedDate: DateTime.now(),
-  )
-
+  AppScreens.MatchDetails: IndividualMatch(
+      match: Match(
+          date: DateTime.now(),
+          time: "11:00 - 13:00",
+          status: "Pending",
+          city: "Bogotá",
+          sport: Sport(
+            id: 1,
+            name: "Fútbol",
+            image: null,
+          ),
+          level: Level(
+            id: 1,
+            name: "Amateur",
+          ),
+          userCreated: null,
+          court: "xd"))
 };
 
 class MainLayout extends StatefulWidget {
@@ -125,6 +146,13 @@ class _MainLayoutState extends State<MainLayout> {
           print("selected screen preffered match");
           screenViews[AppScreens.PreferedMatch] = PreferedMatch(
               selectedSport: state.sport, selectedDate: state.selectedDate);
+        }
+
+        if (state is NavigationMatchState) {
+          _selectedScreen = AppScreens.MatchDetails;
+          print("selected screen match details");
+          screenViews[AppScreens.MatchDetails] =
+              IndividualMatch(match: state.match);
         }
 
         return Scaffold(
