@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
-import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as _notification;
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_app_sports/presentation/screens/match/matches_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
-import 'package:flutter_app_sports/presentation/widgets/MyLocationWidget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -24,7 +24,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
   final GlobalBloc globalBloc = GlobalBloc();
-  final _notification.NotificationBloc notificationBloc = _notification.NotificationBloc();
+  final WeatherApi weatherApi = WeatherApi(apiKey: '02788d36472def97753cd483ee2dd7fa');
   double latitude = 0;
   double longitude = 0;
 
@@ -35,16 +35,9 @@ class _HomeViewState extends State<HomeView> {
     BlocProvider.of<AuthenticationBloc>(context).add(FetchUniversitiesRequested());
     BlocProvider.of<AuthenticationBloc>(context).add(FetchRolesRequested());
     BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
-    _getLocation();
+
   }
 
-  void _getLocation() {
-    setState(() {
-      // Actualiza la ubicación
-      latitude = 0; // Establece valores predeterminados
-      longitude = 0;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +47,6 @@ class _HomeViewState extends State<HomeView> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeBloc>(create: (context) => homeBloc),
-        BlocProvider<_notification.NotificationBloc>(create: (context) => notificationBloc),
       ],
     child: BlocConsumer<HomeBloc, HomeState>(
       bloc: homeBloc,
@@ -87,40 +79,30 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   BlocBuilder<_notification.NotificationBloc, _notification.NotificationState>(
-                    builder: (context, notificationState) {
-                      
-                      if (notificationState is _notification.NotificationLoadedSuccessState) {
-                        // Notification? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
-                        print(BlocProvider.of<AuthenticationBloc>(context).user?.notifications);
-                        if (notificationState.notifications.isNotEmpty) {
-                          
-                          final lastNotification = notificationState.notifications.last;
+                  BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                      builder: (context, authState) {
+                        if (authState is Authenticated) {
+                          final notifications = authState.usuario.notifications;
+                          print({notifications?.last.name});
+                          final title = notifications != null &&
+                                  notifications.isNotEmpty
+                              ? notifications.last.name
+                              : "Aquí va el texto de las notificaciones";
+
                           return CustomButtonNotifications(
-                            title: lastNotification.name,
+                            key: UniqueKey(),
+                            title: title,
                             imageAsset: "assets/arrow_1.png",
                             onPressed: goToNotifications,
                           );
                         }
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                      // En caso de no haber notificaciones o un error
-                      return CustomButtonNotifications(
-                        title: "Aca se deben cambiar el texto a las notificaciones",
-                        imageAsset: "assets/arrow_1.png",
-                        onPressed: goToNotifications,
-                      );
-                    },
-                  ),
-                  MyLocationWidget(
-                    onLocationChanged: (lat, lon) {
-                      setState(() {
-                        latitude = lat;
-                        longitude = lon;
-                      });
-                    },
-                  ),
+                        return CustomButtonNotifications(
+                          title: "Aquí va el texto de las notificaciones",
+                          imageAsset: "assets/arrow_1.png",
+                          onPressed: goToNotifications,
+                        );
+                      },
+                    ),
                   WeatherDisplay(
                     latitude: latitude,
                     longitude: longitude,
@@ -318,7 +300,7 @@ class CustomButtonNotifications extends StatelessWidget {
   final String imageAsset;
   final VoidCallback onPressed;
 
-  const CustomButtonNotifications({super.key, 
+  const CustomButtonNotifications({Key? key, 
     required this.title,
     required this.imageAsset,
     required this.onPressed,

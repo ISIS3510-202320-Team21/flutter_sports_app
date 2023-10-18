@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/services/weather_api.dart';
+import 'package:geolocator/geolocator.dart';
 
 class WeatherDisplay extends StatefulWidget {
-  final double latitude;
-  final double longitude;
-
-  WeatherDisplay({required this.latitude, required this.longitude});
+  WeatherDisplay({Key? key, required double longitude, required double latitude}) : super(key: key);
 
   @override
   _WeatherDisplayState createState() => _WeatherDisplayState();
@@ -13,12 +11,39 @@ class WeatherDisplay extends StatefulWidget {
 
 class _WeatherDisplayState extends State<WeatherDisplay> {
   late Future<Map<String, dynamic>> pronosticoClima;
+  double? latitude;
+  double? longitude;
 
   @override
   void initState() {
     super.initState();
-    final weatherApi = WeatherApi(apiKey: 'c88d220f89270fcc8a34541b3c6eb52b'); // Reemplaza con tu clave de API
-    pronosticoClima = weatherApi.obtenerPronosticoClima(widget.latitude, widget.longitude);
+    _getCurrentLocation();
+  }
+
+  _getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      await Geolocator.requestPermission();
+      return;
+    } else if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openLocationSettings();
+      return;
+    } else {
+      Position currentPosition =
+          await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+      setState(() {
+        latitude = currentPosition.latitude;
+        longitude = currentPosition.longitude;
+      });
+
+      // print("Latitude Display: $latitude");
+      // print("Longitude Display: $longitude");
+
+      final weatherApi = WeatherApi(apiKey: '02788d36472def97753cd483ee2dd7fa');
+      pronosticoClima = weatherApi.obtenerPronosticoClima(latitude!, longitude!);
+    }
   }
 
   @override
@@ -33,16 +58,9 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
         } else if (!snapshot.hasData) {
           return Text('No se recibieron datos del clima.');
         } else {
-          // Aquí puedes construir y retornar un widget que muestre la información del clima
-          // utilizando los datos en snapshot.data
-          // Ejemplo:
           final climaData = snapshot.data;
-          print(climaData);
-          //return something that works
-
-
-          final temperatura = 1.0;
-          final descripcion = 'Soleado';
+          final temperatura = climaData?['main']['temp'];
+          final descripcion = climaData?['weather'][0]['description'];
           return Text('Temperatura: $temperatura°C, Descripción: $descripcion');
         }
       },
