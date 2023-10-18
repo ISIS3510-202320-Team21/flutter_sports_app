@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/camera/bloc/camera_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/presentation/router/app_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +28,8 @@ class _MyAppState extends State<MyApp> {
         providers: [
           BlocProvider<AuthenticationBloc>(
               create: (context) => AuthenticationBloc()),
+          BlocProvider<CameraBloc>(
+              create: (context) => CameraBloc()),
           BlocProvider(create: (context) => GlobalBloc()),
         ],
         child: MaterialApp(

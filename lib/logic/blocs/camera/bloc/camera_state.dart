@@ -9,12 +9,7 @@ class CameraInitial extends CameraState {}
 
 class CameraLoadingState extends CameraState {}
 
-class CameraLoadedSuccessState extends CameraState {
-  // final CameraDescription camera;
-  // CameraLoadedSuccessState({
-  //   required this.camera,
-  // });
-}
+class CameraLoadedSuccessState extends CameraState {}
 
 class CameraErrorState extends CameraState {
   final String error;
@@ -24,3 +19,5 @@ class CameraErrorState extends CameraState {
 }
 
 class CameraClickActionState extends CameraActionState {}
+
+class SavedPhotoActionState extends CameraActionState {}
