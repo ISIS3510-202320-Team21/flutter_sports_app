@@ -1,6 +1,6 @@
 class Sport {
   final String name;
-  final String? image;
+  final String image;
   final int id;
 
   Sport({required this.name , required this.image, required this.id});

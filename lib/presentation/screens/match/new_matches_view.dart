@@ -119,7 +119,7 @@ class _NewMatchesViewState extends State<NewMatchesView> {
                                       padding: const EdgeInsets.only(left: 8.0),
                                       child: CircleAvatar(
                                         backgroundImage:
-                                            NetworkImage(sport.image!),
+                                            NetworkImage(sport.image),
                                         radius: 40,
                                         backgroundColor: Colors.transparent,
                                       ),

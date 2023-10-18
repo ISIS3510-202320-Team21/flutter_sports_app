@@ -35,18 +35,3 @@ class MatchesLoadedForUserEvent extends MatchEvent {
   MatchesLoadedForUserEvent(this.matches); 
 }
 
-class FetchLevelsEvent extends MatchEvent {
-  FetchLevelsEvent(); 
-}
-
-class CreateMatchEvent extends MatchEvent {
-  final Match match;
-  final int userId;
-  CreateMatchEvent(this.match,this.userId); 
-}
-
-class addUserToMatchEvent extends MatchEvent {
-  final int userId;
-  final int matchId;
-  addUserToMatchEvent(this.userId,this.matchId); 
-}

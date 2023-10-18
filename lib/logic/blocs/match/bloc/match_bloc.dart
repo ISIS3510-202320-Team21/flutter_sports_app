@@ -2,10 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_app_sports/data/models/level.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
-import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 
 import '../../../../data/repositories/match_repository.dart';
 
@@ -19,11 +17,8 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     on<NewMatchNavigateEvent>(newMatchNavigateEvent);
     on<FetchMatchesSportsEvent>(_handleFetchPlayersForSportEvent);
     on<FetchMatchesUserEvent>(_handleFetchPlayersForUserEvent);
-    on<FetchLevelsEvent>(_handleFetchLevelsEvent);
-    on<CreateMatchEvent>(_handleCreateMatchEvent);
-    on<addUserToMatchEvent>(_handleAddUserToMatchEvent);
   }
-  
+
   FutureOr<void> matchInitialEvent(MatchInitialEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
@@ -65,38 +60,5 @@ FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emit
   FutureOr<void> newMatchNavigateEvent(NewMatchNavigateEvent event, Emitter<MatchState> emit) {
     print('New match navigate');
     emit(NewMatchNavigateActionState());
-  }
-
-  FutureOr<void> _handleFetchLevelsEvent(FetchLevelsEvent event, Emitter<MatchState> emit) async {
-    emit(MatchLoadingState());
-    try {
-      List<Level>? levels = await MatchRepository(userRepository: UserRepository()).getLevels();
-      emit(LevelsLoadedState(levels!));
-    } catch (e) {
-      print(e);
-      emit(MatchErrorState());
-    }
-  }
-
-  FutureOr<void> _handleCreateMatchEvent(CreateMatchEvent event, Emitter<MatchState> emit) async {
-    emit(MatchLoadingState());
-    try {
-      Match? match = await MatchRepository(userRepository: UserRepository()).createMatch(event.match,event.userId);
-      emit(MatchCreatedState(match!));
-    } catch (e) {
-      print(e);
-      emit(MatchErrorState());
-    }
-  }
-
-  FutureOr<void> _handleAddUserToMatchEvent(addUserToMatchEvent event, Emitter<MatchState> emit) async {
-    emit(MatchLoadingState());
-    try {
-      Match? match = await MatchRepository(userRepository: UserRepository()).addUserToMatch(event.userId,event.matchId);
-      emit(MatchUpdatedMatchState(match!));
-    } catch (e) {
-      print(e);
-      emit(MatchErrorState());
-    }
   }
 }

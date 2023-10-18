@@ -29,7 +29,7 @@ class MatchTile extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      "Match of ${match.sport?.name} on the way!",
+                      "Match of ${match.sport.name} on the way!",
                       style: TextStyle(
                           fontSize: 20,
                           color: colorScheme.onBackground),

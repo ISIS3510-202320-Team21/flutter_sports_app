@@ -55,6 +55,7 @@ class _MatchesViewState extends State<MatchesView> {
                   ),
                   Expanded(
                     child: ListView.builder(
+                      //add padding between the items
                       itemCount: successState.matches.length,
                       itemBuilder: (context, index) {
                         return MatchTile(
