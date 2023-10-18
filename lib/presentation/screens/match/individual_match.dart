@@ -20,7 +20,7 @@ class IndividualMatch extends StatefulWidget {
 
 class _IndividualMatchState extends State<IndividualMatch> {
   User? user;
-    @override
+  @override
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).user;
@@ -46,14 +46,13 @@ class _IndividualMatchState extends State<IndividualMatch> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Match created successfully!')),
             );
-          } 
-          else if (state is MatchUpdatedMatchState) {
+          } else if (state is MatchUpdatedMatchState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Match joined successfully!')),
             );
-            BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Home.index));
-          }
-          else if (state is MatchErrorState) {
+            BlocProvider.of<GlobalBloc>(context)
+                .add(NavigateToIndexEvent(AppScreens.Home.index));
+          } else if (state is MatchErrorState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Error loading data')),
             );
@@ -127,14 +126,14 @@ class _IndividualMatchState extends State<IndividualMatch> {
                     const Divider(),
                     ListTile(
                       title: Text(
-                        "Created By: ${widget.match.userCreated!.name}",
+                        "Created By: ${widget.match.userCreated?.name ?? "Unknown"}",
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        BlocProvider.of<MatchBloc>(context)
-                            .add(addUserToMatchEvent(user!.id, widget.match.id!));
+                        BlocProvider.of<MatchBloc>(context).add(
+                            addUserToMatchEvent(user!.id, widget.match.id!));
                       },
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all(

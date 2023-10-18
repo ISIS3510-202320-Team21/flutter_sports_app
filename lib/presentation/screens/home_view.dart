@@ -86,7 +86,6 @@ class _HomeViewState extends State<HomeView> {
                       builder: (context, authState) {
                         if (authState is Authenticated) {
                           final notifications = authState.usuario.notifications;
-                          print({notifications?.last.name});
                           final title = notifications != null &&
                                   notifications.isNotEmpty
                               ? notifications.last.name
