@@ -17,19 +17,6 @@ class UserRepository {
     required int userid
   }) async {
 
-    // print("Gonna send this to the backend");
-    //
-    // print({
-    //   'email': email,
-    //   'name': name,
-    //   'phoneNumber': phoneNumber,
-    //   'role': role,
-    //   'university': university,
-    //   'bornDate': bornDate,
-    //   'gender': gender
-    // });
-    // print(userid);
-
     final response = await http.put(
       Uri.parse('$backendUrl/users/$userid/'),
       headers: <String, String>{
@@ -66,6 +53,24 @@ class UserRepository {
       return User.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to change password: ${response.statusCode}');
+    }
+  }
+
+  //update image for user
+  Future<User?> changeImage(
+      {required String image, required int userid}) async {
+    final response = await http.post(
+      Uri.parse('$backendUrl/users/$userid/image/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({'imageUrl': image}),
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to change image: ${response.statusCode}');
     }
   }
 
