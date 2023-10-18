@@ -6,6 +6,7 @@ import 'package:flutter_app_sports/presentation/screens/editProfile_view.dart';
 import 'package:flutter_app_sports/presentation/screens/home_view.dart';
 import 'package:flutter_app_sports/presentation/screens/match/my_matches.dart';
 import 'package:flutter_app_sports/presentation/screens/match/new_matches_view.dart';
+import 'package:flutter_app_sports/presentation/screens/match/prefered_match.dart';
 import 'package:flutter_app_sports/presentation/screens/match/sport_match_options_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
@@ -24,7 +25,8 @@ enum AppScreens {
   EditProfile,
   MyMatches,
   SportMatchOptions,
-  CameraScreen
+  CameraScreen,
+  PreferedMatch
   // Agrega nuevas pantallas aquí
 }
 
@@ -37,6 +39,7 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.MyMatches: "MY MATCHES",
   AppScreens.SportMatchOptions: "MATCH OPTIONS",
   AppScreens.CameraScreen: "CAMERA",
+  AppScreens.PreferedMatch: "PREFERED MATCH"
 };
 
 final Map<AppScreens, Widget> screenViews = {
@@ -52,7 +55,16 @@ final Map<AppScreens, Widget> screenViews = {
     name: "Fútbol",
     image: "https://i.ibb.co/0j3h2ZC/football.png",
   )),
-  AppScreens.CameraScreen: const TakePictureScreen(),
+  AppScreens.CameraScreen: const HomeView(),
+  AppScreens.PreferedMatch: PreferedMatch(selectedSport: Sport 
+  (
+    id: 1,
+    name: "Fútbol",
+    image: null,
+  ),
+  selectedDate: DateTime.now(),
+  )
+
 };
 
 class MainLayout extends StatefulWidget {
@@ -102,11 +114,17 @@ class _MainLayoutState extends State<MainLayout> {
         }
 
         if (state is NavigationSportState) {
-          
           _selectedScreen = AppScreens.SportMatchOptions;
           print("selected screen sports");
           screenViews[AppScreens.SportMatchOptions] =
               SportMatchOptionsView(sport: state.sport);
+        }
+
+        if (state is NavigationPrefferedMatchState) {
+          _selectedScreen = AppScreens.PreferedMatch;
+          print("selected screen preffered match");
+          screenViews[AppScreens.PreferedMatch] = PreferedMatch(
+              selectedSport: state.sport, selectedDate: state.selectedDate);
         }
 
         return Scaffold(

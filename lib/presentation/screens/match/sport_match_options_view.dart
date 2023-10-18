@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -54,25 +57,31 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                               setState(() {
                                 selectedDate = pickedDate;
                               });
-                              innerContext.read<MatchBloc>().add(
+                              BlocProvider.of<MatchBloc>(context).add(
                                   FetchMatchesSportsEvent(
                                       widget.sport.id, selectedDate));
                             }
                           },
-                          child: Row(
-                            children: [
-                              const Icon(Icons.calendar_today),
-                              const SizedBox(width: 10.0),
-                              Text(
-                                selectedDate != null
-                                    ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
-                                    : 'Selecciona una fecha',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const Spacer(),
-                              const Icon(Icons.arrow_drop_down),
-                            ],
+                          child: InputDecorator(
+                            decoration: const InputDecoration(
+                              labelText: 'Fecha',
+                              border: OutlineInputBorder(),
+                              suffixIcon: Icon(Icons.arrow_drop_down),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.calendar_today, size: 20.0),
+                                const SizedBox(width: 10.0),
+                                Text(
+                                  selectedDate != null
+                                      ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
+                                      : 'Selecciona una fecha',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -81,14 +90,24 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                               !omittedStatuses.contains(match.status))
                           .map((match) => _buildMatchTile(match))
                           .toList(),
-
                       ListTile(
                         leading: const Icon(Icons.add_circle, size: 40.0),
                         title: const Text(
                             'Add your preferred times and wait for a match'),
                         trailing: const Icon(Icons.arrow_forward_ios),
                         onTap: () {
-                          // Handle the tap action
+                          if (selectedDate == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please select a date first!'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          } else {
+                            BlocProvider.of<GlobalBloc>(context).add(
+                                NavigateToPrefferedMatchEvent(
+                                    widget.sport, selectedDate));
+                          }
                         },
                       ),
                     ],
@@ -109,11 +128,11 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   Widget _buildMatchTile(Match match) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(
-            match.userCreated.imageUrl ?? 'https://thumbs.dreamstime.com/b/vector-de-usuario-redes-sociales-perfil-avatar-predeterminado-retrato-vectorial-del-176194876.jpg'),
+        backgroundImage: NetworkImage(match.userCreated?.imageUrl ??
+            'https://thumbs.dreamstime.com/b/vector-de-usuario-redes-sociales-perfil-avatar-predeterminado-retrato-vectorial-del-176194876.jpg'),
       ),
-      title: Text(match.userCreated.name),
-      subtitle: Text(match.level.name),
+      title: Text(match.userCreated!.name),
+      subtitle: Text(match.level!.name),
       trailing: Text(match.time),
     );
   }

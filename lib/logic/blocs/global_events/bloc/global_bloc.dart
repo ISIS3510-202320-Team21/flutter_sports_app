@@ -6,6 +6,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   GlobalBloc() : super(NavigationStateButtons(0)) {
     on<NavigateToIndexEvent>(_navigateToIndexEvent);
     on<NavigateToSportEvent>(_navigateToSportEvent);
+    on<NavigateToPrefferedMatchEvent>(_navigateToPrefferedMatchEvent);
   }
 
   Future<void> _navigateToIndexEvent(
@@ -18,6 +19,12 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
       NavigateToSportEvent event, Emitter<GlobalState> emit) async {
     // Actualiza el estado con el nuevo índice
     emit(NavigationSportState(event.sport));
+  }
+
+  Future<void> _navigateToPrefferedMatchEvent(
+      NavigateToPrefferedMatchEvent event, Emitter<GlobalState> emit) async {
+    // Actualiza el estado con el nuevo índice
+    emit(NavigationPrefferedMatchState(event.sport, event.selectedDate));
   }
 
   @override

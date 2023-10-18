@@ -1,10 +1,8 @@
 class Level {
   final String name;
-  final int id;
+  int? id;
 
-  Level({required this.name,
-    required this.id});
-
+  Level({required this.name, this.id});
   factory Level.fromJson(Map<String, dynamic> json) {
     return Level(
       name: json['name'],

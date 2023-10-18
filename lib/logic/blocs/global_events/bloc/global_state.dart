@@ -14,3 +14,10 @@ class NavigationSportState extends GlobalState {
 
   NavigationSportState(this.sport);
 }
+
+class NavigationPrefferedMatchState extends GlobalState {
+  final Sport sport;
+  final DateTime? selectedDate;
+
+  NavigationPrefferedMatchState(this.sport, this.selectedDate);
+}

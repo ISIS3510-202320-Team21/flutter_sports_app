@@ -3,6 +3,7 @@ import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authenticatio
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart' as _notification;
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_app_sports/presentation/screens/match/matches_view.dart';
@@ -24,6 +25,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
   final GlobalBloc globalBloc = GlobalBloc();
+  final MatchBloc matchBloc = MatchBloc();
   final _notification.NotificationBloc notificationBloc = _notification.NotificationBloc();
   double latitude = 0;
   double longitude = 0;
@@ -294,6 +296,7 @@ class _HomeViewState extends State<HomeView> {
 
   void goToManageMatches() {
     homeBloc.add(HomeManageMatchesButtonClickedEvent());
+    
   }
 
   void goToNewMatch() {

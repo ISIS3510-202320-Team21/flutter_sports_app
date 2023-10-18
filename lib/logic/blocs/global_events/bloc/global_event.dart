@@ -13,3 +13,10 @@ class NavigateToSportEvent extends GlobalEvent {
 
   NavigateToSportEvent(this.sport);
 }
+
+class NavigateToPrefferedMatchEvent extends GlobalEvent {
+  final Sport sport;
+  final DateTime? selectedDate;
+
+  NavigateToPrefferedMatchEvent(this.sport, this.selectedDate);
+}

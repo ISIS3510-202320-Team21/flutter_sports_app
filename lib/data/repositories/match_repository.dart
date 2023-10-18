@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_app_sports/data/models/level.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
@@ -59,6 +60,47 @@ class MatchRepository {
     } else {
       throw Exception(
           'Failed to get matches for sport: ${response.statusCode}');
+    }
+  }
+
+  Future<Match?> createMatch(Match match,int UserId) async {
+    print("userid");
+    print(UserId);
+    final response = await http.post(
+      Uri.parse('$backendUrl/users/$UserId/matches/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(match.toJson()),
+    );
+    
+    if (response.statusCode == 200) {
+      return Match.createFromJson(jsonDecode(response.body), userRepository);
+    } else {
+      throw Exception('Failed to create match: ${response.statusCode}');
+    }
+  }
+
+  Future<List<Level>?> getLevels() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/levels/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+      List<Level> levels = [];
+
+      for (var item in jsonData) {
+        Level levelData = await Level.fromJson(item);
+        levels.add(levelData);
+      }
+      
+      return levels;
+    } else {
+      throw Exception('Failed to get levels for sport: ${response.statusCode}');
     }
   }
 }
