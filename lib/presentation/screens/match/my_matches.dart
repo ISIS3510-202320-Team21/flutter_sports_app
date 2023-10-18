@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyMatches extends StatelessWidget {
@@ -9,14 +12,14 @@ class MyMatches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
     final userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
+    final MatchBloc matchBloc = MatchBloc();
 
     return BlocProvider<MatchBloc>(
       create: (context) {
-        final matchBloc = MatchBloc();
         if (userId != null) {
           matchBloc.add(FetchMatchesUserEvent(userId));
         }
@@ -32,6 +35,31 @@ class MyMatches extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
+            appBar: AppBar(
+              backgroundColor: colorScheme.onPrimary,
+
+              elevation: 0,
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.add, color: Colors.black),
+                  onPressed: () {
+                    BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Matches.index));
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.refresh,
+                      color: Colors.black), // Icono de refrescar
+                  onPressed: () {
+                    if (userId != null) {
+                      BlocProvider.of<MatchBloc>(context).add(
+                          FetchMatchesUserEvent(
+                              userId)); // Disparamos el evento de fetch nuevamente
+                    }
+                  },
+                ),
+              ],
+            ),
             body: ListView(
               children: [
                 Padding(
@@ -40,9 +68,9 @@ class MyMatches extends StatelessWidget {
                     child: Text(
                       'Matches for $userName',
                       style: TextStyle(
-                        fontSize: textTheme.titleLarge?.fontSize,
+                        fontSize: textTheme.headline5?.fontSize,
                         fontWeight: FontWeight.bold,
-                        color: colorScheme.primary,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -65,17 +93,38 @@ class MyMatches extends StatelessWidget {
     return matches.map((match) {
       return Card(
         elevation: 5,
-        margin: const EdgeInsets.all(10),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          title: Text('Match on ${match.sport.name} with ${match.userJoined?.name}'),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          title: Text(
+              match.userJoined?.name == null
+                  ? 'Match on ${match.sport?.name}'
+                  : 'Match on ${match.sport?.name} with ${match.userJoined?.name}',
+              style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: Text('Status: ${match.status}'),
+            child: Text(
+              'Status: ${match.status}',
+              style: TextStyle(color: _statusColor(match.status)),
+            ),
           ),
-          trailing: const Icon(Icons.arrow_forward_ios),
+          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black45),
         ),
       );
     }).toList();
+  }
+
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'Approved':
+        return const Color(0xFF337E19);
+      case 'Pending':
+        return const Color(0xFF19647E);
+      case 'Out of Date':
+        return const Color(0xFFFF0000);
+      default:
+        return Colors.black;
+    }
   }
 }
