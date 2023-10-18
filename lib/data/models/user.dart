@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter_app_sports/data/models/notification.dart';
 
 class User {

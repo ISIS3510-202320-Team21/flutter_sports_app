@@ -8,7 +8,6 @@ class SportRepository {
 
   Future<List<Sport>?> fetchSports() async {
     // Agrega un retraso de 5 segundos
-    await Future.delayed(const Duration(seconds: 5));
 
     final response = await http.get(
       Uri.parse('$backendUrl/sports/'),
@@ -23,6 +22,20 @@ class SportRepository {
           .toList();
     } else {
       throw Exception('Failed to fetch sports: ${response.statusCode}');
+    }
+  }
+  Future<Sport?> getSport({required int sportId}) async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/sports/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return Sport.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to get sport: ${response.statusCode}');
     }
   }
 }
