@@ -25,5 +25,6 @@ class NavigationPrefferedMatchState extends GlobalState {
 
 class NavigationMatchState extends GlobalState {
   final externals.Match match;
-  NavigationMatchState(this.match);
+  final String status;
+  NavigationMatchState(this.match, this.status);
 }

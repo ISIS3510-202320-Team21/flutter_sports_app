@@ -36,25 +36,36 @@ class MyMatches extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               backgroundColor: colorScheme.onPrimary,
-
               elevation: 0,
-              centerTitle: true,
+              centerTitle:
+                  false, // Cambiado a false para alinear a la izquierda
+              title: Padding(
+                padding: const EdgeInsets.all(1),
+                child: Text(
+                  'Matches for $userName',
+                  style: TextStyle(
+                    fontSize: textTheme.headline5?.fontSize,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.add, color: Colors.black),
                   onPressed: () {
-                    BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Matches.index));
+                    BlocProvider.of<GlobalBloc>(context)
+                        .add(NavigateToIndexEvent(AppScreens.Matches.index));
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.refresh,
-                      color: Colors.black), // Icono de refrescar
+                  icon: const Icon(Icons.refresh, color: Colors.black),
                   onPressed: () {
                     if (userId != null) {
-                      BlocProvider.of<MatchBloc>(context).add(
-                          FetchMatchesUserEvent(
-                              userId)); // Disparamos el evento de fetch nuevamente
+                      BlocProvider.of<MatchBloc>(context)
+                          .add(FetchMatchesUserEvent(userId));
                     }
                   },
                 ),
@@ -62,23 +73,10 @@ class MyMatches extends StatelessWidget {
             ),
             body: ListView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Text(
-                      'Matches for $userName',
-                      style: TextStyle(
-                        fontSize: textTheme.headline5?.fontSize,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
                 if (state is MatchLoadingState)
                   const Center(child: CircularProgressIndicator())
                 else if (state is MatchesLoadedForUserState)
-                  ..._buildMatchesList(state.matches)
+                  ..._buildMatchesList(state.matches, context, userId: userId)
                 else
                   const SizedBox(),
               ],
@@ -89,8 +87,12 @@ class MyMatches extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildMatchesList(List<Match> matches) {
+  List<Widget> _buildMatchesList(List<Match> matches, BuildContext context,
+      {int? userId}) {
     return matches.map((match) {
+      bool isCreatedByCurrentUser = userId == match.userCreated?.id;
+      String opponentName = match.userJoined?.name ??
+          '...'; // Si userJoined es null, se mostrará '...'
       return Card(
         elevation: 5,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -98,9 +100,9 @@ class MyMatches extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           title: Text(
-              match.userJoined?.name == null
-                  ? 'Match on ${match.sport?.name}'
-                  : 'Match on ${match.sport?.name} with ${match.userJoined?.name}',
+              isCreatedByCurrentUser
+                  ? 'Match on ${match.sport?.name} with $opponentName'
+                  : 'Match on ${match.sport?.name} with ${match.userCreated?.name}',
               style: const TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 8.0),
@@ -110,6 +112,15 @@ class MyMatches extends StatelessWidget {
             ),
           ),
           trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black45),
+          onTap: () {
+            if (match.status == 'Finished') {
+              BlocProvider.of<GlobalBloc>(context)
+                  .add(NavigateToMatchEvent(match,"Finished"));
+            } else if (match.status == 'Approved') {
+              BlocProvider.of<GlobalBloc>(context)
+                  .add(NavigateToMatchEvent(match,"Rate"));
+            }
+          },
         ),
       );
     }).toList();

@@ -10,7 +10,7 @@ class WeatherDisplay extends StatefulWidget {
 }
 
 class _WeatherDisplayState extends State<WeatherDisplay> {
-  late Future<Map<String, dynamic>> pronosticoClima;
+  Future<Map<String, dynamic>>? pronosticoClima;
   double? latitude;
   double? longitude;
 

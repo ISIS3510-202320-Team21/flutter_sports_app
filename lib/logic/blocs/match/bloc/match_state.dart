@@ -53,3 +53,9 @@ class MatchUpdatedMatchState extends MatchState {
 
   MatchUpdatedMatchState(this.match);
 }
+
+class MatchFinishedState extends MatchState {
+  final Match match;
+
+  MatchFinishedState(this.match);
+}

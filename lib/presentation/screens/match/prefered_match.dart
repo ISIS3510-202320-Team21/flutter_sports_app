@@ -4,7 +4,10 @@ import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -58,6 +61,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('Waiting for a match!')));
           });
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Home.index));
         }
         return Padding(
           padding: const EdgeInsets.all(16.0),

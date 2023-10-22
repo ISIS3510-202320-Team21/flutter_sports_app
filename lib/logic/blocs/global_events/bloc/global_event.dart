@@ -24,5 +24,6 @@ class NavigateToPrefferedMatchEvent extends GlobalEvent {
 
 class NavigateToMatchEvent extends GlobalEvent {
   final externals.Match match;
-  NavigateToMatchEvent(this.match);
+  final String status;
+  NavigateToMatchEvent(this.match, this.status);
 }
