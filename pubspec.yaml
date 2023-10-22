@@ -47,6 +47,7 @@ dependencies:
   permission_handler: ^11.0.1
   camera:
   path_provider:
+  flutter_rating_bar: 
 
 
 dev_dependencies:

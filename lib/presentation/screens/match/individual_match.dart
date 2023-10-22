@@ -9,10 +9,13 @@ import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class IndividualMatch extends StatefulWidget {
   final Match match;
-  const IndividualMatch({Key? key, required this.match}) : super(key: key);
+  final String state;
+  const IndividualMatch({Key? key, required this.match, required this.state})
+      : super(key: key);
 
   @override
   _IndividualMatchState createState() => _IndividualMatchState();
@@ -20,6 +23,8 @@ class IndividualMatch extends StatefulWidget {
 
 class _IndividualMatchState extends State<IndividualMatch> {
   User? user;
+  double? userRating;
+
   @override
   void initState() {
     super.initState();
@@ -28,17 +33,91 @@ class _IndividualMatchState extends State<IndividualMatch> {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<MatchBloc>(
+    return BlocProvider<MatchBloc>(
       create: (context) => MatchBloc(),
       child: Builder(
         builder: (BuildContext innerContext) {
-          return _buildUI(context);
+          return _buildUI(innerContext);
         },
       ),
     );
   }
 
   Widget _buildUI(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
+
+    void _showRatingDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Rate the match'),
+          content: RatingBar.builder(
+            initialRating: 3,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+            itemBuilder: (context, _) => const Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            onRatingUpdate: (rating) {
+              userRating = rating;
+            },
+          ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: const Text('Submit'),
+              onPressed: () {
+                BlocProvider.of<MatchBloc>(context).add(
+                  RateMatchEvent(
+                    user: user!,
+                    match: widget.match,
+                    rating: userRating!,
+                  ),
+                );
+                setState(() {});
+                Navigator.of(dialogContext).pop();
+              },
+            )
+          ],
+        ),
+      );
+    }
+
+    ListTile buildListTile(
+        {IconData? icon, required String title, String? subtitle}) {
+      print("Subtitle: $title");
+      return ListTile(
+        leading: Icon(icon, color: colorScheme.primary),
+        title: Text(title, style: theme.textTheme.subtitle1),
+        subtitle: subtitle != null ? Text(subtitle) : null,
+      );
+    }
+
+    Widget buildListTile2({
+      IconData? icon,
+      required String title,
+    }) {
+      return ListTile(
+        leading: widget.match.sport?.image != null
+            ? CircleAvatar(
+                radius: 30.0,
+                backgroundImage: NetworkImage(widget.match.sport!.image!),
+              )
+            : Icon(
+                icon ?? Icons.sports,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      );
+    }
+
     return Scaffold(
       body: BlocListener<MatchBloc, MatchState>(
         listener: (context, state) {
@@ -49,6 +128,12 @@ class _IndividualMatchState extends State<IndividualMatch> {
           } else if (state is MatchUpdatedMatchState) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Match joined successfully!')),
+            );
+            BlocProvider.of<GlobalBloc>(context)
+                .add(NavigateToIndexEvent(AppScreens.Home.index));
+          } else if (state is MatchFinishedState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Match rated successfully!')),
             );
             BlocProvider.of<GlobalBloc>(context)
                 .add(NavigateToIndexEvent(AppScreens.Home.index));
@@ -65,99 +150,102 @@ class _IndividualMatchState extends State<IndividualMatch> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ListTile(
-                        leading: Icon(Icons.calendar_today,
-                            color: Theme.of(context).colorScheme.primary),
-                        title: Text(
-                          widget.match.date != null
-                              ? DateFormat('dd/MM/yyyy')
-                                  .format(widget.match.date!)
-                              : "No Date",
-                          style: Theme.of(context).textTheme.titleMedium,
+                    buildListTile(
+                      icon: Icons.calendar_today,
+                      title: widget.match.date != null
+                          ? DateFormat('dd/MM/yyyy').format(widget.match.date!)
+                          : "No Date",
+                      subtitle: "Date",
+                    ),
+                    const Divider(),
+                    buildListTile2(
+                        title: widget.match.sport?.name ?? "Unknown"),
+                    const Divider(),
+                    buildListTile(
+                      icon: Icons.terrain,
+                      title: "Level: ${widget.match.level?.name ?? 'Unknown'}",
+                    ),
+                    const Divider(),
+                    buildListTile(
+                      icon: Icons.access_time,
+                      title: "Time: ${widget.match.time}",
+                    ),
+                    const Divider(),
+                    buildListTile(
+                      icon: Icons.place,
+                      title: "Court: ${widget.match.court}",
+                    ),
+                    const Divider(),
+                    buildListTile(
+                      icon: Icons.location_city,
+                      title: "City: ${widget.match.city}",
+                    ),
+                    const Divider(),
+                    buildListTile(
+                      icon: Icons.person,
+                      title:
+                          "Created By: ${widget.match.userCreated?.name ?? "Unknown"}",
+                    ),
+                    const SizedBox(height: 20),
+                    if (widget.state == "Match") ...[
+                      ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<MatchBloc>(context).add(
+                              addUserToMatchEvent(user!.id, widget.match.id!));
+                        },
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 30)),
+                          backgroundColor:
+                              MaterialStateProperty.all(colorScheme.primary),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          shadowColor:
+                              MaterialStateProperty.all(Colors.black45),
+                          elevation: MaterialStateProperty.all(5),
+                          overlayColor:
+                              MaterialStateProperty.all(Colors.black12),
                         ),
-                        subtitle: Text('Date'), // Leyenda
-                      ),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      leading: widget.match.sport?.image != null
-                          ? Image.network(
-                              widget.match.sport!.image!,
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(Icons.sports_tennis,
-                              color: Theme.of(context).colorScheme.primary),
-                      title: Text(
-                        "Sport: ${widget.match.sport!.name}",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: Text(
-                        "Level: ${widget.match.level!.name}",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      subtitle: Text(''), // Leyenda
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: Text(
-                        "Time: ${widget.match.time}",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: Text(
-                        "Court: ${widget.match.court}",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: Text(
-                        "City: ${widget.match.city}",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      title: Text(
-                        "Created By: ${widget.match.userCreated?.name ?? "Unknown"}",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<MatchBloc>(context).add(
-                            addUserToMatchEvent(user!.id, widget.match.id!));
-                      },
-                      style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                            const EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 30)),
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).colorScheme.primary),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                        child: const Text(
+                          "Match!",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        shadowColor: MaterialStateProperty.all(Colors.black45),
-                        elevation: MaterialStateProperty.all(5),
-                        overlayColor: MaterialStateProperty.all(Colors.black12),
                       ),
-                      child: const Text(
-                        "Match!",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                    ] else if (widget.state == "Rate") ...[
+                      ElevatedButton(
+                        onPressed: () => _showRatingDialog(context),
+                        child: const Text(
+                          "Rate!",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    )
+                    ] else if (widget.state == "Finished") ...[
+                      RatingBar.builder(
+                        initialRating: widget.match.rate ?? 0,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemPadding:
+                            const EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {},
+                        ignoreGestures: true, // Add this line
+                      ),
+                    ],
                   ],
                 ),
               ),

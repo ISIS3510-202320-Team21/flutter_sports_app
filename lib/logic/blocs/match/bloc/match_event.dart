@@ -19,6 +19,17 @@ class MatchClickedEvent extends MatchEvent {
   });
 }
 
+class RateMatchEvent extends MatchEvent {
+  final User user;
+  final Match match;
+  final double rating;
+  RateMatchEvent({
+    required this.user,
+    required this.match,
+    required this.rating,
+  });
+}
+
 class FetchMatchesSportsEvent extends MatchEvent {
   final int sportId;
   final DateTime? date;

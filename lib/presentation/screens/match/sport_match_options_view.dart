@@ -159,7 +159,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
         duration: Duration(seconds: 2),
       ),
     );
-    // Aquí puedes añadir la lógica para navegar a la vista de detalles del match.
-    BlocProvider.of<GlobalBloc>(context).add(NavigateToMatchEvent(match));
+    BlocProvider.of<GlobalBloc>(context).add(NavigateToMatchEvent(match, "Match"));
   }
+  
 }

@@ -85,7 +85,9 @@ final Map<AppScreens, Widget> screenViews = {
             name: "Amateur",
           ),
           userCreated: null,
-          court: "xd"))
+          court: "xd"),
+          state: "",
+          )
 };
 
 class MainLayout extends StatefulWidget {
@@ -152,7 +154,7 @@ class _MainLayoutState extends State<MainLayout> {
           _selectedScreen = AppScreens.MatchDetails;
           print("selected screen match details");
           screenViews[AppScreens.MatchDetails] =
-              IndividualMatch(match: state.match);
+              IndividualMatch(match: state.match, state: state.status);
         }
 
         return Scaffold(
