@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../logic/blocs/global_events/bloc/global_bloc.dart';
@@ -30,7 +31,7 @@ class _ProfileViewState extends State<ProfileView> {
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(4));
         }
         else if (state is ProfileNavigateToAddProfilePictureState){
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(7));
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.CameraScreen.index));
         }
       },
       builder: (context, state) {

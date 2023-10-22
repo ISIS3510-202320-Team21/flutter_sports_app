@@ -60,7 +60,7 @@ final Map<AppScreens, Widget> screenViews = {
     name: "Fútbol",
     image: "https://i.ibb.co/0j3h2ZC/football.png",
   )),
-  AppScreens.CameraScreen: const HomeView(),
+  AppScreens.CameraScreen: const TakePictureScreen(),
   AppScreens.PreferedMatch: PreferedMatch(
     selectedSport: Sport(
       id: 1,
