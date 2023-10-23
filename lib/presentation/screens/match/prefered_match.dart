@@ -62,6 +62,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                 .showSnackBar(const SnackBar(content: Text('Waiting for a match!')));
           });
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Home.index));
+          BlocProvider.of<MatchBloc>(context).add(NewMatchNavigateEvent());
         }
         return Padding(
           padding: const EdgeInsets.all(16.0),

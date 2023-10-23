@@ -48,6 +48,7 @@ dependencies:
   camera:
   path_provider:
   flutter_rating_bar: 
+  restart_app: ^1.2.1
 
 
 dev_dependencies:

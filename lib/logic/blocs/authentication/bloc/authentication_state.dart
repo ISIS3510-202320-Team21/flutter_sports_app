@@ -94,6 +94,11 @@ class GendersLoading extends AuthenticationState {
   List<Object?> get props => [];
 }
 
+class SportsLoading extends AuthenticationState {
+  @override
+  List<Object?> get props => [];
+}
+
 /*
 Representa el estado cuando se ha cargado la lista de géneros
 */
@@ -117,3 +122,4 @@ class FetchError extends AuthenticationState {
   @override
   List<Object?> get props => [error];
 }
+

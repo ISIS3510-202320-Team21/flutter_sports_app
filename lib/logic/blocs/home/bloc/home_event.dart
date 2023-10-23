@@ -27,3 +27,11 @@ class HomeProfileButtonClickedEvent extends HomeEvent{
   
 }
 
+class FetchSportsRecent extends HomeEvent{
+  final User user;
+  FetchSportsRecent(this.user);
+}
+
+class HomeLoadedSuccessEvent extends HomeEvent{
+}
+

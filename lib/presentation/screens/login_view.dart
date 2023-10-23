@@ -18,7 +18,8 @@ class LoginView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0.0, // Esto quitará la sombra
+        automaticallyImplyLeading: false,
+        elevation: 0.0, 
         title: Text(
           "LOGIN",
           style: textTheme.headlineSmall?.copyWith( 
@@ -42,7 +43,7 @@ class LoginView extends StatelessWidget {
 
           return Container(
             constraints: const BoxConstraints
-                .expand(), // Esto hará que el Container se expanda
+                .expand(),
             color: Theme.of(context).colorScheme.background,
             child: Form(
               key: _formKey,

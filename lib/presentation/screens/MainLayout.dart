@@ -128,7 +128,7 @@ class _MainLayoutState extends State<MainLayout> {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
-
+    
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
         if (state is NavigationStateButtons) {

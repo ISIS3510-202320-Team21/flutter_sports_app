@@ -7,7 +7,7 @@ abstract class HomeActionState extends HomeState {}
 
 class HomeInitial extends HomeState {}
 
-class HomeLoadedSuccessState extends HomeActionState {}
+class HomeLoadedSuccessState extends HomeState {}
 
 class HomeLoadingState extends HomeState {}
 
@@ -24,3 +24,23 @@ class HomeNavigateToQuickMatchState extends HomeActionState {}
 class HomeNavigateToNewMatchState extends HomeActionState {}
 
 class HomeNavigateToProfileState extends HomeActionState {}
+
+class RecentSportsLoaded extends HomeActionState {
+  final List<Sport> sports;
+
+  RecentSportsLoaded(this.sports);
+
+  @override
+  List<Object?> get props => [sports];
+}
+
+class SportsLoadingRecent extends HomeState {}
+
+class FetchErrorState extends HomeActionState {
+  final String error;
+
+  FetchErrorState(this.error);
+
+  @override
+  List<Object?> get props => [error];
+}

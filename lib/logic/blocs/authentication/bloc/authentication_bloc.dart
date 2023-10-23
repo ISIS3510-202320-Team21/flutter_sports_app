@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/data/repositories/auth_repository.dart';
 import 'package:meta/meta.dart';
@@ -95,5 +96,7 @@ class AuthenticationBloc
         emit(FetchError(e.toString().replaceAll("Exception: ", "")));
       }
     });
+
+
   }
 }
