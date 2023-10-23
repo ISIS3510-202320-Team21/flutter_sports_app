@@ -183,21 +183,20 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            Wrap(
+                              spacing:
+                                  16, // Espacio horizontal entre cada botón
+                              runSpacing:
+                                  16, // Espacio vertical entre las líneas
+                              alignment: WrapAlignment.center,
                               children: sports.map((sport) {
-                                return Column(
-                                  children: [
-                                    _buildActionButton2(
-                                      title: sport.name,
-                                      imageAsset: sport.image!,
-                                      onPressed: () => goToNewMatch(sport),
-                                    ),
-                                    const SizedBox(width: 16),
-                                  ],
+                                return _buildActionButton2(
+                                  title: sport.name,
+                                  imageAsset: sport.image!,
+                                  onPressed: () => goToNewMatch(sport),
                                 );
                               }).toList(),
-                            ),
+                            )
                           ],
                         ),
                       ),
