@@ -19,7 +19,7 @@ class AppRouter {
         );
       case '/home':
         return MaterialPageRoute(
-          builder: (_) => const MainLayout(),
+          builder: (_) =>  MainLayout(),
         );
       case '/notifications':
         return MaterialPageRoute(
@@ -29,7 +29,6 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const EditProfileView(),
         );
-
       default:
         return null;
     }

@@ -70,24 +70,24 @@ final Map<AppScreens, Widget> screenViews = {
     selectedDate: DateTime.now(),
   ),
   AppScreens.MatchDetails: IndividualMatch(
-      match: Match(
-          date: DateTime.now(),
-          time: "11:00 - 13:00",
-          status: "Pending",
-          city: "Bogotá",
-          sport: Sport(
-            id: 1,
-            name: "Fútbol",
-            image: null,
-          ),
-          level: Level(
-            id: 1,
-            name: "Amateur",
-          ),
-          userCreated: null,
-          court: "xd"),
-          state: "",
-          )
+    match: Match(
+        date: DateTime.now(),
+        time: "11:00 - 13:00",
+        status: "Pending",
+        city: "Bogotá",
+        sport: Sport(
+          id: 1,
+          name: "Fútbol",
+          image: null,
+        ),
+        level: Level(
+          id: 1,
+          name: "Amateur",
+        ),
+        userCreated: null,
+        court: "xd"),
+    state: "",
+  )
 };
 
 class MainLayout extends StatefulWidget {
@@ -99,6 +99,21 @@ class MainLayout extends StatefulWidget {
 
 class _MainLayoutState extends State<MainLayout> {
   AppScreens _selectedScreen = AppScreens.Home;
+  final List<AppScreens> _navigationHistory = [];
+  final int maxHistoryLength = 2;
+  Future<bool> _onWillPop() async {
+    if (_navigationHistory.isNotEmpty) {
+      setState(() {
+        _selectedScreen =
+            _navigationHistory.removeLast(); // Vuelve a la pantalla anterior
+      });
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToIndexEvent(_selectedScreen.index));
+      return false; // No salir de la app, se ha manejado la acción
+    }
+    // Si no hay historial de navegación, permite salir de la app
+    return true;
+  }
 
   Widget iconButtonWithRoundedSquare(
       BuildContext context, IconData icon, VoidCallback onPressed) {
@@ -128,75 +143,95 @@ class _MainLayoutState extends State<MainLayout> {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
-    
-    return BlocBuilder<GlobalBloc, GlobalState>(
-      builder: (context, state) {
-        if (state is NavigationStateButtons) {
-          print(state.selectedIndex);
-          _selectedScreen = AppScreens.values[state.selectedIndex];
-        }
 
-        if (state is NavigationSportState) {
-          _selectedScreen = AppScreens.SportMatchOptions;
-          print("selected screen sports");
-          screenViews[AppScreens.SportMatchOptions] =
-              SportMatchOptionsView(sport: state.sport);
-        }
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: BlocBuilder<GlobalBloc, GlobalState>(
+        builder: (context, state) {
+          if (_navigationHistory.length >= maxHistoryLength) {
+            _navigationHistory.removeAt(
+                0);
+          }
 
-        if (state is NavigationPrefferedMatchState) {
-          _selectedScreen = AppScreens.PreferedMatch;
-          print("selected screen preffered match");
-          screenViews[AppScreens.PreferedMatch] = PreferedMatch(
-              selectedSport: state.sport, selectedDate: state.selectedDate);
-        }
+          if (state is NavigationStateButtons) {
+            if (_selectedScreen != AppScreens.values[state.selectedIndex]) {
+              _navigationHistory.add(_selectedScreen);
+            }
+            _selectedScreen = AppScreens.values[state.selectedIndex];
+          }
 
-        if (state is NavigationMatchState) {
-          _selectedScreen = AppScreens.MatchDetails;
-          print("selected screen match details");
-          screenViews[AppScreens.MatchDetails] =
-              IndividualMatch(match: state.match, state: state.status);
-        }
+          if (state is NavigationSportState) {
+            if (_selectedScreen != AppScreens.SportMatchOptions) {
+              _navigationHistory.add(_selectedScreen);
+            }
+            _selectedScreen = AppScreens.SportMatchOptions;
+            print("selected screen sports");
+            screenViews[AppScreens.SportMatchOptions] =
+                SportMatchOptionsView(sport: state.sport);
+          }
 
-        return Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: colorScheme.onPrimary,
-            elevation: 0.0,
-            title: Text(
-              screenTitles[_selectedScreen]!,
-              style: textTheme.headlineSmall?.copyWith(
-                color: colorScheme.onBackground,
-                fontWeight: FontWeight.bold,
+          if (state is NavigationPrefferedMatchState) {
+            if (_selectedScreen != AppScreens.PreferedMatch) {
+              _navigationHistory.add(_selectedScreen);
+            }
+            _selectedScreen = AppScreens.PreferedMatch;
+            print("selected screen preffered match");
+            screenViews[AppScreens.PreferedMatch] = PreferedMatch(
+                selectedSport: state.sport, selectedDate: state.selectedDate);
+          }
+
+          if (state is NavigationMatchState) {
+            if (_selectedScreen != AppScreens.MatchDetails) {
+              _navigationHistory.add(_selectedScreen);
+            }
+            _selectedScreen = AppScreens.MatchDetails;
+            print("selected screen match details");
+            screenViews[AppScreens.MatchDetails] =
+                IndividualMatch(match: state.match, state: state.status);
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: colorScheme.onPrimary,
+              elevation: 0.0,
+              title: Text(
+                screenTitles[_selectedScreen]!,
+                style: textTheme.headlineSmall?.copyWith(
+                  color: colorScheme.onBackground,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              actions: [
+                iconButtonWithRoundedSquare(context, Icons.message, () {
+                  // Acción para el ícono de mensajes
+                }),
+                if (_selectedScreen != AppScreens.Notifications)
+                  iconButtonWithRoundedSquare(context, Icons.notifications, () {
+                    BlocProvider.of<GlobalBloc>(context).add(
+                        NavigateToIndexEvent(AppScreens.Notifications.index));
+                  }),
+              ],
+              bottom: PreferredSize(
+                preferredSize:
+                    Size.fromHeight(0.01 * ScreenUtil().screenHeight),
+                child: const SizedBox(),
               ),
             ),
-            actions: [
-              iconButtonWithRoundedSquare(context, Icons.message, () {
-                // Acción para el ícono de mensajes
-              }),
-              if (_selectedScreen != AppScreens.Notifications)
-                iconButtonWithRoundedSquare(context, Icons.notifications, () {
-                  BlocProvider.of<GlobalBloc>(context).add(
-                      NavigateToIndexEvent(AppScreens.Notifications.index));
-                }),
-            ],
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(0.01 * ScreenUtil().screenHeight),
-              child: const SizedBox(),
+            body: IndexedStack(
+              index: _selectedScreen.index,
+              children: screenViews.values.toList(),
             ),
-          ),
-          body: IndexedStack(
-            index: _selectedScreen.index,
-            children: screenViews.values.toList(),
-          ),
-          bottomNavigationBar: CustomBottomNavigationBar(
-            selectedIndex: _selectedScreen.index,
-            onItemTapped: (index) {
-              BlocProvider.of<GlobalBloc>(context)
-                  .add(NavigateToIndexEvent(index));
-            },
-          ),
-        );
-      },
+            bottomNavigationBar: CustomBottomNavigationBar(
+              selectedIndex: _selectedScreen.index,
+              onItemTapped: (index) {
+                BlocProvider.of<GlobalBloc>(context)
+                    .add(NavigateToIndexEvent(index));
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
