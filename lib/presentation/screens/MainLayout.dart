@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app_sports/data/models/level.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
@@ -102,15 +103,24 @@ class _MainLayoutState extends State<MainLayout> {
   final List<AppScreens> _navigationHistory = [];
   final int maxHistoryLength = 2;
   Future<bool> _onWillPop() async {
-    if (_navigationHistory.isNotEmpty) {
+    if (_selectedScreen == AppScreens.Home) {
+      SystemNavigator.pop();
+      return false;
+    } else if (_navigationHistory.isNotEmpty &&
+        _selectedScreen != AppScreens.Home) {
       setState(() {
         _selectedScreen =
-            _navigationHistory.removeLast(); // Vuelve a la pantalla anterior
+            _navigationHistory.removeLast(); 
       });
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(_selectedScreen.index));
-      return false; // No salir de la app, se ha manejado la acción
+      return false; 
+    } else if (_navigationHistory.isEmpty) {
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToIndexEvent(AppScreens.Home.index));
+      return false;
     }
+
     // Si no hay historial de navegación, permite salir de la app
     return true;
   }
@@ -149,8 +159,7 @@ class _MainLayoutState extends State<MainLayout> {
       child: BlocBuilder<GlobalBloc, GlobalState>(
         builder: (context, state) {
           if (_navigationHistory.length >= maxHistoryLength) {
-            _navigationHistory.removeAt(
-                0);
+            _navigationHistory.removeAt(0);
           }
 
           if (state is NavigationStateButtons) {
