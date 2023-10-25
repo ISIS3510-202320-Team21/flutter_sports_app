@@ -109,12 +109,11 @@ class _MainLayoutState extends State<MainLayout> {
     } else if (_navigationHistory.isNotEmpty &&
         _selectedScreen != AppScreens.Home) {
       setState(() {
-        _selectedScreen =
-            _navigationHistory.removeLast(); 
+        _selectedScreen = _navigationHistory.removeLast();
       });
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(_selectedScreen.index));
-      return false; 
+      return false;
     } else if (_navigationHistory.isEmpty) {
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(AppScreens.Home.index));
