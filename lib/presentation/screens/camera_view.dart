@@ -74,16 +74,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
               //center body
               body: Center(
                 child: CameraPreview(cameraBloc.getController())
-                // ListView.builder(
-                //   //add padding between the items
-                //   itemCount: 1,
-                //   itemBuilder: (context, index) {
-                //     return SizedBox(
-                //       height: 0.8 * ScreenUtil().screenHeight,
-                //       child: CameraPreview(cameraBloc.getController()),
-                //     );
-                //   },
-                // ),
               ),
               // body: CameraPreview(cameraBloc.getController()),
               floatingActionButton: FloatingActionButton(
@@ -167,9 +157,11 @@ class DisplayPictureScreen extends StatelessWidget {
           FloatingActionButton(
             heroTag: "savebtn",
             onPressed: () {
+              //TODO take user id from authentication bloc
               BlocProvider.of<CameraBloc>(context).add(SavePhotoEvent(imagePath: imagePath, userId: 1));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Photo Saved!'),
+                const SnackBar(
+                    content: Text('Photo Saved!'),
                     backgroundColor: Colors.green),
               );
               Navigator.pop(context);
