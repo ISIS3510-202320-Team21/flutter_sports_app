@@ -52,6 +52,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     } catch (e) {
       print(e);
       emit(EditProfileErrorState());
+      emit(SubmissionErrorState(message: e.toString()));
     }
   }
 

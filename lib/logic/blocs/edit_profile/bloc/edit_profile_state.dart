@@ -18,6 +18,13 @@ class EditProfileLoadedSuccessState extends EditProfileState {
 
 class EditProfileErrorState extends EditProfileState {}
 
+class SubmissionErrorState extends EditProfileActionState {
+  final String message;
+  SubmissionErrorState({
+    required this.message
+  });
+}
+
 class SubmittedUserActionState extends EditProfileActionState {}
 
 class ProfileNavigateActionState extends EditProfileActionState {}
