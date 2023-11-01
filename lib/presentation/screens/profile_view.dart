@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
 import 'package:flutter_app_sports/main.dart';
@@ -22,6 +24,7 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+
     return BlocConsumer<ProfileBloc, ProfileState>(
       bloc: _profileBloc,
       listenWhen: (previous, current) => current is ProfileActionState,
@@ -36,89 +39,187 @@ class _ProfileViewState extends State<ProfileView> {
         }
       },
       builder: (context, state) {
-        return Scaffold(
-          body: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // Acción cuando se presiona el botón de perfil
-                          _profileBloc.add(
-                              ProfileAddProfilePictureButtonClickedEvent());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(16.0),
-                          backgroundColor: colorScheme.background,
-                          shadowColor: Colors.transparent,
+        if (state is ProfileLoadedSuccessState) {
+          // Si el estado es ProfileLoadedSuccessState, muestra la imagen de perfil
+          final profileImagePath = state.profileImagePath;
+
+          return Scaffold(
+            body: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            // Acción cuando se presiona el botón de perfil
+                            _profileBloc.add(
+                              ProfileAddProfilePictureButtonClickedEvent(),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(16.0),
+                            backgroundColor: colorScheme.background,
+                            shadowColor: Colors.transparent,
+                          ),
+                          child: profileImagePath != null
+                              ? Image.file(
+                                  File(profileImagePath),
+                                  width: 80.0,
+                                  height: 80.0,
+                                )
+                              : const Icon(
+                                  Icons.account_circle,
+                                  size: 80.0,
+                                  color: Colors.black87,
+                                ),
                         ),
-                        child: const Icon(
-                          Icons.account_circle,
-                          size: 80.0,
-                          color: Colors.black87,
+                        const SizedBox(
+                            height:
+                                20), // Espacio reducido entre el botón de perfil y el texto
+                        Text(
+                          'Nombre del usuario',
+                          style: textTheme.titleLarge!.copyWith(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Lato',
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                          height:
-                              20), // Espacio reducido entre el botón de perfil y el texto
-                      Text(
-                        'Nombre del usuario',
-                        style: textTheme.titleLarge!.copyWith(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Lato',
-                          color: Colors.black,
+                        const SizedBox(
+                            height:
+                                40.0), // Espacio entre el nombre y los botones
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _iconButtonWithText(
+                                Icons.edit,
+                                'Edit my profile',
+                                () {
+                                  goToEditProfile();
+                                },
+                              ),
+                              const SizedBox(
+                                  height: 16.0), // Espacio entre los botones
+                              _iconButtonWithText(
+                                Icons.settings,
+                                'Settings',
+                                () {
+                                  // Acción cuando se presiona el botón
+                                },
+                              ),
+                              const SizedBox(
+                                  height: 16.0), // Espacio entre los botones
+                              _iconButtonWithText(
+                                Icons.logout,
+                                'Log out',
+                                () {
+                                  Restart.restartApp(webOrigin: '/');
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                          height:
-                              40.0), // Espacio entre el nombre y los botones
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _iconButtonWithText(
-                              Icons.edit,
-                              'Edit my profile',
-                              () {
-                                goToEditProfile();
-                              },
-                            ),
-                            const SizedBox(
-                                height: 16.0), // Espacio entre los botones
-                            _iconButtonWithText(
-                              Icons.settings,
-                              'Settings',
-                              () {
-                                // Acción cuando se presiona el botón
-                              },
-                            ),
-                            const SizedBox(
-                                height: 16.0), // Espacio entre los botones
-                            _iconButtonWithText(
-                              Icons.logout,
-                              'Log out',
-                              () {
-                                 Restart.restartApp(webOrigin: '/');
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
+              ],
+            ),
+          );
+        } else {
+          // Si no estás en ProfileLoadedSuccessState, muestra el icono de perfil por defecto.
+          return Scaffold(
+            body: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            // Acción cuando se presiona el botón de perfil
+                            _profileBloc.add(
+                              ProfileAddProfilePictureButtonClickedEvent(),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(16.0),
+                            backgroundColor: colorScheme.background,
+                            shadowColor: Colors.transparent,
+                          ),
+                          child: const Icon(
+                            Icons.account_circle,
+                            size: 80.0,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        const SizedBox(
+                            height:
+                                20), // Espacio reducido entre el botón de perfil y el texto
+                        Text(
+                          'Nombre del usuario',
+                          style: textTheme.titleLarge!.copyWith(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Lato',
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(
+                            height:
+                                40.0), // Espacio entre el nombre y los botones
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _iconButtonWithText(
+                                Icons.edit,
+                                'Edit my profile',
+                                () {
+                                  goToEditProfile();
+                                },
+                              ),
+                              const SizedBox(
+                                  height: 16.0), // Espacio entre los botones
+                              _iconButtonWithText(
+                                Icons.settings,
+                                'Settings',
+                                () {
+                                  // Acción cuando se presiona el botón
+                                },
+                              ),
+                              const SizedBox(
+                                  height: 16.0), // Espacio entre los botones
+                              _iconButtonWithText(
+                                Icons.logout,
+                                'Log out',
+                                () {
+                                  Restart.restartApp(webOrigin: '/');
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
       },
     );
   }

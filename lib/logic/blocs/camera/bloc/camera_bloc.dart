@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
+import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:convert';
 
@@ -12,7 +13,7 @@ part 'camera_event.dart';
 part 'camera_state.dart';
 
 class CameraBloc extends Bloc<CameraEvent, CameraState> {
-
+  final ProfileBloc _profileBloc = ProfileBloc();
   CameraBloc() : super(CameraInitial()) {
     on<CameraInitialEvent>(notificationInitialEvent);
     on<CameraClickedEvent>(notificationClickedEvent);
@@ -49,8 +50,12 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     emit(CameraLoadingState());
     print('You saved the photo!');
     String imagePath = event.imagePath;
+
     File fileData = File(imagePath);
     List<int> imageBytes = await fileData.readAsBytes();
+
+    _profileBloc.add(ProfileUpdateImageEvent(imagePath: imagePath));
+    
     String base64Image = base64Encode(imageBytes);
     User? user = await UserRepository().changeImage(image: base64Image, userid: event.userId);
     emit(SavedPhotoActionState());
