@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_sports/data/services/config_service.dart';
@@ -61,7 +62,6 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
-    // TODO: Implementa la lógica para cerrar sesión si es necesario.
   }
 
   Future<List<String>> fetchRoles() async {
@@ -109,6 +109,23 @@ class AuthRepository {
       return gendersList.cast<String>();
     } else {
       throw Exception('Failed to fetch genders: ${response.statusCode}');
+    }
+  }
+
+  Future<List<Sport>> fetchSportsRecent(User user) async {
+    int userId = user.id!;
+    final response = await http.get(
+      Uri.parse('$backendUrl/user/$userId/most_reserved_sports_this_week'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> sportsList = jsonDecode(response.body);
+      return sportsList.map((e) => Sport.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to fetch sports: ${response.statusCode}');
     }
   }
 }

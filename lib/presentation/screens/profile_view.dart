@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
+import 'package:flutter_app_sports/main.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
+import 'package:flutter_app_sports/presentation/screens/login_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:restart_app/restart_app.dart';
 import '../../logic/blocs/global_events/bloc/global_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_event.dart';
 
@@ -25,12 +28,11 @@ class _ProfileViewState extends State<ProfileView> {
       buildWhen: (previous, current) => current is! ProfileActionState,
       listener: (context, state) {
         if (state is ProfileNavigateToEditState) {
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => const EditProfileView()));
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(4));
-        }
-        else if (state is ProfileNavigateToAddProfilePictureState){
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(7));
+          BlocProvider.of<GlobalBloc>(context)
+              .add(NavigateToIndexEvent(AppScreens.EditProfile.index));
+        } else if (state is ProfileNavigateToAddProfilePictureState) {
+          BlocProvider.of<GlobalBloc>(context)
+              .add(NavigateToIndexEvent(AppScreens.CameraScreen.index));
         }
       },
       builder: (context, state) {
@@ -47,7 +49,8 @@ class _ProfileViewState extends State<ProfileView> {
                       ElevatedButton(
                         onPressed: () {
                           // Acción cuando se presiona el botón de perfil
-                          _profileBloc.add(ProfileAddProfilePictureButtonClickedEvent());
+                          _profileBloc.add(
+                              ProfileAddProfilePictureButtonClickedEvent());
                         },
                         style: ElevatedButton.styleFrom(
                           shape: const CircleBorder(),
@@ -61,7 +64,9 @@ class _ProfileViewState extends State<ProfileView> {
                           color: Colors.black87,
                         ),
                       ),
-                      const SizedBox(height: 20), // Espacio reducido entre el botón de perfil y el texto
+                      const SizedBox(
+                          height:
+                              20), // Espacio reducido entre el botón de perfil y el texto
                       Text(
                         'Nombre del usuario',
                         style: textTheme.titleLarge!.copyWith(
@@ -71,7 +76,9 @@ class _ProfileViewState extends State<ProfileView> {
                           color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 40.0), // Espacio entre el nombre y los botones
+                      const SizedBox(
+                          height:
+                              40.0), // Espacio entre el nombre y los botones
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Column(
@@ -84,7 +91,8 @@ class _ProfileViewState extends State<ProfileView> {
                                 goToEditProfile();
                               },
                             ),
-                            SizedBox(height: 16.0), // Espacio entre los botones
+                            const SizedBox(
+                                height: 16.0), // Espacio entre los botones
                             _iconButtonWithText(
                               Icons.settings,
                               'Settings',
@@ -92,12 +100,13 @@ class _ProfileViewState extends State<ProfileView> {
                                 // Acción cuando se presiona el botón
                               },
                             ),
-                            SizedBox(height: 16.0), // Espacio entre los botones
+                            const SizedBox(
+                                height: 16.0), // Espacio entre los botones
                             _iconButtonWithText(
                               Icons.logout,
                               'Log out',
                               () {
-                                // Acción cuando se presiona el botón
+                                 Restart.restartApp(webOrigin: '/');
                               },
                             ),
                           ],
@@ -128,10 +137,10 @@ class _ProfileViewState extends State<ProfileView> {
             size: 36.0,
             color: Colors.black,
           ),
-          SizedBox(width: 16.0), // Espacio entre el icono y el texto
+          const SizedBox(width: 16.0), // Espacio entre el icono y el texto
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18.0,
               fontFamily: 'Lato',
               color: Colors.black,

@@ -83,7 +83,7 @@ class UserRepository {
     );
 
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
+      return User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     } else {
       throw Exception('Failed to get info of user: ${response.statusCode}');
     }

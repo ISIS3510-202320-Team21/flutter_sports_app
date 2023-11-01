@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../logic/blocs/authentication/bloc/authentication_bloc.dart';
@@ -42,6 +43,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    
     return BlocConsumer<EditProfileBloc, EditProfileState>(
       bloc: editProfileBloc,
       listenWhen: (previous, current) => current is EditProfileActionState,
@@ -53,9 +55,8 @@ class _EditProfileViewState extends State<EditProfileView> {
           );
         }
         else if (state is SubmittedUserActionState){
-          BlocProvider.of<GlobalBloc>(context)
-              .add(NavigateToIndexEvent(0));
-          //snackbar green
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Profile.index));
+          editProfileBloc.add(EditProfileInitialEvent(userId: userid)); 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("User updated"),
               backgroundColor: Colors.green),
@@ -66,9 +67,12 @@ class _EditProfileViewState extends State<EditProfileView> {
           _roleController.clear();
           _universityController.clear();
           _genderController.clear();
+          _bornDate = null;
+
         }
       },
       builder: (context, state) {
+       
         roles = editProfileBloc.roles;
         universities = editProfileBloc.universities;
         genders = editProfileBloc.genders;
