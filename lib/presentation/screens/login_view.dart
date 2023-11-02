@@ -39,8 +39,12 @@ class LoginView extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          if (state is AuthLoading) return const CircularProgressIndicator();
-
+          if (state is AuthLoading) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ));
+          }
           return Container(
             constraints: const BoxConstraints
                 .expand(),
