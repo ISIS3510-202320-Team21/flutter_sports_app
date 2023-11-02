@@ -171,7 +171,6 @@ class _ProfileViewState extends State<ProfileView> {
                             color: Colors.black87,
                           ),
                         ),
-                      ),
                       const SizedBox(
                           height:
                               20), // Espacio reducido entre el botón de perfil y el texto
@@ -183,42 +182,43 @@ class _ProfileViewState extends State<ProfileView> {
                           fontFamily: 'Lato',
                           color: colorScheme.primary,
                         ),
-                        const SizedBox(
-                            height:
-                                40.0), // Espacio entre el nombre y los botones
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _iconButtonWithText(
-                                Icons.edit,
-                                'Edit my profile',
-                                () {
-                                  goToEditProfile();
-                                },
-                              ),
-                              const SizedBox(
-                                  height: 16.0), // Espacio entre los botones
-                              _iconButtonWithText(
-                                Icons.settings,
-                                'Settings',
-                                () {
-                                  // Acción cuando se presiona el botón
-                                },
-                              ),
-                              const SizedBox(
-                                  height: 16.0), // Espacio entre los botones
-                              _iconButtonWithText(
-                                Icons.logout,
-                                'Log out',
-                                () {
-                                  Restart.restartApp(webOrigin: '/');
-                                },
-                              ),
-                            ],
-                          ),
+                      ),
+                      const SizedBox(
+                          height:
+                              40.0), // Espacio entre el nombre y los botones
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _iconButtonWithText(
+                              Icons.edit,
+                              'Edit my profile',
+                              () {
+                                goToEditProfile();
+                              },
+                            ),
+                            const SizedBox(
+                                height: 16.0), // Espacio entre los botones
+                            _iconButtonWithText(
+                              Icons.settings,
+                              'Settings',
+                              () {
+                                // Acción cuando se presiona el botón
+                              },
+                            ),
+                            const SizedBox(
+                                height: 16.0), // Espacio entre los botones
+                            _iconButtonWithText(
+                              Icons.logout,
+                              'Log out',
+                              () {
+                                Restart.restartApp(webOrigin: '/');
+                              },
+                            ),
+                          ],
                         ),
+                      ),
                       ],
                     ),
                   ),
