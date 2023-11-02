@@ -18,3 +18,9 @@ class ProfileLogoutButtonClickedEvent extends ProfileEvent {
 class ProfileAddProfilePictureButtonClickedEvent extends ProfileEvent {
 
 }
+
+class ProfileUpdateImageEvent extends ProfileEvent {
+  final String imagePath;
+
+  ProfileUpdateImageEvent({required this.imagePath});
+}
