@@ -7,6 +7,7 @@ import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_app_sports/presentation/screens/login_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restart_app/restart_app.dart';
+import '../../logic/blocs/authentication/bloc/authentication_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_event.dart';
 
@@ -19,6 +20,12 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   final ProfileBloc _profileBloc = ProfileBloc();
+
+  String? userName;
+  void initState() {
+    super.initState();
+    userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,17 +171,17 @@ class _ProfileViewState extends State<ProfileView> {
                             color: Colors.black87,
                           ),
                         ),
-                        const SizedBox(
-                            height:
-                                20), // Espacio reducido entre el botón de perfil y el texto
-                        Text(
-                          'Nombre del usuario',
-                          style: textTheme.titleLarge!.copyWith(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Lato',
-                            color: Colors.black,
-                          ),
+                      ),
+                      const SizedBox(
+                          height:
+                              20), // Espacio reducido entre el botón de perfil y el texto
+                      Text(
+                        userName != null ? '$userName' : 'User',
+                        style: textTheme.titleLarge!.copyWith(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Lato',
+                          color: colorScheme.primary,
                         ),
                         const SizedBox(
                             height:

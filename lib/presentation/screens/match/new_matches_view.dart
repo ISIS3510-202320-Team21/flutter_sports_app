@@ -102,7 +102,11 @@ class _NewMatchesViewState extends State<NewMatchesView> {
                           splashColor: Colors.blueAccent
                               .withOpacity(0.5), // Color de la salpicadura
                           child: Card(
-                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            elevation: 0,
+                            color: const Color(0xFFEAEAEA),
                             child: Stack(
                               children: [
                                 Positioned(
