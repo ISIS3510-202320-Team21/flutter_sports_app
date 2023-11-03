@@ -10,32 +10,31 @@ import 'package:meta/meta.dart';
 part 'connectivity_event.dart';
 part 'connectivity_state.dart';
 
+
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   final Connectivity _connectivity;
-  StreamSubscription? _connectivitySubscription;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   ConnectivityBloc({required Connectivity connectivity})
       : _connectivity = connectivity,
         super(ConnectivityInitial()) {
     on<ConnectivityChanged>(_onConnectivityChanged);
     
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
-      (ConnectivityResult result) {
-        add(ConnectivityChanged(result == ConnectivityResult.none
-            ? ConnectivityStatus.offline
-            : ConnectivityStatus.online));
-      },
-    );
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      add(ConnectivityChanged(result == ConnectivityResult.none
+          ? ConnectivityStatus.offline
+          : ConnectivityStatus.online));
+    });
   }
 
   void _onConnectivityChanged(
-      ConnectivityChanged event,
-      Emitter<ConnectivityState> emit,
-    ) {
-      emit(event.status == ConnectivityStatus.online
-          ? ConnectivityOnline()
-          : ConnectivityOffline());
-    }
+    ConnectivityChanged event,
+    Emitter<ConnectivityState> emit,
+  ) {
+    emit(event.status == ConnectivityStatus.online
+        ? ConnectivityOnline()
+        : ConnectivityOffline());
+  }
 
   @override
   Future<void> close() {
