@@ -116,15 +116,16 @@ class _MainLayoutState extends State<MainLayout> {
       setState(() {
         _selectedScreen = _navigationHistory.removeLast();
       });
-      if (_selectedScreen == AppScreens.SportMatchOptions) {
+      else if (_selectedScreen == AppScreens.SportMatchOptions) {
         BlocProvider.of<GlobalBloc>(context).add(
             NavigateToSportEvent(selectedSport!));
         return false;
       }
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(_selectedScreen.index));
+
       return false;
-    } 
+    }  
     return true;
   }
 

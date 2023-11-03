@@ -226,6 +226,7 @@ class _HomeViewState extends State<HomeView> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
+        elevation: 0,
       ),
       child: SizedBox(
         width: 300,
@@ -256,7 +257,7 @@ class _HomeViewState extends State<HomeView> {
       required String imageAsset,
       required VoidCallback onPressed}) {
     return SizedBox(
-      width: 170, // Establece el ancho máximo deseado
+      width: 159, // Establece el ancho máximo deseado
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -264,6 +265,7 @@ class _HomeViewState extends State<HomeView> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
+          elevation: 0,
         ),
         child: Row(
           children: [

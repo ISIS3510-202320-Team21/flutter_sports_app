@@ -50,6 +50,7 @@ dependencies:
   flutter_rating_bar: 
   restart_app: ^1.2.1
   connectivity_plus: ^2.1.0
+  flutter_launcher_icons: "^0.9.2" # usa la versión más reciente
 
 
 dev_dependencies:
@@ -62,6 +63,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,6 +72,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
+  image_path: assets/icono 1.png
 
 flutter:
   assets:
@@ -86,6 +89,7 @@ flutter:
     - assets/reserva_1.png
     - assets/arrow_1.png
     - assets/profile_image.png
+    - assets/icono 1.png
     
   fonts:
     - family: Lato

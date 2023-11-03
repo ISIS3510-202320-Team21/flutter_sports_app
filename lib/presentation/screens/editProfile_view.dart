@@ -49,9 +49,9 @@ class _EditProfileViewState extends State<EditProfileView> {
       listenWhen: (previous, current) => current is EditProfileActionState,
       buildWhen: (previous, current) => current is !EditProfileActionState,
       listener: (context, state) {
-        if (state is EditProfileErrorState) {
+        if (state is SubmissionErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Error")),
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
         else if (state is SubmittedUserActionState){
@@ -68,11 +68,9 @@ class _EditProfileViewState extends State<EditProfileView> {
           _universityController.clear();
           _genderController.clear();
           _bornDate = null;
-
         }
       },
       builder: (context, state) {
-       
         roles = editProfileBloc.roles;
         universities = editProfileBloc.universities;
         genders = editProfileBloc.genders;
@@ -85,7 +83,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 body: Center(
                   child: CircularProgressIndicator(),
                 ));
-          case EditProfileLoadedSuccessState || EditProfileErrorState:
+          default:
             return Container(
               constraints: const BoxConstraints.expand(),
               color: Theme.of(context).colorScheme.background,
@@ -190,8 +188,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ),
               ),
             );
-          default:
-            return const SizedBox();
+          // default:
+          //   return const SizedBox();
         }
       }
     );

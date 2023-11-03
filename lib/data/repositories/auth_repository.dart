@@ -62,7 +62,6 @@ class AuthRepository {
   }
 
   Future<void> signOut() async {
-    // TODO: Implementa la lógica para cerrar sesión si es necesario.
   }
 
   Future<List<String>> fetchRoles() async {
