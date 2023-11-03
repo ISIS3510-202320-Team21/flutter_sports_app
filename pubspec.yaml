@@ -49,6 +49,7 @@ dependencies:
   path_provider:
   flutter_rating_bar: 
   restart_app: ^1.2.1
+  connectivity_plus: ^2.1.0
 
 
 dev_dependencies:
