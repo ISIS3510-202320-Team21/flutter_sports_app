@@ -1,6 +1,6 @@
 part of 'connectivity_bloc.dart';
 
-sealed class ConnectivityEvent extends Equatable {
+abstract class ConnectivityEvent extends Equatable {
   const ConnectivityEvent();
 
   @override
@@ -15,5 +15,3 @@ class ConnectivityChanged extends ConnectivityEvent {
   @override
   List<Object> get props => [status];
 }
-
-
