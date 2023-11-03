@@ -33,31 +33,44 @@ class RateMatchEvent extends MatchEvent {
 class FetchMatchesSportsEvent extends MatchEvent {
   final int sportId;
   final DateTime? date;
-  FetchMatchesSportsEvent(this.sportId,this.date); 
+  FetchMatchesSportsEvent(this.sportId, this.date);
 }
 
 class FetchMatchesUserEvent extends MatchEvent {
   final int userId;
-  FetchMatchesUserEvent(this.userId); 
+  FetchMatchesUserEvent(this.userId);
 }
 
 class MatchesLoadedForUserEvent extends MatchEvent {
   final List<Match> matches;
-  MatchesLoadedForUserEvent(this.matches); 
+  MatchesLoadedForUserEvent(this.matches);
 }
 
 class FetchLevelsEvent extends MatchEvent {
-  FetchLevelsEvent(); 
+  FetchLevelsEvent();
 }
 
 class CreateMatchEvent extends MatchEvent {
   final Match match;
   final int userId;
-  CreateMatchEvent(this.match,this.userId); 
+  CreateMatchEvent(this.match, this.userId);
 }
 
 class addUserToMatchEvent extends MatchEvent {
   final int userId;
   final int matchId;
-  addUserToMatchEvent(this.userId,this.matchId); 
+  addUserToMatchEvent(this.userId, this.matchId);
+}
+
+class UpdatedMatchEvent extends MatchEvent {
+  UpdatedMatchEvent();
+}
+
+class DeleteMatchEvent extends MatchEvent {
+  final int matchId;
+
+  DeleteMatchEvent(this.matchId);
+
+  @override
+  List<Object> get props => [matchId];
 }
