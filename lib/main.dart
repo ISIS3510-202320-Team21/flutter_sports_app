@@ -66,7 +66,6 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         builder: (context, child) {
-          // Usamos Builder para tener un context que tenga un Scaffold.
           return Builder(
             builder: (context) {
               return BlocListener<ConnectivityBloc, ConnectivityState>(
@@ -90,7 +89,7 @@ class _MyAppState extends State<MyApp> {
                   }
                 },
                 child:
-                    child, // Este es el child que MaterialApp normalmente construiría.
+                    child, 
               );
             },
           );
