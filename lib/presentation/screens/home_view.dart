@@ -3,6 +3,7 @@ import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/connectivity/bloc/connectivity_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
@@ -29,6 +30,7 @@ class _HomeViewState extends State<HomeView> {
   final HomeBloc homeBloc = HomeBloc();
   final GlobalBloc globalBloc = GlobalBloc();
   final MatchBloc matchBloc = MatchBloc();
+  List<Sport> sports = [];
   late User user;
   final _notification.NotificationBloc notificationBloc =
       _notification.NotificationBloc();
@@ -51,10 +53,10 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
-    List<Sport> sports = [];
+
 
     return MultiBlocProvider(
-      providers: [
+      providers: [ 
         BlocProvider<HomeBloc>(create: (context) => homeBloc),
       ],
       child: BlocConsumer<HomeBloc, HomeState>(
@@ -81,7 +83,6 @@ class _HomeViewState extends State<HomeView> {
                 MaterialPageRoute(builder: (context) => const ProfileView()));
           } else if (state is RecentSportsLoaded) {
             sports = state.sports;
-            print(sports);
             homeBloc.add(HomeLoadedSuccessEvent());
           } else if (state is FetchErrorState) {
             print(state.error);
@@ -94,6 +95,8 @@ class _HomeViewState extends State<HomeView> {
               child: CircularProgressIndicator(),
             ));
           }
+          print("La cantidad de deportes es:");
+          print(sports.length);
 
           return Scaffold(
             body: Center(

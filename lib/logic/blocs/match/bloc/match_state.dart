@@ -9,7 +9,9 @@ abstract class MatchActionState extends MatchState {}
 
 class MatchInitial extends MatchState {}
 
-class MatchLoadingState extends MatchState {}
+class MatchLoadingState extends MatchState {
+  MatchLoadingState();
+}
 
 class MatchLoadedSuccessState extends MatchState {
   final List<Match> matches;
@@ -19,6 +21,11 @@ class MatchLoadedSuccessState extends MatchState {
 }
 
 class MatchErrorState extends MatchState {}
+
+class MatchDeletedState extends MatchState {
+  final int matchId;
+  MatchDeletedState(this.matchId);
+}
 
 class MatchClickActionState extends MatchActionState {}
 
