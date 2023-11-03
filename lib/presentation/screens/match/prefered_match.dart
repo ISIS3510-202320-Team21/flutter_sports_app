@@ -39,12 +39,8 @@ class _PreferedMatchState extends State<PreferedMatch> {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<MatchBloc>(
-        create: (context) => MatchBloc(),
-        child: Builder(builder: (BuildContext innerContext) {
-          innerContext.read<MatchBloc>().add(FetchLevelsEvent());
-          return _buildUI(context);
-        }));
+    BlocProvider.of<MatchBloc>(context).add(FetchLevelsEvent());
+    return _buildUI(context);
   }
 
   Widget _buildUI(BuildContext context) {
@@ -57,11 +53,12 @@ class _PreferedMatchState extends State<PreferedMatch> {
         } else if (state is MatchErrorState) {
           return const Center(child: Text('Error loading data'));
         } else if (state is MatchCreatedState) {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Waiting for a match!')));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Waiting for a match!')));
           });
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Home.index));
+          BlocProvider.of<GlobalBloc>(context)
+              .add(NavigateToIndexEvent(AppScreens.Home.index));
           BlocProvider.of<MatchBloc>(context).add(NewMatchNavigateEvent());
         }
         return Padding(
@@ -220,6 +217,21 @@ class _PreferedMatchState extends State<PreferedMatch> {
               const SizedBox(height: 100),
               ElevatedButton(
                 onPressed: () {
+                  DateTime now = DateTime.now();
+                  if (widget.selectedDate != null &&
+                      widget.selectedDate!.day==now.day &&
+                      selectedStartTime != null &&
+                      selectedStartTime!.isBefore(now)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            "You cannot create a match for a time that has already passed."),
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Si todas las validaciones pasan, crea el partido
                   BlocProvider.of<MatchBloc>(context).add(CreateMatchEvent(
                       Match(
                           date: widget.selectedDate,
@@ -232,21 +244,10 @@ class _PreferedMatchState extends State<PreferedMatch> {
                           userCreated: user,
                           status: "Pending"),
                       user!.id));
+
+                  BlocProvider.of<MatchBloc>(context)
+                      .add(FetchMatchesUserEvent(user!.id));
                 },
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all(
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 40)),
-                  backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).colorScheme.primary),
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  shadowColor: MaterialStateProperty.all(Colors.black45),
-                  elevation: MaterialStateProperty.all(5),
-                  overlayColor: MaterialStateProperty.all(Colors.black12),
-                ),
                 child: const Text(
                   "CREATE",
                   style: TextStyle(
@@ -261,5 +262,4 @@ class _PreferedMatchState extends State<PreferedMatch> {
       }),
     );
   }
-
 }

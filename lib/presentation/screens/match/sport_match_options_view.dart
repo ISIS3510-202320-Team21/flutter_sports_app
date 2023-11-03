@@ -37,13 +37,13 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   @override
   Widget build(BuildContext context) {
     return Provider<MatchBloc>(
-      create: (context) => MatchBloc(),
+      create: (context) => BlocProvider.of<MatchBloc>(context),
       child: Builder(
         builder: (BuildContext innerContext) {
           innerContext
               .read<MatchBloc>()
               .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
-
+          print("reconstruido");
           return Scaffold(
             body: BlocBuilder<MatchBloc, MatchState>(
               builder: (context, state) {

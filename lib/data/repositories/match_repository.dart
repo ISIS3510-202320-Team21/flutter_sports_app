@@ -148,4 +148,19 @@ class MatchRepository {
       throw Exception('Failed to rate match: ${response.statusCode}');
     }
   }
+
+  Future<int> deleteMatch(int matchId) async {
+    final response = await http.delete(
+      Uri.parse('$backendUrl/matches/$matchId/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return matchId;
+    } else {
+      throw Exception('Failed to delete match: ${response.statusCode}');
+    }
+  }
 }

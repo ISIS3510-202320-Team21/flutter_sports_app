@@ -17,7 +17,9 @@ class NewMatchesView extends StatefulWidget {
 
 class _NewMatchesViewState extends State<NewMatchesView> {
   String? userName;
-  void initState() {
+  
+  @override
+  void initState () {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
   }

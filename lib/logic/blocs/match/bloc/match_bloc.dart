@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_sports/data/models/level.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
@@ -24,6 +25,7 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     on<CreateMatchEvent>(_handleCreateMatchEvent);
     on<addUserToMatchEvent>(_handleAddUserToMatchEvent);
     on<RateMatchEvent>(rateMatchEvent);
+    on<DeleteMatchEvent>(_deleteMatch);
   }
   
   FutureOr<void> matchInitialEvent(MatchInitialEvent event, Emitter<MatchState> emit) async {
@@ -113,4 +115,13 @@ FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emit
       emit(MatchErrorState());
     }
   }
+Future<void> _deleteMatch(DeleteMatchEvent event, Emitter<MatchState> emit) async {
+    emit(MatchLoadingState());
+    try {
+      int xd = await MatchRepository(userRepository: UserRepository()).deleteMatch(event.matchId);
+      emit(MatchDeletedState(xd));
+    } catch (e) {
+      print(e);
+    }
+}
 }
