@@ -37,7 +37,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   @override
   Widget build(BuildContext context) {
     return Provider<MatchBloc>(
-      create: (context) => MatchBloc(),
+      create: (context) => BlocProvider.of<MatchBloc>(context),
       child: Builder(
         builder: (BuildContext innerContext) {
           innerContext
