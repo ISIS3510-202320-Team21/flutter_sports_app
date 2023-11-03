@@ -102,23 +102,29 @@ class _MainLayoutState extends State<MainLayout> {
   AppScreens _selectedScreen = AppScreens.Home;
   final List<AppScreens> _navigationHistory = [];
   final int maxHistoryLength = 2;
+  Sport? selectedSport;
   Future<bool> _onWillPop() async {
     if (_selectedScreen == AppScreens.Home) {
       SystemNavigator.pop();
       return false;
-    } else if (_navigationHistory.isNotEmpty &&
+    } else if (_navigationHistory.isEmpty || _selectedScreen == AppScreens.Profile || _selectedScreen == AppScreens.Matches) {
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToIndexEvent(AppScreens.Home.index));
+      return false;
+    }else if (_navigationHistory.isNotEmpty &&
         _selectedScreen != AppScreens.Home) {
       setState(() {
         _selectedScreen = _navigationHistory.removeLast();
       });
+      if (_selectedScreen == AppScreens.SportMatchOptions) {
+        BlocProvider.of<GlobalBloc>(context).add(
+            NavigateToSportEvent(selectedSport!));
+        return false;
+      }
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(_selectedScreen.index));
       return false;
-    } else if (_navigationHistory.isEmpty) {
-      BlocProvider.of<GlobalBloc>(context)
-          .add(NavigateToIndexEvent(AppScreens.Home.index));
-      return false;
-    }
+    } 
     return true;
   }
 
@@ -164,7 +170,7 @@ class _MainLayoutState extends State<MainLayout> {
               _navigationHistory.add(_selectedScreen);
             }
             _selectedScreen = AppScreens.values[state.selectedIndex];
-            if(_selectedScreen == AppScreens.MyMatches){
+            if (_selectedScreen == AppScreens.MyMatches) {
               screenViews[AppScreens.MyMatches] = MyMatches();
             }
           }
@@ -177,6 +183,7 @@ class _MainLayoutState extends State<MainLayout> {
             print("selected screen sports");
             screenViews[AppScreens.SportMatchOptions] =
                 SportMatchOptionsView(sport: state.sport);
+            selectedSport = state.sport;
           }
 
           if (state is NavigationPrefferedMatchState) {

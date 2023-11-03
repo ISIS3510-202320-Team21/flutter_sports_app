@@ -43,7 +43,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
           innerContext
               .read<MatchBloc>()
               .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
-
+          print("reconstruido");
           return Scaffold(
             body: BlocBuilder<MatchBloc, MatchState>(
               builder: (context, state) {
