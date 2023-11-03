@@ -119,6 +119,9 @@ class _MainLayoutState extends State<MainLayout> {
         _selectedScreen = _navigationHistory.removeLast();
       });
 
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToIndexEvent(_selectedScreen.index));
+
       return false;
     } else if (_selectedScreen == AppScreens.SportMatchOptions) {
       BlocProvider.of<GlobalBloc>(context)
