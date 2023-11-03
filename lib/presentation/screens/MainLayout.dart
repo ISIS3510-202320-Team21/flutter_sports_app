@@ -54,7 +54,7 @@ final Map<AppScreens, Widget> screenViews = {
   AppScreens.Profile: const ProfileView(),
   AppScreens.Notifications: const NotificationsView(),
   AppScreens.EditProfile: const EditProfileView(),
-  AppScreens.MyMatches: const MyMatches(),
+  AppScreens.MyMatches: MyMatches(),
   AppScreens.SportMatchOptions: SportMatchOptionsView(
       sport: Sport(
     id: 1,
@@ -109,19 +109,16 @@ class _MainLayoutState extends State<MainLayout> {
     } else if (_navigationHistory.isNotEmpty &&
         _selectedScreen != AppScreens.Home) {
       setState(() {
-        _selectedScreen =
-            _navigationHistory.removeLast(); 
+        _selectedScreen = _navigationHistory.removeLast();
       });
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(_selectedScreen.index));
-      return false; 
+      return false;
     } else if (_navigationHistory.isEmpty) {
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(AppScreens.Home.index));
       return false;
     }
-
-    // Si no hay historial de navegación, permite salir de la app
     return true;
   }
 
@@ -167,6 +164,9 @@ class _MainLayoutState extends State<MainLayout> {
               _navigationHistory.add(_selectedScreen);
             }
             _selectedScreen = AppScreens.values[state.selectedIndex];
+            if(_selectedScreen == AppScreens.MyMatches){
+              screenViews[AppScreens.MyMatches] = MyMatches();
+            }
           }
 
           if (state is NavigationSportState) {
