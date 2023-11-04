@@ -118,7 +118,7 @@ class _HomeViewState extends State<HomeView> {
                           );
                         }else{
                         return CustomButtonNotifications(
-                          title: "Go and see your notifications",
+                          title: "Go and see your notifications!",
                           imageAsset: "assets/arrow_1.png",
                           onPressed: goToNotifications,
                         );
