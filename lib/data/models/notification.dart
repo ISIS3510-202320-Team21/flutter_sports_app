@@ -20,4 +20,14 @@ class Notification {
       id: json['id'],
     );
   }
+  Map<String, dynamic> toJson() {
+  return {
+    'name': name,
+    'type': type,
+    'redirectTo': redirectTo,
+    'seen': seen,
+    'creationDate': creationDate.toIso8601String(),
+    'id': id,
+  };
+}
 }

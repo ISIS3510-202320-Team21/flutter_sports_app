@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
+import 'package:flutter_app_sports/data/models/notification.dart'
+    as Notification2;
 import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
@@ -34,16 +36,13 @@ class _HomeViewState extends State<HomeView> {
       _notification.NotificationBloc();
   double latitude = 0;
   double longitude = 0;
-
+  List<Sport> sports = [];
+  List<Notification2.Notification> notifications = [];
   @override
   void initState() {
     super.initState();
     int userId = BlocProvider.of<AuthenticationBloc>(context).user!.id;
     user = BlocProvider.of<AuthenticationBloc>(context).user!;
-    BlocProvider.of<AuthenticationBloc>(context)
-        .add(FetchUniversitiesRequested());
-    BlocProvider.of<AuthenticationBloc>(context).add(FetchRolesRequested());
-    BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
     homeBloc.add(FetchSportsRecent(user));
   }
 
@@ -51,7 +50,6 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
-    List<Sport> sports = [];
 
     return MultiBlocProvider(
       providers: [
@@ -104,9 +102,9 @@ class _HomeViewState extends State<HomeView> {
                     BlocBuilder<AuthenticationBloc, AuthenticationState>(
                       builder: (context, authState) {
                         if (authState is Authenticated) {
-                          final notifications = authState.usuario.notifications;
-                          print(notifications?.first.name);
-                          final title = notifications!.isNotEmpty
+                          notifications = authState.usuario.notifications!;
+                          print(notifications.first.name);
+                          final title = notifications.isNotEmpty
                               ? notifications.first.name
                               : "Go and see your notifications!";
 
@@ -116,12 +114,13 @@ class _HomeViewState extends State<HomeView> {
                             imageAsset: "assets/arrow_1.png",
                             onPressed: goToNotifications,
                           );
-                        }else{
-                        return CustomButtonNotifications(
-                          title: "Go and see your notifications!",
-                          imageAsset: "assets/arrow_1.png",
-                          onPressed: goToNotifications,
-                        );
+                        } else {
+                          return CustomButtonNotifications(
+                            title: "Go and see your notifications",
+                            imageAsset: "assets/arrow_1.png",
+                            onPressed: goToNotifications,
+                          );
+
                         }
                       },
                     ),
@@ -209,7 +208,6 @@ class _HomeViewState extends State<HomeView> {
               ),
             ),
           );
-          
         },
       ),
     );
