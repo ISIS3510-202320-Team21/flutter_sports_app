@@ -107,27 +107,24 @@ class _MainLayoutState extends State<MainLayout> {
     if (_selectedScreen == AppScreens.Home) {
       SystemNavigator.pop();
       return false;
-    } else if (_navigationHistory.isEmpty ||
-        _selectedScreen == AppScreens.Profile ||
-        _selectedScreen == AppScreens.Matches) {
+    } else if (_navigationHistory.isEmpty || _selectedScreen == AppScreens.Profile || _selectedScreen == AppScreens.Matches) {
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(AppScreens.Home.index));
       return false;
-    } else if (_navigationHistory.isNotEmpty &&
+    }else if (_navigationHistory.isNotEmpty &&
         _selectedScreen != AppScreens.Home) {
       setState(() {
         _selectedScreen = _navigationHistory.removeLast();
       });
-
+      if (_selectedScreen == AppScreens.SportMatchOptions) {
+        BlocProvider.of<GlobalBloc>(context).add(
+            NavigateToSportEvent(selectedSport!));
+        return false;
+      }
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(_selectedScreen.index));
-
       return false;
-    } else if (_selectedScreen == AppScreens.SportMatchOptions) {
-      BlocProvider.of<GlobalBloc>(context)
-          .add(NavigateToSportEvent(selectedSport!));
-      return false;
-    }
+    } 
     return true;
   }
 
