@@ -120,6 +120,7 @@ class _HomeViewState extends State<HomeView> {
                             imageAsset: "assets/arrow_1.png",
                             onPressed: goToNotifications,
                           );
+
                         }
                       },
                     ),
