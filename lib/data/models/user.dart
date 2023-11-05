@@ -1,4 +1,5 @@
 import 'package:flutter_app_sports/data/models/notification.dart' as notif;
+import 'package:intl/intl.dart';
 
 class User {
   final int id;
@@ -33,7 +34,7 @@ class User {
     final day = int.parse(dateParts[0]);
     final month = int.parse(dateParts[1]);
     final year = int.parse(dateParts[2]);
-    final parsedDate = DateTime(year + 2000, month, day);
+    final parsedDate = DateTime(year, month, day);
 
     return User(
       id: json['id'],
@@ -55,19 +56,24 @@ class User {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'role': role,
-      'bornDate': bornDate?.toIso8601String(),
-      'gender': gender,
-      'imageUrl': imageUrl,
-      'latitude': latitude,
-      'longitude': longitude,
-      'notifications':
-          notifications?.map((notification) => notification.toJson()).toList(),
-    };
-  }
+
+
+Map<String, dynamic> toJson() {
+  DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  String formattedDate = bornDate != null ? dateFormat.format(bornDate!) : '';
+
+  return {
+    'email': email,
+    'id': id,
+    'university': university,
+    'name': name,
+    'phoneNumber': phoneNumber,
+    'role': role,
+    'bornDate': formattedDate,
+    'gender': gender,
+    'imageUrl': imageUrl,
+    'notifications': notifications?.map((notification) => notification.toJson()).toList(),
+  };
+}
+
 }

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Notification {
   final String name;
   final String type;
