@@ -3,7 +3,9 @@ import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:geolocator/geolocator.dart';
 
 class WeatherDisplay extends StatefulWidget {
-  WeatherDisplay({Key? key, required double longitude, required double latitude}) : super(key: key);
+  WeatherDisplay(
+      {Key? key, required double longitude, required double latitude})
+      : super(key: key);
 
   @override
   _WeatherDisplayState createState() => _WeatherDisplayState();
@@ -24,25 +26,35 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
     LocationPermission permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
-      await Geolocator.requestPermission();
-      return;
-    } else if (permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Consider showing some message to the user.
       await Geolocator.openLocationSettings();
       return;
-    } else {
-      Position currentPosition =
-          await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    }
+
+    try {
+      Position currentPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      if (!mounted) return; // Check if the widget is still in the tree
 
       setState(() {
         latitude = currentPosition.latitude;
         longitude = currentPosition.longitude;
       });
 
-      // print("Latitude Display: $latitude");
-      // print("Longitude Display: $longitude");
-
       final weatherApi = WeatherApi(apiKey: '02788d36472def97753cd483ee2dd7fa');
-      pronosticoClima = weatherApi.obtenerPronosticoClima(latitude!, longitude!);
+      pronosticoClima =
+          weatherApi.obtenerPronosticoClima(latitude!, longitude!);
+    } catch (e) {
+      // Handle any errors here
     }
   }
 

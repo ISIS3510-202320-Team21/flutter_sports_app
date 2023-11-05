@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/camera/bloc/camera_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/connectivity/bloc/connectivity_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/fetch/bloc/fetch_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/presentation/router/app_router.dart';
@@ -37,6 +38,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
             create: (context) =>
                 ConnectivityBloc(connectivity: Connectivity())),
+        BlocProvider(create: (context) => FetchBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -88,8 +90,7 @@ class _MyAppState extends State<MyApp> {
                     red = 'online';
                   }
                 },
-                child:
-                    child, 
+                child: child,
               );
             },
           );
