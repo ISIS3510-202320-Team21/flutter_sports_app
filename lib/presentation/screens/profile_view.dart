@@ -29,7 +29,6 @@ class _ProfileViewState extends State<ProfileView> {
     final textTheme = Theme.of(context).textTheme;
     final colorTheme = Theme.of(context).colorScheme;
 
-    // Defining custom button styles
     final ButtonStyle profileButtonStyle = ButtonStyle(
       backgroundColor: MaterialStateProperty.all(const Color(0xFFEAEAEA)),
       foregroundColor: MaterialStateProperty.all(colorTheme.onError),
@@ -44,7 +43,6 @@ class _ProfileViewState extends State<ProfileView> {
       padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 15.0)),
     );
 
-    // Calculate the width for the buttons based on the screen size
     final buttonWidth = MediaQuery.of(context).size.width / 2;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
