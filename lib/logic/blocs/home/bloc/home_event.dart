@@ -34,4 +34,11 @@ class FetchSportsRecent extends HomeEvent{
 
 class HomeLoadedSuccessEvent extends HomeEvent{
 }
+class FetchSportsUserStorageRecent extends HomeEvent{
+  FetchSportsUserStorageRecent();
+}
 
+class SaveSportsUserStorageRecent extends HomeEvent{
+  final List<Sport> sports;
+  SaveSportsUserStorageRecent(this.sports);
+}

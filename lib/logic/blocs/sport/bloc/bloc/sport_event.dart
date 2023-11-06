@@ -9,6 +9,7 @@ abstract class SportEvent extends Equatable {
 }
 
 class FetchSportsEvent extends SportEvent {}
+class FetchSportsStorage extends SportEvent {}
 
 class UpdateSportEvent extends SportEvent {
   final Sport updatedSport;  
@@ -24,6 +25,14 @@ class DeleteSportEvent extends SportEvent {
 
   @override
   List<Object> get props => [sportId];
+}
+
+class SaveMatchSportsEvent extends SportEvent {
+  final List<Sport> sports;
+  SaveMatchSportsEvent(this.sports);
+
+  @override
+  List<Object> get props => [sports];
 }
 
 
