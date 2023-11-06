@@ -58,12 +58,20 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  Future<void> _handleRefresh() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      homeBloc.add(FetchSportsUserStorageRecent());
+    } else {
+      homeBloc.add(FetchSportsRecent(user));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
     checkInitialConnectivity();
-
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeBloc>(create: (context) => homeBloc),
@@ -107,8 +115,11 @@ class _HomeViewState extends State<HomeView> {
           }
 
           return Scaffold(
-            body: Center(
+              body: Center(
+            child: RefreshIndicator(
+              onRefresh: _handleRefresh,
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -142,82 +153,86 @@ class _HomeViewState extends State<HomeView> {
                       longitude: longitude,
                     ),
                     const SizedBox(height: 16),
-                    SingleChildScrollView(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Welcome back ',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: colorScheme.onBackground,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: user.name,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: colorScheme.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              'What would you like to do today?',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: colorScheme.onBackground),
-                            ),
-                            const SizedBox(height: 32),
-                            Row(
+                    RefreshIndicator(
+                        onRefresh:
+                            _handleRefresh, // La función que se llamará para refrescar
+                        child: SingleChildScrollView(
+                          child: Center(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _buildActionButton(
-                                  title: 'Go to field reservation',
-                                  imageAsset: 'assets/field_reservation.png',
-                                  onPressed: goToFieldReservation,
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Welcome back ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: colorScheme.onBackground,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: user.name,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: colorScheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  'What would you like to do today?',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: colorScheme.onBackground),
+                                ),
+                                const SizedBox(height: 32),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _buildActionButton(
+                                      title: 'Go to field reservation',
+                                      imageAsset:
+                                          'assets/field_reservation.png',
+                                      onPressed: goToFieldReservation,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _buildActionButton(
+                                      title: 'Manage your matches',
+                                      imageAsset: 'assets/reserva_1.png',
+                                      onPressed: goToManageMatches,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Wrap(
+                                  spacing: 16,
+                                  runSpacing: 16,
+                                  alignment: WrapAlignment.center,
+                                  children: sports.map((sport) {
+                                    return _buildActionButton2(
+                                      title: sport.name,
+                                      imageAsset: sport.image!,
+                                      onPressed: () => goToNewMatch(sport),
+                                    );
+                                  }).toList(),
+                                )
                               ],
                             ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _buildActionButton(
-                                  title: 'Manage your matches',
-                                  imageAsset: 'assets/reserva_1.png',
-                                  onPressed: goToManageMatches,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Wrap(
-                              spacing: 16,
-                              runSpacing: 16,
-                              alignment: WrapAlignment.center,
-                              children: sports.map((sport) {
-                                return _buildActionButton2(
-                                  title: sport.name,
-                                  imageAsset: sport.image!,
-                                  onPressed: () => goToNewMatch(sport),
-                                );
-                              }).toList(),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
+                        )),
                   ],
                 ),
               ),
             ),
-          );
+          ));
         },
       ),
     );
@@ -284,22 +299,21 @@ class _HomeViewState extends State<HomeView> {
               height: 100,
               placeholder: (context, url) => const Center(
                 child: SizedBox(
-                  width: 20, 
-                  height: 20, 
+                  width: 20,
+                  height: 20,
                   child: CircularProgressIndicator(
-                    strokeWidth: 2.0, 
+                    strokeWidth: 2.0,
                   ),
                 ),
               ),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
-            const SizedBox(
-                width: 16), 
+            const SizedBox(width: 16),
             Expanded(
               child: Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.black, 
+                  color: Colors.black,
                   fontSize: 17,
                 ),
               ),
