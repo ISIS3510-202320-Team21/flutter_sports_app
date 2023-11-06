@@ -32,6 +32,7 @@ class _ProfileViewState extends State<ProfileView> {
     final colorTheme = Theme.of(context).colorScheme;
 
     final ButtonStyle profileButtonStyle = ButtonStyle(
+      elevation: MaterialStateProperty.all(0),
       backgroundColor: MaterialStateProperty.all(const Color(0xFFEAEAEA)),
       foregroundColor: MaterialStateProperty.all(colorTheme.onError),
       shape: MaterialStateProperty.all(CircleBorder()),
@@ -51,13 +52,16 @@ class _ProfileViewState extends State<ProfileView> {
       bloc: _profileBloc,
       listener: (context, state) {
         if (state is ProfileNavigateToEditState) {
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.EditProfile.index));
+          BlocProvider.of<GlobalBloc>(context)
+              .add(NavigateToIndexEvent(AppScreens.EditProfile.index));
         } else if (state is ProfileNavigateToAddProfilePictureState) {
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.CameraScreen.index));
+          BlocProvider.of<GlobalBloc>(context)
+              .add(NavigateToIndexEvent(AppScreens.CameraScreen.index));
         }
       },
       builder: (context, state) {
-        String? profileImagePath = state is ProfileLoadedSuccessState ? state.profileImagePath : null;
+        String? profileImagePath =
+            state is ProfileLoadedSuccessState ? state.profileImagePath : null;
         return Scaffold(
           body: SingleChildScrollView(
             child: Center(
@@ -67,9 +71,13 @@ class _ProfileViewState extends State<ProfileView> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ElevatedButton(
-                      onPressed: () => _profileBloc.add(ProfileAddProfilePictureButtonClickedEvent()),
+                      onPressed: () => _profileBloc
+                          .add(ProfileAddProfilePictureButtonClickedEvent()),
                       style: profileButtonStyle,
-                      child: profileImagePath != null ? Image.file(File(profileImagePath), width: 80.0, height: 80.0) : Icon(Icons.account_circle, size: 80.0),
+                      child: profileImagePath != null
+                          ? Image.file(File(profileImagePath),
+                              width: 80.0, height: 80.0)
+                          : Icon(Icons.account_circle, size: 80.0),
                     ),
                     SizedBox(height: 20),
                     Text(userName ?? 'User', style: textTheme.headline5),
@@ -78,7 +86,8 @@ class _ProfileViewState extends State<ProfileView> {
                       constraints: BoxConstraints.tightFor(width: buttonWidth),
                       child: ElevatedButton.icon(
                         icon: Icon(Icons.edit, size: 28.0),
-                        label: Text('Edit my profile', style: TextStyle(fontSize: 22)),
+                        label: Text('Edit my profile',
+                            style: TextStyle(fontSize: 22)),
                         onPressed: () => _editProfile(context),
                         style: iconButtonStyle,
                       ),
@@ -113,25 +122,20 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
-  void _editProfile(BuildContext context) => BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.EditProfile.index));
+  void _editProfile(BuildContext context) =>
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToIndexEvent(AppScreens.EditProfile.index));
 
   void logOut() async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult == ConnectivityResult.none) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Cannot log out because there is no internet connection.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  } else {
-    // Aquí puedes agregar el código para limpiar el estado de los blocs si es necesario
-    // Por ejemplo: 
+// Aquí puedes agregar el código para limpiar el estado de los blocs si es necesario
+    // Por ejemplo:
     // Asegúrate de tener el evento y el estado adecuado en tu AuthenticationBloc.
 
     // Limpia los datos de SharedPreferences
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     BlocProvider.of<AuthenticationBloc>(context).add(SignOutRequested());
+    BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(0));
+    
     await prefs.clear();
 
     // Aquí también puedes navegar de vuelta a la pantalla de inicio de sesión si es necesario
@@ -145,8 +149,5 @@ class _ProfileViewState extends State<ProfileView> {
     );
 
     Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
-
   }
-}
-
 }

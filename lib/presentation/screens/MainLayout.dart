@@ -44,7 +44,7 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.MyMatches: "MY MATCHES",
   AppScreens.SportMatchOptions: "MATCH OPTIONS",
   AppScreens.CameraScreen: "CAMERA",
-  AppScreens.PreferedMatch: "PREFERED MATCH",
+  AppScreens.PreferedMatch: "PREFERRED MATCH",
   AppScreens.MatchDetails: "MATCH DETAILS"
 };
 

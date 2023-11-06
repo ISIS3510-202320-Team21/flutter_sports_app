@@ -47,6 +47,7 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).user!;
+    notifications = user.notifications!;
   }
 
   void checkInitialConnectivity() async {
@@ -125,9 +126,7 @@ class _HomeViewState extends State<HomeView> {
                   children: [
                     BlocBuilder<AuthenticationBloc, AuthenticationState>(
                       builder: (context, authState) {
-                        if (authState is Authenticated) {
-                          notifications = authState.usuario.notifications!;
-                          print(notifications.first.name);
+                        if (notifications.isNotEmpty) {
                           final title = notifications.isNotEmpty
                               ? notifications.first.name
                               : "Go and see your notifications!";
@@ -140,7 +139,8 @@ class _HomeViewState extends State<HomeView> {
                           );
                         } else {
                           return CustomButtonNotifications(
-                            title: "Go and see your notifications",
+                            key: UniqueKey(),
+                            title: "You don't have any notifications",
                             imageAsset: "assets/arrow_1.png",
                             onPressed: goToNotifications,
                           );

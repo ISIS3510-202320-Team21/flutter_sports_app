@@ -33,11 +33,7 @@ class _MyMatchesState extends State<MyMatches> {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Provider<MatchBloc>(
-        create: (context) => BlocProvider.of<MatchBloc>(context),
-        child: Builder(builder: (BuildContext innerContext) {
-          innerContext.read<MatchBloc>().add(FetchMatchesUserEvent(userId!));
-
+    return Builder(builder: (BuildContext innerContext) {
           return BlocBuilder<MatchBloc, MatchState>(
             buildWhen: (previous, current) => current is! MatchActionState,
             builder: (context, state) {
@@ -102,7 +98,7 @@ class _MyMatchesState extends State<MyMatches> {
               );
             },
           );
-        }));
+        });
   }
 
   List<Widget> _buildMatchesList(List<Match> matches, BuildContext context,
