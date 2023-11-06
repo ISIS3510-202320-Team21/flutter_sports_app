@@ -16,6 +16,25 @@ class SportBloc extends Bloc<SportEvent, SportState> {
         emit(SportsError());
       }
     });
+    on<FetchSportsStorage>((event, emit) async {
+      emit(FetchingSports());
+      try {
+        final sports = await sportRepository.fetchSportsStorage();
+        emit(SportsLoaded(sports!));
+      } catch (e) {
+        emit(SportsError());
+      }
+    });
+
+    on<SaveMatchSportsEvent>((event, emit) async {
+      try {
+        await sportRepository.saveSports(event.sports);
+      } catch (e) {
+        emit(SportsError());
+      }
+    });
+
+
 
 
   }

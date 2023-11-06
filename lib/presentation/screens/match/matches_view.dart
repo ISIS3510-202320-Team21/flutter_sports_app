@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
@@ -22,9 +23,18 @@ class _MatchesViewState extends State<MatchesView> {
     matchBloc.add(MatchInitialEvent(userId: userId!));
     super.initState();
   }
+  void checkInitialConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
 
+    } else {
+      
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
+    checkInitialConnectivity();	
     return BlocConsumer<MatchBloc,MatchState>(
       bloc: matchBloc,
       listenWhen: (previous, current) => current is MatchActionState,

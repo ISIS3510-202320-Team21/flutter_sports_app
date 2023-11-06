@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthenticationBloc>(
-            create: (context) => AuthenticationBloc()),
+            create: (context) => AuthenticationBloc()..add(CheckSession())),
         BlocProvider<CameraBloc>(create: (context) => CameraBloc()),
         BlocProvider(create: (context) => GlobalBloc()),
         BlocProvider(create: (context) => MatchBloc()),
@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
             headlineLarge: TextStyle(color: Color(0xFF37392E)),
           ),
         ),
+
         builder: (context, child) {
           return Builder(
             builder: (context) {

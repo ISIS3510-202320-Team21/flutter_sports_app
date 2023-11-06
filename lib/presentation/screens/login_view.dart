@@ -17,18 +17,6 @@ class LoginView extends StatelessWidget {
     ScreenUtil.init(context);
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0.0, 
-        title: Text(
-          "LOGIN",
-          style: textTheme.headlineSmall?.copyWith( 
-              color: Theme.of(context).colorScheme.onBackground,
-              fontWeight: FontWeight.bold),
-        ),
-        toolbarHeight: 0.1 * ScreenUtil().screenHeight,
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
       body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
           if (state is Authenticated) Navigator.of(context).pushNamed('/home');
@@ -39,122 +27,137 @@ class LoginView extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          if (state is AuthLoading) {
+          if (state is AuthLoading || state is Authenticated) {
             return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ));
+                body: Center(
+              child: CircularProgressIndicator(),
+            ));
           }
-          return Container(
-            constraints: const BoxConstraints
-                .expand(),
-            color: Theme.of(context).colorScheme.background,
-            child: Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.05,
-                            bottom: MediaQuery.of(context).size.height * 0.03),
-                        child: Image.asset('assets/loginIcon.png'),
-                      ),
-                      _buildTextField(context, _emailController, 'Email...',
-                          (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Can\'t be empty';
-                        }
-                        if (!EmailValidator.validate(text)) {
-                          return 'Must be a valid email address';
-                        }
-                        return null;
-                      }),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildTextField(
-                          context, _passwordController, 'Password...', (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Can\'t be empty';
-                        }
-                        return null;
-                      }, isObscure: true),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _login(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: EdgeInsets.zero,
-                          minimumSize: const Size(143, 52),
+          return Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0.0,
+              title: Text(
+                "LOGIN",
+                style: textTheme.headlineSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                    fontWeight: FontWeight.bold),
+              ),
+              toolbarHeight: 0.1 * ScreenUtil().screenHeight,
+              backgroundColor: Theme.of(context).colorScheme.onPrimary,
+            ),
+            body: Container(
+              constraints: const BoxConstraints.expand(),
+              color: Theme.of(context).colorScheme.background,
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.05,
+                              bottom:
+                                  MediaQuery.of(context).size.height * 0.03),
+                          child: Image.asset('assets/loginIcon.png'),
                         ),
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                        _buildTextField(context, _emailController, 'Email...',
+                            (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Can\'t be empty';
+                          }
+                          if (!EmailValidator.validate(text)) {
+                            return 'Must be a valid email address';
+                          }
+                          return null;
+                        }),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        _buildTextField(
+                            context, _passwordController, 'Password...',
+                            (text) {
+                          if (text == null || text.isEmpty) {
+                            return 'Can\'t be empty';
+                          }
+                          return null;
+                        }, isObscure: true),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03,
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _login(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: EdgeInsets.zero,
+                            minimumSize: const Size(143, 52),
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: ShapeDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Positioned(
-                              child: Text(
-                                'LOGIN',
-                                textAlign: TextAlign.center,
-                                style: textTheme.titleLarge?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height *
-                            0.04, // Ajusta este valor según lo que necesites
-                      ),
-                      Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('/signUp');
-                          },
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                  fontWeight: FontWeight.bold),
-                              children: [
-                                const TextSpan(text: 'Or sign up using'),
-                                const TextSpan(text: '\n'),
-                                TextSpan(
-                                  text: 'Sign up',
-                                  style: TextStyle(
+                              Positioned(
+                                child: Text(
+                                  'LOGIN',
+                                  textAlign: TextAlign.center,
+                                  style: textTheme.titleLarge?.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.primary,
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.normal,
                                   ),
                                 ),
-                              ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height *
+                              0.04, // Ajusta este valor según lo que necesites
+                        ),
+                        Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed('/signUp');
+                            },
+                            child: RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: textTheme.titleLarge?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                    fontWeight: FontWeight.bold),
+                                children: [
+                                  const TextSpan(text: 'Or sign up using'),
+                                  const TextSpan(text: '\n'),
+                                  TextSpan(
+                                    text: 'Sign up',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

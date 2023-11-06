@@ -1,22 +1,22 @@
 import 'dart:convert';
+import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_sports/data/services/config_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
   final String? backendUrl = ConfigService.backendUrl;
 
-  Future<User?> changeInfo({
-    required String email,
-    required String name,
-    required String phoneNumber,
-    required String role,
-    required String university,
-    required String bornDate,
-    required String gender,
-    required int userid
-  }) async {
-
+  Future<User?> changeInfo(
+      {required String email,
+      required String name,
+      required String phoneNumber,
+      required String role,
+      required String university,
+      required String bornDate,
+      required String gender,
+      required int userid}) async {
     final response = await http.put(
       Uri.parse('$backendUrl/users/$userid/'),
       headers: <String, String>{
@@ -41,13 +41,15 @@ class UserRepository {
   }
 
   Future<User?> changePassword(
-      {required String oldPassword, required String newPassword, required int userid}) async {
+      {required String oldPassword,
+      required String newPassword,
+      required int userid}) async {
     final response = await http.put(
-      Uri.parse('$backendUrl/users/$userid/password/?=oldPassword$oldPassword&newPassword=$newPassword'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      }
-    );
+        Uri.parse(
+            '$backendUrl/users/$userid/password/?=oldPassword$oldPassword&newPassword=$newPassword'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
 
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body));
@@ -75,12 +77,10 @@ class UserRepository {
   }
 
   Future<User?> getInfoUser({required int userid}) async {
-    final response = await http.get(
-      Uri.parse('$backendUrl/users/$userid'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      }
-    );
+    final response = await http
+        .get(Uri.parse('$backendUrl/users/$userid'), headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
 
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
@@ -136,4 +136,22 @@ class UserRepository {
       throw Exception('Failed to fetch genders: ${response.statusCode}');
     }
   }
+
+  Future<List<Sport>> fetchSportsUserStorageRecent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? sportsJson = prefs.getString('sports');
+    if (sportsJson == null) {
+      return [];
+    }
+    List<dynamic> sportsList = jsonDecode(sportsJson) as List;
+    return sportsList.map((json) => Sport.fromJson(json)).toList();
+  }
+
+
+
+Future<void> saveSportsUserStorageRecent(List<Sport> sports) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String sportsJson = jsonEncode(sports.map((sport) => sport.toJson()).toList());
+  await prefs.setString('sports', sportsJson);
+}
 }

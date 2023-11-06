@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_app_sports/data/models/notification.dart'
     as Notification2;
 import 'package:flutter_app_sports/data/services/weather_api.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/connectivity/bloc/connectivity_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/home/bloc/home_bloc.dart';
@@ -17,6 +20,7 @@ import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/WeatherDisplay.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeView extends StatefulWidget {
@@ -38,19 +42,37 @@ class _HomeViewState extends State<HomeView> {
   double longitude = 0;
   List<Sport> sports = [];
   List<Notification2.Notification> notifications = [];
+
   @override
   void initState() {
     super.initState();
-    int userId = BlocProvider.of<AuthenticationBloc>(context).user!.id;
     user = BlocProvider.of<AuthenticationBloc>(context).user!;
-    homeBloc.add(FetchSportsRecent(user));
+    notifications = user.notifications!;
+  }
+
+  void checkInitialConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      homeBloc.add(FetchSportsUserStorageRecent());
+    } else {
+      homeBloc.add(FetchSportsRecent(user));
+    }
+  }
+
+  Future<void> _handleRefresh() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      homeBloc.add(FetchSportsUserStorageRecent());
+    } else {
+      homeBloc.add(FetchSportsRecent(user));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
-
+    checkInitialConnectivity();
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeBloc>(create: (context) => homeBloc),
@@ -79,7 +101,7 @@ class _HomeViewState extends State<HomeView> {
                 MaterialPageRoute(builder: (context) => const ProfileView()));
           } else if (state is RecentSportsLoaded) {
             sports = state.sports;
-            print(sports);
+            homeBloc.add(SaveSportsUserStorageRecent(state.sports));
             homeBloc.add(HomeLoadedSuccessEvent());
           } else if (state is FetchErrorState) {
             print(state.error);
@@ -94,16 +116,17 @@ class _HomeViewState extends State<HomeView> {
           }
 
           return Scaffold(
-            body: Center(
+              body: Center(
+            child: RefreshIndicator(
+              onRefresh: _handleRefresh,
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     BlocBuilder<AuthenticationBloc, AuthenticationState>(
                       builder: (context, authState) {
-                        if (authState is Authenticated) {
-                          notifications = authState.usuario.notifications!;
-                          print(notifications.first.name);
+                        if (notifications.isNotEmpty) {
                           final title = notifications.isNotEmpty
                               ? notifications.first.name
                               : "Go and see your notifications!";
@@ -116,98 +139,100 @@ class _HomeViewState extends State<HomeView> {
                           );
                         } else {
                           return CustomButtonNotifications(
-                            title: "Go and see your notifications",
+                            key: UniqueKey(),
+                            title: "You don't have any notifications",
                             imageAsset: "assets/arrow_1.png",
                             onPressed: goToNotifications,
                           );
-
                         }
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     WeatherDisplay(
                       latitude: latitude,
                       longitude: longitude,
                     ),
-                    SizedBox(height: 16),
-                    SingleChildScrollView(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Welcome back ',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: colorScheme.onBackground,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: user.name,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: colorScheme.primary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              'What would you like to do today?',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: colorScheme.onBackground),
-                            ),
-                            const SizedBox(height: 32),
-                            Row(
+                    const SizedBox(height: 16),
+                    RefreshIndicator(
+                        onRefresh:
+                            _handleRefresh, // La función que se llamará para refrescar
+                        child: SingleChildScrollView(
+                          child: Center(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _buildActionButton(
-                                  title: 'Go to field reservation',
-                                  imageAsset: 'assets/field_reservation.png',
-                                  onPressed: goToFieldReservation,
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: 'Welcome back ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: colorScheme.onBackground,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: user.name,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: colorScheme.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                const SizedBox(height: 3),
+                                Text(
+                                  'What would you like to do today?',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: colorScheme.onBackground),
+                                ),
+                                const SizedBox(height: 32),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _buildActionButton(
+                                      title: 'Go to field reservation',
+                                      imageAsset:
+                                          'assets/field_reservation.png',
+                                      onPressed: goToFieldReservation,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _buildActionButton(
+                                      title: 'Manage your matches',
+                                      imageAsset: 'assets/reserva_1.png',
+                                      onPressed: goToManageMatches,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Wrap(
+                                  spacing: 16,
+                                  runSpacing: 16,
+                                  alignment: WrapAlignment.center,
+                                  children: sports.map((sport) {
+                                    return _buildActionButton2(
+                                      title: sport.name,
+                                      imageAsset: sport.image!,
+                                      onPressed: () => goToNewMatch(sport),
+                                    );
+                                  }).toList(),
+                                )
                               ],
                             ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _buildActionButton(
-                                  title: 'Manage your matches',
-                                  imageAsset: 'assets/reserva_1.png',
-                                  onPressed: goToManageMatches,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Wrap(
-                              spacing:
-                                  16, // Espacio horizontal entre cada botón
-                              runSpacing:
-                                  16, // Espacio vertical entre las líneas
-                              alignment: WrapAlignment.center,
-                              children: sports.map((sport) {
-                                return _buildActionButton2(
-                                  title: sport.name,
-                                  imageAsset: sport.image!,
-                                  onPressed: () => goToNewMatch(sport),
-                                );
-                              }).toList(),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
+                        )),
                   ],
                 ),
               ),
             ),
-          );
+          ));
         },
       ),
     );
@@ -250,12 +275,13 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildActionButton2(
-      {required String title,
-      required String imageAsset,
-      required VoidCallback onPressed}) {
+  Widget _buildActionButton2({
+    required String title,
+    required String imageAsset,
+    required VoidCallback onPressed,
+  }) {
     return SizedBox(
-      width: 159, // Establece el ancho máximo deseado
+      width: 159,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -267,18 +293,27 @@ class _HomeViewState extends State<HomeView> {
         ),
         child: Row(
           children: [
-            Image.network(
-              imageAsset,
+            CachedNetworkImage(
+              imageUrl: imageAsset,
               width: 50,
               height: 100,
+              placeholder: (context, url) => const Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                  ),
+                ),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
-            const SizedBox(
-                width: 16), // Espacio horizontal entre la imagen y el texto
+            const SizedBox(width: 16),
             Expanded(
               child: Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.black, // Color del texto
+                  color: Colors.black,
                   fontSize: 17,
                 ),
               ),

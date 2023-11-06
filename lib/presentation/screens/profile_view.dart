@@ -1,27 +1,26 @@
 import 'dart:io';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
-import 'package:flutter_app_sports/main.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
-import 'package:flutter_app_sports/presentation/screens/login_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../logic/blocs/authentication/bloc/authentication_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_event.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
-
   @override
   _ProfileViewState createState() => _ProfileViewState();
 }
 
 class _ProfileViewState extends State<ProfileView> {
   final ProfileBloc _profileBloc = ProfileBloc();
-
   String? userName;
+
+  @override
   void initState() {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
@@ -29,13 +28,28 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    final colorTheme = Theme.of(context).colorScheme;
+
+    final ButtonStyle profileButtonStyle = ButtonStyle(
+      elevation: MaterialStateProperty.all(0),
+      backgroundColor: MaterialStateProperty.all(const Color(0xFFEAEAEA)),
+      foregroundColor: MaterialStateProperty.all(colorTheme.onError),
+      shape: MaterialStateProperty.all(CircleBorder()),
+      padding: MaterialStateProperty.all(EdgeInsets.all(16.0)),
+    );
+
+    final ButtonStyle iconButtonStyle = ButtonStyle(
+      backgroundColor: MaterialStateProperty.all(const Color(0xFFEAEAEA)),
+      foregroundColor: MaterialStateProperty.all(colorTheme.onError),
+      elevation: MaterialStateProperty.all(0),
+      padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 15.0)),
+    );
+
+    final buttonWidth = MediaQuery.of(context).size.width / 2;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
       bloc: _profileBloc,
-      listenWhen: (previous, current) => current is ProfileActionState,
-      buildWhen: (previous, current) => current is! ProfileActionState,
       listener: (context, state) {
         if (state is ProfileNavigateToEditState) {
           BlocProvider.of<GlobalBloc>(context)
@@ -46,220 +60,94 @@ class _ProfileViewState extends State<ProfileView> {
         }
       },
       builder: (context, state) {
-        if (state is ProfileLoadedSuccessState) {
-          // Si el estado es ProfileLoadedSuccessState, muestra la imagen de perfil
-          final profileImagePath = state.profileImagePath;
-
-          return Scaffold(
-            body: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            // Acción cuando se presiona el botón de perfil
-                            _profileBloc.add(
-                              ProfileAddProfilePictureButtonClickedEvent(),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(16.0),
-                            backgroundColor: colorScheme.background,
-                            shadowColor: Colors.transparent,
-                          ),
-                          child: profileImagePath != null
-                              ? Image.file(
-                                  File(profileImagePath),
-                                  width: 80.0,
-                                  height: 80.0,
-                                )
-                              : const Icon(
-                                  Icons.account_circle,
-                                  size: 80.0,
-                                  color: Colors.black87,
-                                ),
-                        ),
-                        const SizedBox(
-                            height:
-                                20), // Espacio reducido entre el botón de perfil y el texto
-                        Text(
-                          'Nombre del usuario',
-                          style: textTheme.titleLarge!.copyWith(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Lato',
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(
-                            height:
-                                40.0), // Espacio entre el nombre y los botones
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _iconButtonWithText(
-                                Icons.edit,
-                                'Edit my profile',
-                                () {
-                                  goToEditProfile();
-                                },
-                              ),
-                              const SizedBox(
-                                  height: 16.0), // Espacio entre los botones
-                              _iconButtonWithText(
-                                Icons.settings,
-                                'Settings',
-                                () {
-                                  // Acción cuando se presiona el botón
-                                },
-                              ),
-                              const SizedBox(
-                                  height: 16.0), // Espacio entre los botones
-                              _iconButtonWithText(
-                                Icons.logout,
-                                'Log out',
-                                () {
-                                  Restart.restartApp(webOrigin: '/');
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+        String? profileImagePath =
+            state is ProfileLoadedSuccessState ? state.profileImagePath : null;
+        return Scaffold(
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => _profileBloc
+                          .add(ProfileAddProfilePictureButtonClickedEvent()),
+                      style: profileButtonStyle,
+                      child: profileImagePath != null
+                          ? Image.file(File(profileImagePath),
+                              width: 80.0, height: 80.0)
+                          : Icon(Icons.account_circle, size: 80.0),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        } else {
-          // Si no estás en ProfileLoadedSuccessState, muestra el icono de perfil por defecto.
-          return Scaffold(
-            body: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            // Acción cuando se presiona el botón de perfil
-                            _profileBloc.add(
-                              ProfileAddProfilePictureButtonClickedEvent(),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(16.0),
-                            backgroundColor: colorScheme.background,
-                            shadowColor: Colors.transparent,
-                          ),
-                          child: const Icon(
-                            Icons.account_circle,
-                            size: 80.0,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      const SizedBox(
-                          height:
-                              20), // Espacio reducido entre el botón de perfil y el texto
-                      Text(
-                        userName != null ? '$userName' : 'User',
-                        style: textTheme.titleLarge!.copyWith(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Lato',
-                          color: colorScheme.primary,
-                        ),
+                    SizedBox(height: 20),
+                    Text(userName ?? 'User', style: textTheme.headline5),
+                    SizedBox(height: 40),
+                    ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: buttonWidth),
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.edit, size: 28.0),
+                        label: Text('Edit my profile',
+                            style: TextStyle(fontSize: 22)),
+                        onPressed: () => _editProfile(context),
+                        style: iconButtonStyle,
                       ),
-                      const SizedBox(
-                          height:
-                              40.0), // Espacio entre el nombre y los botones
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _iconButtonWithText(
-                              Icons.edit,
-                              'Edit my profile',
-                              () {
-                                goToEditProfile();
-                              },
-                            ),
-                            const SizedBox(
-                                height: 16.0), // Espacio entre los botones
-                            _iconButtonWithText(
-                              Icons.settings,
-                              'Settings',
-                              () {
-                                // Acción cuando se presiona el botón
-                              },
-                            ),
-                            const SizedBox(
-                                height: 16.0), // Espacio entre los botones
-                            _iconButtonWithText(
-                              Icons.logout,
-                              'Log out',
-                              () {
-                                Restart.restartApp(webOrigin: '/');
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      ],
                     ),
-                  ),
+                    SizedBox(height: 20),
+                    ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: buttonWidth),
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.settings, size: 28.0),
+                        label: Text('Settings', style: TextStyle(fontSize: 22)),
+                        onPressed: () {},
+                        style: iconButtonStyle,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: buttonWidth),
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.logout, size: 28.0),
+                        label: Text('Log out', style: TextStyle(fontSize: 22)),
+                        onPressed: logOut,
+                        style: iconButtonStyle,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          );
-        }
+          ),
+        );
       },
     );
   }
 
-  Widget _iconButtonWithText(
-    IconData iconData,
-    String text,
-    VoidCallback onPressed,
-  ) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Row(
-        children: [
-          Icon(
-            iconData,
-            size: 36.0,
-            color: Colors.black,
-          ),
-          const SizedBox(width: 16.0), // Espacio entre el icono y el texto
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 18.0,
-              fontFamily: 'Lato',
-              color: Colors.black,
-            ),
-          ),
-        ],
+  void _editProfile(BuildContext context) =>
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToIndexEvent(AppScreens.EditProfile.index));
+
+  void logOut() async {
+// Aquí puedes agregar el código para limpiar el estado de los blocs si es necesario
+    // Por ejemplo:
+    // Asegúrate de tener el evento y el estado adecuado en tu AuthenticationBloc.
+
+    // Limpia los datos de SharedPreferences
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    BlocProvider.of<AuthenticationBloc>(context).add(SignOutRequested());
+    BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(0));
+    
+    await prefs.clear();
+
+    // Aquí también puedes navegar de vuelta a la pantalla de inicio de sesión si es necesario
+    // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginScreen()), (Route<dynamic> route) => false);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('You have been successfully logged out.'),
+        duration: Duration(seconds: 2),
       ),
     );
-  }
 
-  void goToEditProfile() {
-    _profileBloc.add(ProfileEditButtonClickedEvent());
+    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
   }
 }
