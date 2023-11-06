@@ -40,8 +40,15 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<MatchBloc, MatchState>(
-        builder: (context, state) {
+        body: RefreshIndicator(
+      onRefresh: () async {
+        // Llama al evento para cargar de nuevo las coincidencias
+        BlocProvider.of<MatchBloc>(context)
+            .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
+      },
+      child: BlocConsumer<MatchBloc, MatchState>(
+        builder: (context, state) 
+        {
           if (state is MatchLoadingState) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -124,7 +131,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
           }
         },
       ),
-    );
+    ));
   }
 
   Widget _buildMatchTile(Match match) {
