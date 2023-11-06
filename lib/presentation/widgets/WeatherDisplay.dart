@@ -68,12 +68,12 @@ class _WeatherDisplayState extends State<WeatherDisplay> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData) {
-          return Text('No se recibieron datos del clima.');
+          return Text('Could not fetch weather data.');
         } else {
           final climaData = snapshot.data;
           final temperatura = climaData?['main']['temp'];
           final descripcion = climaData?['weather'][0]['description'];
-          return Text('Temperatura: $temperatura°C, Descripción: $descripcion');
+          return Text('Temperature: $temperatura°C, Description: $descripcion');
         }
       },
     );

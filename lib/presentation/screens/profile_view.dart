@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../logic/blocs/authentication/bloc/authentication_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_event.dart';
+import 'dart:convert';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -19,11 +21,12 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   final ProfileBloc _profileBloc = ProfileBloc();
   String? userName;
+  String? userImage;
 
-  @override
   void initState() {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
+    userImage = BlocProvider.of<AuthenticationBloc>(context).user!.imageUrl;
   }
 
   @override
@@ -60,8 +63,19 @@ class _ProfileViewState extends State<ProfileView> {
         }
       },
       builder: (context, state) {
-        String? profileImagePath =
-            state is ProfileLoadedSuccessState ? state.profileImagePath : null;
+        // String? profileImagePath =
+        //     state is ProfileLoadedSuccessState ? state.profileImagePath : null;
+        
+          String base64String = "data:image/png;base64,${userImage!}";
+
+          // Elimina el encabezado
+          String base64Content = base64String.split(',').last;
+          Uint8List bytes = base64.decode(base64Content);
+          Image image = Image.memory(
+            bytes,
+            width: 80.0,
+            height: 80.0,
+          );
         return Scaffold(
           body: SingleChildScrollView(
             child: Center(
@@ -74,9 +88,8 @@ class _ProfileViewState extends State<ProfileView> {
                       onPressed: () => _profileBloc
                           .add(ProfileAddProfilePictureButtonClickedEvent()),
                       style: profileButtonStyle,
-                      child: profileImagePath != null
-                          ? Image.file(File(profileImagePath),
-                              width: 80.0, height: 80.0)
+                      child: userImage != null
+                          ? image
                           : Icon(Icons.account_circle, size: 80.0),
                     ),
                     SizedBox(height: 20),
