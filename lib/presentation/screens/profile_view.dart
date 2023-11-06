@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../logic/blocs/authentication/bloc/authentication_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_bloc.dart';
 import '../../logic/blocs/global_events/bloc/global_event.dart';
@@ -97,7 +99,7 @@ class _ProfileViewState extends State<ProfileView> {
                       child: ElevatedButton.icon(
                         icon: Icon(Icons.logout, size: 28.0),
                         label: Text('Log out', style: TextStyle(fontSize: 22)),
-                        onPressed: Restart.restartApp,
+                        onPressed: logOut,
                         style: iconButtonStyle,
                       ),
                     ),
@@ -112,4 +114,39 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void _editProfile(BuildContext context) => BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.EditProfile.index));
+
+  void logOut() async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.none) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Cannot log out because there is no internet connection.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  } else {
+    // Aquí puedes agregar el código para limpiar el estado de los blocs si es necesario
+    // Por ejemplo: 
+    // Asegúrate de tener el evento y el estado adecuado en tu AuthenticationBloc.
+
+    // Limpia los datos de SharedPreferences
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    BlocProvider.of<AuthenticationBloc>(context).add(SignOutRequested());
+    await prefs.clear();
+
+    // Aquí también puedes navegar de vuelta a la pantalla de inicio de sesión si es necesario
+    // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginScreen()), (Route<dynamic> route) => false);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('You have been successfully logged out.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+
+    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+
+  }
+}
+
 }

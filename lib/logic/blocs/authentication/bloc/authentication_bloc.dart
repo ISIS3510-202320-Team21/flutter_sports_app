@@ -97,6 +97,7 @@ class AuthenticationBloc
       await AuthRepository().signOut();
       emit(UnAuthenticated());
     });
+    
 
     //   Future<void> _persistUser(User user) async {
     //   final SharedPreferences prefs = await SharedPreferences.getInstance();
