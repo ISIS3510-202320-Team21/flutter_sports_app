@@ -3,7 +3,13 @@ class Sport {
   final String? image;
   final int id;
 
-  Sport({required this.name , required this.image, required this.id});
+  Sport({required this.name, this.image, required this.id});
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'imageUrl': image,
+    'id': id,
+  };
 
   factory Sport.fromJson(Map<String, dynamic> json) {
     return Sport(

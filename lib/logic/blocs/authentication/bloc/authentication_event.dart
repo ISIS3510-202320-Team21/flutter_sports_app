@@ -66,4 +66,6 @@ class UpdateUserEvent extends AuthenticationEvent {
   UpdateUserEvent(this.user);
 }
 
+class CheckSession extends AuthenticationEvent {}
+
 

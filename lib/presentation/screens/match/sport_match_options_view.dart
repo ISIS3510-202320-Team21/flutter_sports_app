@@ -25,6 +25,7 @@ class SportMatchOptionsView extends StatefulWidget {
 class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   DateTime? selectedDate;
   User? user;
+  List<Match> matches = [];
 
   final List<String> omittedStatuses = ['Finished', 'Out of Date', 'Approved'];
 
@@ -32,106 +33,95 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).user;
+    BlocProvider.of<MatchBloc>(context)
+        .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Provider<MatchBloc>(
-      create: (context) => BlocProvider.of<MatchBloc>(context),
-      child: Builder(
-        builder: (BuildContext innerContext) {
-          innerContext
-              .read<MatchBloc>()
-              .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
-          print("reconstruido");
-          return Scaffold(
-            body: BlocBuilder<MatchBloc, MatchState>(
-              builder: (context, state) {
-                if (state is MatchLoadingState) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is MatchesLoadedForSportState) {
-                  return ListView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: selectedDate ?? DateTime.now(),
-                              firstDate: DateTime.now(),
-                              lastDate: DateTime(2101),
-                            );
+    return Scaffold(
+      body: BlocConsumer<MatchBloc, MatchState>(
+        builder: (context, state) {
+          if (state is MatchLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate ?? DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2101),
+                    );
 
-                            if (pickedDate != null &&
-                                pickedDate != selectedDate) {
-                              setState(() {
-                                selectedDate = pickedDate;
-                              });
-                              BlocProvider.of<MatchBloc>(context).add(
-                                  FetchMatchesSportsEvent(
-                                      widget.sport.id, selectedDate));
-                            }
-                          },
-                          child: InputDecorator(
-                            decoration: const InputDecoration(
-                              labelText: 'Fecha',
-                              border: OutlineInputBorder(),
-                              suffixIcon: Icon(Icons.arrow_drop_down),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.calendar_today, size: 20.0),
-                                const SizedBox(width: 10.0),
-                                Text(
-                                  selectedDate != null
-                                      ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
-                                      : 'Selecciona una fecha',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
+                    if (pickedDate != null && pickedDate != selectedDate) {
+                      setState(() {
+                        selectedDate = pickedDate;
+                      });
+                      BlocProvider.of<MatchBloc>(context).add(
+                          FetchMatchesSportsEvent(
+                              widget.sport.id, selectedDate));
+                    }
+                  },
+                  child: InputDecorator(
+                    decoration: const InputDecoration(
+                      labelText: 'Fecha',
+                      border: OutlineInputBorder(),
+                      suffixIcon: Icon(Icons.arrow_drop_down),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.calendar_today, size: 20.0),
+                        const SizedBox(width: 10.0),
+                        Text(
+                          selectedDate != null
+                              ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
+                              : 'Selecciona una fecha',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              ...matches
+                  .where((match) =>
+                      !omittedStatuses.contains(match.status) &&
+                      match.userCreated?.id != user?.id)
+                  .map((match) => _buildMatchTile(match))
+                  .toList(),
+              ListTile(
+                leading: const Icon(Icons.add_circle, size: 40.0),
+                title:
+                    const Text('Add your preferred times and wait for a match'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  if (selectedDate == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Please select a date first!'),
+                        duration: Duration(seconds: 2),
                       ),
-                      ...state.matches
-                          .where((match) =>
-                              !omittedStatuses.contains(match.status) &&
-                              match.userCreated?.id != user?.id)
-                          .map((match) => _buildMatchTile(match))
-                          .toList(),
-                      ListTile(
-                        leading: const Icon(Icons.add_circle, size: 40.0),
-                        title: const Text(
-                            'Add your preferred times and wait for a match'),
-                        trailing: const Icon(Icons.arrow_forward_ios),
-                        onTap: () {
-                          if (selectedDate == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please select a date first!'),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          } else {
-                            BlocProvider.of<GlobalBloc>(context).add(
-                                NavigateToPrefferedMatchEvent(
-                                    widget.sport, selectedDate));
-                          }
-                        },
-                      ),
-                    ],
-                  );
-                } else if (state is MatchErrorState) {
-                  return const Center(child: Text('Error loading matches'));
-                } else {
-                  return Container();
-                }
-              },
-            ),
+                    );
+                  } else {
+                    BlocProvider.of<GlobalBloc>(context).add(
+                        NavigateToPrefferedMatchEvent(
+                            widget.sport, selectedDate));
+                  }
+                },
+              ),
+            ],
           );
+        },
+        listener: (BuildContext context, MatchState state) {
+          if (state is MatchesLoadedForSportState) {
+            matches = state.matches;
+          }
         },
       ),
     );
@@ -159,7 +149,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
         duration: Duration(seconds: 2),
       ),
     );
-    BlocProvider.of<GlobalBloc>(context).add(NavigateToMatchEvent(match, "Match"));
+    BlocProvider.of<GlobalBloc>(context)
+        .add(NavigateToMatchEvent(match, "Match"));
   }
-  
 }

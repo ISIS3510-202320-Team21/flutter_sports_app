@@ -35,12 +35,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

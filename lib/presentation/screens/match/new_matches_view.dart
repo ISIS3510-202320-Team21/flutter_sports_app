@@ -1,4 +1,6 @@
 // Archivo: new_matches_view.dart
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
@@ -17,11 +19,22 @@ class NewMatchesView extends StatefulWidget {
 
 class _NewMatchesViewState extends State<NewMatchesView> {
   String? userName;
-  
+  final sportBloc = SportBloc();
+
   @override
-  void initState () {
+  void initState() {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
+    checkInitialConnectivity(sportBloc);
+  }
+
+  void checkInitialConnectivity(SportBloc sportBloc) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      sportBloc.add(FetchSportsStorage());
+    } else {
+      sportBloc.add(FetchSportsEvent());
+    }
   }
 
   @override
@@ -31,8 +44,6 @@ class _NewMatchesViewState extends State<NewMatchesView> {
 
     return BlocProvider(
       create: (context) {
-        final sportBloc = SportBloc();
-        sportBloc.add(FetchSportsEvent());
         return sportBloc;
       },
       child: BlocConsumer<SportBloc, SportState>(
@@ -41,6 +52,9 @@ class _NewMatchesViewState extends State<NewMatchesView> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Error fetching sports')),
             );
+          }
+          else if (state is SportsLoaded) {
+            sportBloc.add(SaveMatchSportsEvent(state.sports));
           }
         },
         builder: (context, state) {
@@ -76,7 +90,6 @@ class _NewMatchesViewState extends State<NewMatchesView> {
                     ),
                   ),
                 ),
-
                 if (state is FetchingSports)
                   const Center(child: CircularProgressIndicator())
                 else if (state is SportsLoaded)
@@ -99,7 +112,8 @@ class _NewMatchesViewState extends State<NewMatchesView> {
                         return InkWell(
                           onTap: () {
                             print("Tapped on sport ${sport.name}");
-                            BlocProvider.of<GlobalBloc>(context).add(NavigateToSportEvent(sport));
+                            BlocProvider.of<GlobalBloc>(context)
+                                .add(NavigateToSportEvent(sport));
                           },
                           splashColor: Colors.blueAccent
                               .withOpacity(0.5), // Color de la salpicadura
@@ -122,14 +136,15 @@ class _NewMatchesViewState extends State<NewMatchesView> {
                                 Row(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(sport.image!),
-                                        radius: 40,
-                                        backgroundColor: Colors.transparent,
-                                      ),
-                                    ),
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: CircleAvatar(
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                                  sport.image!),
+                                          radius: 40,
+                                          backgroundColor: Colors.transparent,
+                                        )),
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),

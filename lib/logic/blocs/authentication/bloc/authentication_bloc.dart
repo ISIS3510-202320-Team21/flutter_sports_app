@@ -14,7 +14,8 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  User? get user => state is Authenticated ? (state as Authenticated).usuario : null;
+  User? get user =>
+      state is Authenticated ? (state as Authenticated).usuario : null;
 
   final AuthRepository _authRepository = AuthRepository();
   AuthenticationBloc() : super(UnAuthenticated()) {
@@ -23,27 +24,45 @@ class AuthenticationBloc
     Emite un estado de carga primero, luego intenta autenticar al usuario
     y en caso de lograrlo emite un estado de Authenticated
     */
-  on<LoginRequested>((event, emit) async {
-    emit(AuthLoading());
-    try {
-      User? usuario = await _authRepository.signIn(email: event.email, password: event.password);
-      if (usuario != null) {
-        // Convertir el usuario a JSON y almacenarlo
-        final prefs = await SharedPreferences.getInstance();
-        final userJson = json.encode(usuario.toJson());
-        await prefs.setString('user', userJson);
-
-        emit(Authenticated(usuario, event.email));
-      } else {
-        // Manejar el caso cuando el usuario es nulo
-        emit(AuthError("Usuario no encontrado."));
+    on<LoginRequested>((event, emit) async {
+      emit(AuthLoading());
+      try {
+        User? usuario = await _authRepository.signIn(
+            email: event.email, password: event.password);
+        if (usuario != null) {
+          // Convertir el usuario a JSON y almacenarlo
+          final prefs = await SharedPreferences.getInstance();
+          final userJson = json.encode(usuario.toJson());
+          await prefs.setString('user', userJson);
+          await prefs.setBool('isLoggedIn', true);
+          emit(Authenticated(usuario, event.email));
+        } else {
+          // Manejar el caso cuando el usuario es nulo
+          emit(AuthError("Usuario no encontrado."));
+          emit(UnAuthenticated());
+        }
+      } catch (e) {
+        emit(AuthError(e.toString().replaceAll("Exception: ", "")));
         emit(UnAuthenticated());
       }
-    } catch (e) {
-      emit(AuthError(e.toString().replaceAll("Exception: ", "")));
-      emit(UnAuthenticated());
-    }
-  });
+    });
+
+
+    on<CheckSession>((event, emit) async {
+      emit(AuthLoading());
+      final prefs = await SharedPreferences.getInstance();
+      final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+      if (isLoggedIn) {
+        // Si está logueado, emite el estado de autenticado
+        final userJson = prefs.getString('user');
+        final user = User.fromJson(jsonDecode(userJson!));
+        emit(Authenticated(user, user.email));
+      } else {
+        // Si no está logueado, emite el estado de no autenticado
+        emit(UnAuthenticated());
+      }
+    });
 
     /*
     Maneja el evento que se lanza al oprimir el boton de signup
@@ -78,29 +97,26 @@ class AuthenticationBloc
       await AuthRepository().signOut();
       emit(UnAuthenticated());
     });
+    
 
+    //   Future<void> _persistUser(User user) async {
+    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   String userJson = json.encode(user.toJson());
+    //   await prefs.setString('user', userJson);
+    // }
 
+    // Future<User?> _loadUser() async {
+    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   String? userJson = prefs.getString('user');
+    //   if (userJson != null) {
+    //     return User.fromJson(json.decode(userJson));
+    //   }
+    //   return null;
+    // }
 
-  //   Future<void> _persistUser(User user) async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String userJson = json.encode(user.toJson());
-  //   await prefs.setString('user', userJson);
-  // }
-
-  // Future<User?> _loadUser() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? userJson = prefs.getString('user');
-  //   if (userJson != null) {
-  //     return User.fromJson(json.decode(userJson));
-  //   }
-  //   return null;
-  // }
-
-  // Future<void> _deleteUser() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.remove('user');
-  // }
-
-
+    // Future<void> _deleteUser() async {
+    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   await prefs.remove('user');
+    // }
   }
 }
