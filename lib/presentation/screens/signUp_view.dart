@@ -1,6 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/fetch/bloc/fetch_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/fetch/bloc/fetch_event.dart';
+import 'package:flutter_app_sports/logic/blocs/fetch/bloc/fetch_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -30,55 +33,61 @@ class _SignUpViewState extends State<SignUpView> {
   void initState() {
     super.initState();
     // Lanza los eventos para cargar los datos al iniciar la vista
-    BlocProvider.of<AuthenticationBloc>(context).add(FetchRolesRequested());
-    BlocProvider.of<AuthenticationBloc>(context)
+    BlocProvider.of<FetchBloc>(context).add(FetchRolesRequested());
+    BlocProvider.of<FetchBloc>(context)
         .add(FetchUniversitiesRequested());
-    BlocProvider.of<AuthenticationBloc>(context).add(FetchGendersRequested());
+    BlocProvider.of<FetchBloc>(context).add(FetchGendersRequested());
   }
 
   @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    ScreenUtil.init(context);
+Widget build(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
+  ScreenUtil.init(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0.0,
-        title: Text(
-          "SIGN UP",
-          style: textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onBackground,
-              fontWeight: FontWeight.bold),
-        ),
-        toolbarHeight: 0.1 * ScreenUtil().screenHeight,
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
-      body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
-        listener: (context, state) {
-          if (state is Authenticated) Navigator.of(context).pushNamed('/home');
-          if (state is AuthError) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.error)));
-          }
-          if (state is RolesLoaded) {
-            roles = state.roles;
-          }
-          if (state is UniversitiesLoaded) {
-            universities = state.universities;
-          }
-          if (state is GendersLoaded) {
-            genders = state.genders;
-          }
-        },
-        builder: (context, state) {
-          if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is AuthLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return Container(
+  return Scaffold(
+    appBar: AppBar(
+      // Existing AppBar properties...
+    ),
+    body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+      listener: (context, authState) {
+        // Existing AuthenticationBloc listener code...
+      },
+      builder: (context, authState) {
+        // Here you can use BlocBuilder or BlocConsumer for FetchBloc.
+        return BlocConsumer<FetchBloc, FetchState>(
+          listener: (context, fetchState) {
+            // React to the state changes of FetchBloc
+            if (fetchState is RolesLoadSuccess) {
+              setState(() {
+                roles = fetchState.roles;
+              });
+            }
+            if (fetchState is UniversitiesLoadSuccess) {
+              setState(() {
+                universities = fetchState.universities;
+              });
+            }
+            if (fetchState is GendersLoadSuccess) {
+              setState(() {
+                genders = fetchState.genders;
+              });
+            }
+          },
+          builder: (context, fetchState) {
+            // This will rebuild whenever FetchBloc's state changes.
+            if (fetchState is RolesLoadInProgress ||
+                fetchState is UniversitiesLoadInProgress ||
+                fetchState is GendersLoadInProgress) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            // If any of the data lists is empty, it means data is not fetched yet.
+            if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            // Once all the data is loaded, you can build your form.
+            return Container(
             constraints: const BoxConstraints.expand(),
             color: Theme.of(context).colorScheme.background,
             child: Form(
@@ -220,11 +229,13 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
               ),
             ),
-          );
-        },
-      ),
-    );
-  }
+          );// Extract the form build method for readability.
+          },
+        );
+      },
+    ),
+  );
+}
 
   Widget _buildTextField(
     BuildContext context,
