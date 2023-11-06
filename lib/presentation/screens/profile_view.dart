@@ -32,10 +32,9 @@ class _ProfileViewState extends State<ProfileView> {
     // Defining custom button styles
     final ButtonStyle profileButtonStyle = ButtonStyle(
       backgroundColor: MaterialStateProperty.all(const Color(0xFFEAEAEA)),
-      iconColor: MaterialStateProperty.all(colorTheme.onSurface),
+      foregroundColor: MaterialStateProperty.all(colorTheme.onError),
       shape: MaterialStateProperty.all(CircleBorder()),
       padding: MaterialStateProperty.all(EdgeInsets.all(16.0)),
-      minimumSize: MaterialStateProperty.all(Size(double.infinity, 50)),
     );
 
     final ButtonStyle iconButtonStyle = ButtonStyle(
@@ -43,8 +42,10 @@ class _ProfileViewState extends State<ProfileView> {
       foregroundColor: MaterialStateProperty.all(colorTheme.onError),
       elevation: MaterialStateProperty.all(0),
       padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 15.0)),
-      minimumSize: MaterialStateProperty.all(Size(double.infinity, 60)),
     );
+
+    // Calculate the width for the buttons based on the screen size
+    final buttonWidth = MediaQuery.of(context).size.width / 2;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
       bloc: _profileBloc,
@@ -73,25 +74,34 @@ class _ProfileViewState extends State<ProfileView> {
                     SizedBox(height: 20),
                     Text(userName ?? 'User', style: textTheme.headline5),
                     SizedBox(height: 40),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.edit, size: 28.0),
-                      label: Text('Edit my profile', style: TextStyle(fontSize: 22)),
-                      onPressed: () => _editProfile(context),
-                      style: iconButtonStyle,
+                    ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: buttonWidth),
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.edit, size: 28.0),
+                        label: Text('Edit my profile', style: TextStyle(fontSize: 22)),
+                        onPressed: () => _editProfile(context),
+                        style: iconButtonStyle,
+                      ),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.settings, size: 28.0),
-                      label: Text('Settings', style: TextStyle(fontSize: 22)),
-                      onPressed: () {},
-                      style: iconButtonStyle,
+                    ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: buttonWidth),
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.settings, size: 28.0),
+                        label: Text('Settings', style: TextStyle(fontSize: 22)),
+                        onPressed: () {},
+                        style: iconButtonStyle,
+                      ),
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.logout, size: 28.0),
-                      label: Text('Log out', style: TextStyle(fontSize: 22)),
-                      onPressed: Restart.restartApp,
-                      style: iconButtonStyle,
+                    ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(width: buttonWidth),
+                      child: ElevatedButton.icon(
+                        icon: Icon(Icons.logout, size: 28.0),
+                        label: Text('Log out', style: TextStyle(fontSize: 22)),
+                        onPressed: Restart.restartApp,
+                        style: iconButtonStyle,
+                      ),
                     ),
                   ],
                 ),
