@@ -28,6 +28,7 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     on<DeleteMatchEvent>(_deleteMatch);
     on<FetchCitiesRequested>(_FetchCitiesRequested);
     on<FetchCourtsRequested>(_FetchCourtsRequested);
+    on<AllDataLoadedEvent>(_handleAllDataLoadedEvent);
   }
 
   FutureOr<void> matchInitialEvent(
@@ -174,5 +175,10 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
       print(e);
       emit(MatchErrorState());
     }
+  }
+
+  FutureOr<void> _handleAllDataLoadedEvent(
+      AllDataLoadedEvent event, Emitter<MatchState> emit) async {
+    emit((AllDataLoadedState()));
   }
 }

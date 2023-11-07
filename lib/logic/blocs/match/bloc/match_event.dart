@@ -78,3 +78,6 @@ class DeleteMatchEvent extends MatchEvent {
 class FetchCitiesRequested extends MatchEvent {}
 
 class FetchCourtsRequested extends MatchEvent {}
+
+class AllDataLoadedEvent extends MatchEvent {
+}

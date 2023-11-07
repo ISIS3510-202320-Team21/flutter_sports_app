@@ -106,6 +106,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
             ? CircleAvatar(
                 radius: 30.0,
                 backgroundImage: NetworkImage(widget.match.sport!.image!),
+                backgroundColor: Colors.transparent,
               )
             : Icon(
                 icon ?? Icons.sports,

@@ -80,3 +80,7 @@ class CourtsLoadSuccess extends MatchState {
   final List<String> courts;
   CourtsLoadSuccess(this.courts);
 }
+
+class AllDataLoadedState extends MatchState {
+  AllDataLoadedState();
+}
