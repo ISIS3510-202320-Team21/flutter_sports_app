@@ -98,25 +98,5 @@ class AuthenticationBloc
       emit(UnAuthenticated());
     });
     
-
-    //   Future<void> _persistUser(User user) async {
-    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   String userJson = json.encode(user.toJson());
-    //   await prefs.setString('user', userJson);
-    // }
-
-    // Future<User?> _loadUser() async {
-    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   String? userJson = prefs.getString('user');
-    //   if (userJson != null) {
-    //     return User.fromJson(json.decode(userJson));
-    //   }
-    //   return null;
-    // }
-
-    // Future<void> _deleteUser() async {
-    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   await prefs.remove('user');
-    // }
   }
 }

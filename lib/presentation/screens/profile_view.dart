@@ -26,7 +26,8 @@ class _ProfileViewState extends State<ProfileView> {
   void initState() {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
-    userImage = BlocProvider.of<AuthenticationBloc>(context).user!.imageUrl;
+    userImage = BlocProvider.of<AuthenticationBloc>(context).user?.imageUrl;
+    print(userImage);
   }
 
   @override
@@ -66,7 +67,7 @@ class _ProfileViewState extends State<ProfileView> {
         // String? profileImagePath =
         //     state is ProfileLoadedSuccessState ? state.profileImagePath : null;
         
-          String base64String = "data:image/png;base64,${userImage!}";
+          String base64String = "data:image/png;base64,$userImage";
 
           // Elimina el encabezado
           String base64Content = base64String.split(',').last;

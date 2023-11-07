@@ -66,3 +66,17 @@ class MatchFinishedState extends MatchState {
 
   MatchFinishedState(this.match);
 }
+
+class CitiesLoadInProgress extends MatchState {}
+
+class CitiesLoadSuccess extends MatchState {
+  final List<String> cities;
+  CitiesLoadSuccess(this.cities);
+}
+
+class CourtsLoadInProgress extends MatchState {}
+
+class CourtsLoadSuccess extends MatchState {
+  final List<String> courts;
+  CourtsLoadSuccess(this.courts);
+}

@@ -163,4 +163,36 @@ class MatchRepository {
       throw Exception('Failed to delete match: ${response.statusCode}');
     }
   }
+
+    Future<List<String>> fetchCities() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/cities/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> citiesList = jsonDecode(utf8.decode(response.bodyBytes)); 
+      return citiesList.cast<String>();
+    } else {
+      throw Exception('Failed to fetch cities: ${response.statusCode}');
+    }
+  }
+
+  Future<List<String>> fetchCourts() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/courts/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> courtsList = jsonDecode(utf8.decode(response.bodyBytes));
+      return courtsList.cast<String>();
+    } else {
+      throw Exception('Failed to fetch courts: ${response.statusCode}');
+    }
+  }
 }

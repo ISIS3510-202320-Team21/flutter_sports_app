@@ -39,6 +39,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<MatchBloc>(context).add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
     return Scaffold(
         body: RefreshIndicator(
       onRefresh: () async {

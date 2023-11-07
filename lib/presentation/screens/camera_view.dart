@@ -31,7 +31,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   void initState() {
     cameraBloc.add(CameraInitialEvent());
-    userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
+    userId = BlocProvider.of<AuthenticationBloc>(context).user!.id;
     super.initState();
   }
 
@@ -151,8 +151,7 @@ class DisplayPictureScreen extends StatelessWidget {
           FloatingActionButton(
             heroTag: "savebtn",
             onPressed: () {
-              //TODO take user id from authentication bloc
-              BlocProvider.of<CameraBloc>(context).add(SavePhotoEvent(imagePath: imagePath, userId: 1));
+              BlocProvider.of<CameraBloc>(context).add(SavePhotoEvent(imagePath: imagePath, userId: userId!));
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                     content: Text('Photo Saved!'),
