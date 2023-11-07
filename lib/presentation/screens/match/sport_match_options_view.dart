@@ -39,7 +39,8 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<MatchBloc>(context).add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
+    BlocProvider.of<MatchBloc>(context)
+        .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
     return Scaffold(
         body: RefreshIndicator(
       onRefresh: () async {
@@ -48,8 +49,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
             .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
       },
       child: BlocConsumer<MatchBloc, MatchState>(
-        builder: (context, state) 
-        {
+        builder: (context, state) {
           if (state is MatchLoadingState) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -76,10 +76,23 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                     }
                   },
                   child: InputDecorator(
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Fecha',
                       border: OutlineInputBorder(),
-                      suffixIcon: Icon(Icons.arrow_drop_down),
+                      suffixIcon: selectedDate != null
+                          ? IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                setState(() {
+                                  selectedDate = null;
+                                });
+                                // También es necesario actualizar los matches ya que la fecha ha cambiado
+                                BlocProvider.of<MatchBloc>(context).add(
+                                    FetchMatchesSportsEvent(
+                                        widget.sport.id, null));
+                              },
+                            )
+                          : Icon(Icons.arrow_drop_down),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
