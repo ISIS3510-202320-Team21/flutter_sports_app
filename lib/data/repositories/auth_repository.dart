@@ -115,7 +115,7 @@ class AuthRepository {
   Future<List<Sport>> fetchSportsRecent(User user) async {
     int userId = user.id!;
     final response = await http.get(
-      Uri.parse('$backendUrl/user/$userId/most_reserved_sports_this_week'),
+      Uri.parse('$backendUrl/user/$userId/most_reserved_sports_this_week/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
