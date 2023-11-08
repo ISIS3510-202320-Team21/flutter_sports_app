@@ -131,7 +131,11 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
       await MatchRepository(userRepository: UserRepository())
           .rateMatch(event.user, event.match, event.rating);
       Match? match = await MatchRepository(userRepository: UserRepository())
+          .getMatch(matchId: event.match.id!);
+      if (match?.rate1 != null && match?.rate2 != null) {
+        await MatchRepository(userRepository: UserRepository())
           .changeStatusMatch(event.match.id!, "Finished");
+      }
       emit(MatchFinishedState(match!));
     } catch (e) {
       print(e);

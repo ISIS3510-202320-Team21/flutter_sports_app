@@ -23,12 +23,14 @@ class IndividualMatch extends StatefulWidget {
 
 class _IndividualMatchState extends State<IndividualMatch> {
   User? user;
-  double? userRating;
+  double? userRating=3;
+  bool isUserInMatch = false;
 
   @override
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).user;
+    isUserInMatch = widget.match.userCreated?.id == user?.id;
   }
 
   @override
@@ -219,7 +221,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
                           ),
                         ),
                       ),
-                    ] else if (widget.state == "Rate") ...[
+                    ] else if ((widget.state == "Rate" && isUserInMatch && widget.match.rate1 == null) || (widget.state == "Rate" && !isUserInMatch && widget.match.rate2 == null)) ...[
                       ElevatedButton(
                         onPressed: () => _showRatingDialog(context),
                         child: const Text(
@@ -230,9 +232,28 @@ class _IndividualMatchState extends State<IndividualMatch> {
                           ),
                         ),
                       ),
-                    ] else if (widget.state == "Finished") ...[
+                    ] else if ((widget.state == "Rate" && (widget.match.rate1 != null || widget.match.rate2 != null))) ...[
                       RatingBar.builder(
-                        initialRating: widget.match.rate ?? 0,
+                        initialRating: isUserInMatch
+                            ? widget.match.rate1 ?? 0
+                            : widget.match.rate2 ?? 0,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemPadding:
+                            const EdgeInsets.symmetric(horizontal: 4.0),
+                        itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                        onRatingUpdate: (rating) {},
+                        ignoreGestures: true, // Add this line
+                      ),
+                    ]
+                    else if (widget.state == "Finished") ...[
+                      RatingBar.builder(
+                        initialRating: (widget.match.rate1! + widget.match.rate2!) / 2, 
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,

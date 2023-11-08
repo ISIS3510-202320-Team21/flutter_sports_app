@@ -11,7 +11,8 @@ class Match {
   final User? userCreated;
   final User? userJoined;
   final String time;
-  final double? rate;
+  final double? rate1;
+  final double? rate2;
   final String status;
   final String city;
   final String court;
@@ -21,7 +22,8 @@ class Match {
   Match(
       {required this.date,
       required this.time,
-      this.rate,
+      this.rate1,
+      this.rate2,
       required this.status,
       required this.city,
       required this.court,
@@ -58,7 +60,8 @@ class Match {
     return Match(
       date: DateFormat("dd/MM/yyyy").parse(json['date']),
       time: json['time'],
-      rate: json['rate'] != null ? double.parse(json['rate']) : null,
+      rate1: json['rate1'] != null ? double.parse(json['rate1']) : null,
+      rate2: json['rate2'] != null ? double.parse(json['rate2']) : null,
       status: json['status'],
       city: json['city'],
       court: json['court'],
