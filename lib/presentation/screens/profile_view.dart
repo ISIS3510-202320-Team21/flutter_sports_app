@@ -19,7 +19,6 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  final ProfileBloc _profileBloc = ProfileBloc();
   String? userName;
   String? userImage;
 
@@ -53,7 +52,6 @@ class _ProfileViewState extends State<ProfileView> {
     final buttonWidth = MediaQuery.of(context).size.width / 2;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
-      bloc: _profileBloc,
       listener: (context, state) {
         if (state is ProfileNavigateToEditState) {
           BlocProvider.of<GlobalBloc>(context)
@@ -61,12 +59,15 @@ class _ProfileViewState extends State<ProfileView> {
         } else if (state is ProfileNavigateToAddProfilePictureState) {
           BlocProvider.of<GlobalBloc>(context)
               .add(NavigateToIndexEvent(AppScreens.CameraScreen.index));
+        } else if (state is ProfileLoadedSuccessState) {
+          BlocProvider.of<AuthenticationBloc>(context)
+              .add(UpdateUserEvent(state.user));
         }
       },
       builder: (context, state) {
         // String? profileImagePath =
         //     state is ProfileLoadedSuccessState ? state.profileImagePath : null;
-        
+       
           String base64String = "data:image/png;base64,$userImage";
 
           // Elimina el encabezado
@@ -86,7 +87,7 @@ class _ProfileViewState extends State<ProfileView> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     ElevatedButton(
-                      onPressed: () => _profileBloc
+                      onPressed: () => BlocProvider.of<ProfileBloc>(context)
                           .add(ProfileAddProfilePictureButtonClickedEvent()),
                       style: profileButtonStyle,
                       child: userImage != null

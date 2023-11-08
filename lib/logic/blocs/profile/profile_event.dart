@@ -20,7 +20,9 @@ class ProfileAddProfilePictureButtonClickedEvent extends ProfileEvent {
 }
 
 class ProfileUpdateImageEvent extends ProfileEvent {
-  final String imagePath;
+  final User user;
 
-  ProfileUpdateImageEvent({required this.imagePath});
+  ProfileUpdateImageEvent({
+    required this.user,
+  });
 }

@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -57,6 +58,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         else if (state is SubmittedUserActionState){
           BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Profile.index));
           editProfileBloc.add(EditProfileInitialEvent(userId: userid)); 
+          BlocProvider.of<AuthenticationBloc>(context).add(UpdateUserEvent(state.user));
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("User updated"),
               backgroundColor: Colors.green),
@@ -74,6 +76,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         roles = editProfileBloc.roles;
         universities = editProfileBloc.universities;
         genders = editProfileBloc.genders;
+        
         if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -307,7 +310,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   void _changeInfo(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {  
+
       editProfileBloc.add(
         SubmitUserEvent(
           email: _emailController.text,
@@ -320,6 +324,7 @@ class _EditProfileViewState extends State<EditProfileView> {
           userId: userid
         ),
       );
+      
     }
   }
 }

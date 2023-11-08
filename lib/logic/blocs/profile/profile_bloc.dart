@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_app_sports/data/models/user.dart';
 import 'dart:async';
 import 'package:meta/meta.dart';
 
@@ -35,7 +36,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   FutureOr<void> profileUpdateImageEvent(ProfileUpdateImageEvent event, Emitter<ProfileState> emit) {
-    // Actualiza la ruta de la imagen de perfil en el estado
-    emit(ProfileLoadedSuccessState(profileImagePath: event.imagePath));
+    emit(ProfileLoadedSuccessState(user: event.user));
   }
 }

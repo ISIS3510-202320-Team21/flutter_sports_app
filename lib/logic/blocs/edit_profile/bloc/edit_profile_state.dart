@@ -25,6 +25,11 @@ class SubmissionErrorState extends EditProfileActionState {
   });
 }
 
-class SubmittedUserActionState extends EditProfileActionState {}
+class SubmittedUserActionState extends EditProfileActionState {
+  User user;
+  SubmittedUserActionState({
+    required this.user
+  });
+}
 
 class ProfileNavigateActionState extends EditProfileActionState {}

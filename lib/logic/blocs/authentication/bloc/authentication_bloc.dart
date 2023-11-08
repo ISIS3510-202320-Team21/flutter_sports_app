@@ -47,7 +47,6 @@ class AuthenticationBloc
       }
     });
 
-
     on<CheckSession>((event, emit) async {
       emit(AuthLoading());
       final prefs = await SharedPreferences.getInstance();
@@ -97,6 +96,14 @@ class AuthenticationBloc
       await AuthRepository().signOut();
       emit(UnAuthenticated());
     });
-    
+
+    on<UpdateUserEvent>((event, emit) async {
+      emit(AuthLoading());
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = json.encode(event.user.toJson());
+      await prefs.setString('user', userJson);
+      await prefs.setBool('isLoggedIn', true);
+      emit(Authenticated(event.user, event.user.email));
+    });
   }
 }

@@ -55,7 +55,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       bloc: cameraBloc,
       listenWhen: (previous, current) => current is CameraActionState,
       buildWhen: (previous, current) => current is! CameraActionState,
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is SavedPhotoActionState) {
+          BlocProvider.of<AuthenticationBloc>(context).add(UpdateUserEvent(state.user));
+        }
+      },
       builder: (context, state) {
         switch (state.runtimeType) {
           case CameraLoadingState:
@@ -81,6 +85,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                       MaterialPageRoute(
                         builder: (context) => DisplayPictureScreen(
                           imagePath: image.path,
+                          cameraBloc: cameraBloc,
                         ),
                       ),
                     );
@@ -106,7 +111,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  final CameraBloc cameraBloc;
+  const DisplayPictureScreen({super.key, required this.imagePath, required this.cameraBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +157,7 @@ class DisplayPictureScreen extends StatelessWidget {
           FloatingActionButton(
             heroTag: "savebtn",
             onPressed: () {
-              BlocProvider.of<CameraBloc>(context).add(SavePhotoEvent(imagePath: imagePath, userId: userId!));
+              cameraBloc.add(SavePhotoEvent(imagePath: imagePath, userId: userId!));
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                     content: Text('Photo Saved!'),

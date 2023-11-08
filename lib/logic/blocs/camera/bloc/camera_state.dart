@@ -20,4 +20,9 @@ class CameraErrorState extends CameraState {
 
 class CameraClickActionState extends CameraActionState {}
 
-class SavedPhotoActionState extends CameraActionState {}
+class SavedPhotoActionState extends CameraActionState {
+  final User user;
+  SavedPhotoActionState({
+    required this.user,
+  });
+}

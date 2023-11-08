@@ -54,11 +54,9 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     File fileData = File(imagePath);
     List<int> imageBytes = await fileData.readAsBytes();
 
-    _profileBloc.add(ProfileUpdateImageEvent(imagePath: imagePath));
-    
     String base64Image = base64Encode(imageBytes);
     User? user = await UserRepository().changeImage(image: base64Image, userid: event.userId);
-    emit(SavedPhotoActionState());
+    emit(SavedPhotoActionState(user: user!));
   }
 
   FutureOr<void> cameraStoppedEvent(CameraStoppedEvent event, Emitter<CameraState> emit) async* {
