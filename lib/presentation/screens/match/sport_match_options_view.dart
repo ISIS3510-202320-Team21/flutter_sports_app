@@ -26,6 +26,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   DateTime? selectedDate;
   User? user;
   List<Match> matches = [];
+  MatchBloc matchBloc = MatchBloc();
 
   final List<String> omittedStatuses = ['Finished', 'Out of Date', 'Approved'];
 
@@ -33,22 +34,22 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).user;
-    BlocProvider.of<MatchBloc>(context)
-        .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
   }
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<MatchBloc>(context)
+    matchBloc
         .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
+        
     return Scaffold(
         body: RefreshIndicator(
       onRefresh: () async {
         // Llama al evento para cargar de nuevo las coincidencias
-        BlocProvider.of<MatchBloc>(context)
+        matchBloc
             .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
       },
       child: BlocConsumer<MatchBloc, MatchState>(
+        bloc: matchBloc,
         builder: (context, state) {
           if (state is MatchLoadingState) {
             return const Center(child: CircularProgressIndicator());
@@ -70,7 +71,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                       setState(() {
                         selectedDate = pickedDate;
                       });
-                      BlocProvider.of<MatchBloc>(context).add(
+                      matchBloc.add(
                           FetchMatchesSportsEvent(
                               widget.sport.id, selectedDate));
                     }
@@ -87,7 +88,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                                   selectedDate = null;
                                 });
                                 // También es necesario actualizar los matches ya que la fecha ha cambiado
-                                BlocProvider.of<MatchBloc>(context).add(
+                                matchBloc.add(
                                     FetchMatchesSportsEvent(
                                         widget.sport.id, null));
                               },
