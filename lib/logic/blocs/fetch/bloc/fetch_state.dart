@@ -33,4 +33,5 @@ class FetchLoadError extends FetchState {
   FetchLoadError(this.error);
 }
 
+
 // Add other states as necessary

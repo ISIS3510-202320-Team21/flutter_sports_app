@@ -36,7 +36,6 @@ class FetchBloc extends Bloc<FetchEvent, FetchState> {
         emit(FetchLoadError(e.toString()));
       }
     });
-    
-    // ... Handle other events
+
   }
 }

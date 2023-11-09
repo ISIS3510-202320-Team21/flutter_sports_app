@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
+import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../../../data/models/user.dart';
 part 'edit_profile_event.dart';
@@ -48,7 +49,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         gender: event.gender,
         userid: event.userId
       );
-      emit(SubmittedUserActionState());
+      emit(SubmittedUserActionState(user: usuario!));
     } catch (e) {
       print(e);
       emit(EditProfileErrorState());

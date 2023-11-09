@@ -47,7 +47,6 @@ class AuthenticationBloc
       }
     });
 
-
     on<CheckSession>((event, emit) async {
       emit(AuthLoading());
       final prefs = await SharedPreferences.getInstance();
@@ -97,26 +96,14 @@ class AuthenticationBloc
       await AuthRepository().signOut();
       emit(UnAuthenticated());
     });
-    
 
-    //   Future<void> _persistUser(User user) async {
-    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   String userJson = json.encode(user.toJson());
-    //   await prefs.setString('user', userJson);
-    // }
-
-    // Future<User?> _loadUser() async {
-    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   String? userJson = prefs.getString('user');
-    //   if (userJson != null) {
-    //     return User.fromJson(json.decode(userJson));
-    //   }
-    //   return null;
-    // }
-
-    // Future<void> _deleteUser() async {
-    //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   await prefs.remove('user');
-    // }
+    on<UpdateUserEvent>((event, emit) async {
+      emit(AuthLoading());
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = json.encode(event.user.toJson());
+      await prefs.setString('user', userJson);
+      await prefs.setBool('isLoggedIn', true);
+      emit(Authenticated(event.user, event.user.email));
+    });
   }
 }

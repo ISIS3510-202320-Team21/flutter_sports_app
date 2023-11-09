@@ -11,4 +11,5 @@ class FetchUniversitiesRequested extends FetchEvent {}
 
 class FetchGendersRequested extends FetchEvent {}
 
+
 // Add other events as necessary

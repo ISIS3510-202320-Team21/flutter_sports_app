@@ -15,15 +15,13 @@ class ProfileInitial extends ProfileState {
 }
 
 class ProfileLoadedSuccessState extends ProfileActionState {
-  final String profileImagePath;
+  final User user;
 
-  ProfileLoadedSuccessState({required this.profileImagePath});
-
+  ProfileLoadedSuccessState({required this.user});
+  
   @override
   ProfileState copyWith({String? profileImagePath}) {
-    return ProfileLoadedSuccessState(
-      profileImagePath: profileImagePath ?? this.profileImagePath,
-    );
+    return ProfileLoadedSuccessState(user: user);
   }
 }
 

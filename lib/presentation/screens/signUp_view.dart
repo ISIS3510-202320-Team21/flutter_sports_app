@@ -34,208 +34,221 @@ class _SignUpViewState extends State<SignUpView> {
     super.initState();
     // Lanza los eventos para cargar los datos al iniciar la vista
     BlocProvider.of<FetchBloc>(context).add(FetchRolesRequested());
-    BlocProvider.of<FetchBloc>(context)
-        .add(FetchUniversitiesRequested());
+    BlocProvider.of<FetchBloc>(context).add(FetchUniversitiesRequested());
     BlocProvider.of<FetchBloc>(context).add(FetchGendersRequested());
   }
 
   @override
-Widget build(BuildContext context) {
-  final textTheme = Theme.of(context).textTheme;
-  ScreenUtil.init(context);
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    ScreenUtil.init(context);
 
-  return Scaffold(
-    appBar: AppBar(
-      // Existing AppBar properties...
-    ),
-    body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
-      listener: (context, authState) {
-        // Existing AuthenticationBloc listener code...
-      },
-      builder: (context, authState) {
-        // Here you can use BlocBuilder or BlocConsumer for FetchBloc.
-        return BlocConsumer<FetchBloc, FetchState>(
-          listener: (context, fetchState) {
-            // React to the state changes of FetchBloc
-            if (fetchState is RolesLoadSuccess) {
-              setState(() {
-                roles = fetchState.roles;
-              });
-            }
-            if (fetchState is UniversitiesLoadSuccess) {
-              setState(() {
-                universities = fetchState.universities;
-              });
-            }
-            if (fetchState is GendersLoadSuccess) {
-              setState(() {
-                genders = fetchState.genders;
-              });
-            }
-          },
-          builder: (context, fetchState) {
-            // This will rebuild whenever FetchBloc's state changes.
-            if (fetchState is RolesLoadInProgress ||
-                fetchState is UniversitiesLoadInProgress ||
-                fetchState is GendersLoadInProgress) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 0.0,
+        title: Text(
+          
+          "SIGN UP",
+          style: textTheme.headlineSmall?.copyWith(
+              color: Theme.of(context).colorScheme.onBackground,
+              fontWeight: FontWeight.bold),
+        ),
+        toolbarHeight: 0.1 * ScreenUtil().screenHeight,
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      ),
+      body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+        listener: (context, authState) {
+          // Existing AuthenticationBloc listener code...
+        },
+        builder: (context, authState) {
+          // Here you can use BlocBuilder or BlocConsumer for FetchBloc.
+          return BlocConsumer<FetchBloc, FetchState>(
+            listener: (context, fetchState) {
+              // React to the state changes of FetchBloc
+              if (fetchState is RolesLoadSuccess) {
+                setState(() {
+                  roles = fetchState.roles;
+                });
+              }
+              if (fetchState is UniversitiesLoadSuccess) {
+                setState(() {
+                  universities = fetchState.universities;
+                });
+              }
+              if (fetchState is GendersLoadSuccess) {
+                setState(() {
+                  genders = fetchState.genders;
+                });
+              }
+            },
+            builder: (context, fetchState) {
+              // This will rebuild whenever FetchBloc's state changes.
+              if (fetchState is RolesLoadInProgress ||
+                  fetchState is UniversitiesLoadInProgress ||
+                  fetchState is GendersLoadInProgress) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            // If any of the data lists is empty, it means data is not fetched yet.
-            if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            }
+              // If any of the data lists is empty, it means data is not fetched yet.
+              if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-            // Once all the data is loaded, you can build your form.
-            return Container(
-            constraints: const BoxConstraints.expand(),
-            color: Theme.of(context).colorScheme.background,
-            child: Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.05),
-                        child: Image.asset('assets/loginIcon.png'),
-                      ),
-                      _buildTextField(context, _nameController, 'Name', (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Can\'t be empty';
-                        }
-                        return null;
-                      }),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildTextField(context, _emailController, 'Email...',
-                          (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Can\'t be empty';
-                        }
-                        if (!EmailValidator.validate(text)) {
-                          return 'Must be a valid email address';
-                        }
-                        return null;
-                      }),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildTextField(
-                          context, _passwordController, 'Password...', (text) {
-                        if (text == null || text.isEmpty) {
-                          return 'Can\'t be empty';
-                        }
-                        return null;
-                      }, isObscure: true),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildPhoneNumberField(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildDatePicker(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildDropdown('Role', _roleController, roles),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildDropdown(
-                          'University', _universityController, universities),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      _buildDropdown('Gender', _genderController, genders),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.03,
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _signUp(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+              // Once all the data is loaded, you can build your form.
+              return Container(
+                constraints: const BoxConstraints.expand(),
+                color: Theme.of(context).colorScheme.background,
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.05),
+                            child: Image.asset('assets/loginIcon.png'),
                           ),
-                          padding: EdgeInsets.zero,
-                          minimumSize: const Size(143, 52),
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Container(
-                                decoration: ShapeDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                          _buildTextField(context, _nameController, 'Name',
+                              (text) {
+                            if (text == null || text.isEmpty) {
+                              return 'Can\'t be empty';
+                            }
+                            return null;
+                          }),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildTextField(context, _emailController, 'Email...',
+                              (text) {
+                            if (text == null || text.isEmpty) {
+                              return 'Can\'t be empty';
+                            }
+                            if (!EmailValidator.validate(text)) {
+                              return 'Must be a valid email address';
+                            }
+                            return null;
+                          }),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildTextField(
+                              context, _passwordController, 'Password...',
+                              (text) {
+                            if (text == null || text.isEmpty) {
+                              return 'Can\'t be empty';
+                            }
+                            return null;
+                          }, isObscure: true),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildPhoneNumberField(),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDatePicker(),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDropdown('Role', _roleController, roles),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDropdown('University', _universityController,
+                              universities),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDropdown('Gender', _genderController, genders),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                          ElevatedButton(
+                            onPressed: () => _signUp(context),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(143, 52),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: ShapeDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Positioned(
-                              child: Text(
-                                'SIGN UP',
-                                textAlign: TextAlign.center,
-                                style: textTheme.titleLarge?.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.04,
-                      ),
-                      Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                  fontWeight: FontWeight.bold),
-                              children: [
-                                const TextSpan(
-                                    text: 'Already have an account?'),
-                                const TextSpan(text: '\n'),
-                                TextSpan(
-                                  text: 'Login',
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                Positioned(
+                                  child: Text(
+                                    'SIGN UP',
+                                    textAlign: TextAlign.center,
+                                    style: textTheme.titleLarge?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                          ),
+                          Center(
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: RichText(
+                                textAlign: TextAlign.center,
+                                text: TextSpan(
+                                  style: textTheme.titleLarge?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onBackground,
+                                      fontWeight: FontWeight.bold),
+                                  children: [
+                                    const TextSpan(
+                                        text: 'Already have an account?'),
+                                    const TextSpan(text: '\n'),
+                                    TextSpan(
+                                      text: 'Login',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );// Extract the form build method for readability.
-          },
-        );
-      },
-    ),
-  );
-}
+              ); // Extract the form build method for readability.
+            },
+          );
+        },
+      ),
+    );
+  }
 
   Widget _buildTextField(
     BuildContext context,

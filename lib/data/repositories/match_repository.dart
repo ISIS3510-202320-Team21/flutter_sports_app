@@ -135,8 +135,9 @@ class MatchRepository {
   }
 
   Future<void> rateMatch(User user, Match match, double rating) async {
+    bool isUserCreated = user.id == match.userCreated?.id;
     final response = await http.put(
-      Uri.parse('$backendUrl/matches/${match.id}/rate?rate=$rating'),
+      Uri.parse('$backendUrl/matches/${match.id}/rate?rate=$rating&is_user_created=$isUserCreated'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -146,6 +147,23 @@ class MatchRepository {
       return;
     } else {
       throw Exception('Failed to rate match: ${response.statusCode}');
+    }
+  }
+
+  Future<Match?> getMatch({required int matchId}) async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/matches/$matchId'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+
+      return Match.createFromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)), userRepository);
+    } else {
+      throw Exception('Failed to get match: ${response.statusCode}');
     }
   }
 
@@ -161,6 +179,38 @@ class MatchRepository {
       return matchId;
     } else {
       throw Exception('Failed to delete match: ${response.statusCode}');
+    }
+  }
+
+    Future<List<String>> fetchCities() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/cities/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> citiesList = jsonDecode(utf8.decode(response.bodyBytes)); 
+      return citiesList.cast<String>();
+    } else {
+      throw Exception('Failed to fetch cities: ${response.statusCode}');
+    }
+  }
+
+  Future<List<String>> fetchCourts() async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/courts/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> courtsList = jsonDecode(utf8.decode(response.bodyBytes));
+      return courtsList.cast<String>();
+    } else {
+      throw Exception('Failed to fetch courts: ${response.statusCode}');
     }
   }
 }

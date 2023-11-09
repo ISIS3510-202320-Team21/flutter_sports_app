@@ -16,89 +16,97 @@ class MyMatches extends StatefulWidget {
 }
 
 class _MyMatchesState extends State<MyMatches> {
-  List<Match> matches = [];
+  List<Match>? matches;
   String? userName;
   int? userId;
+  MatchBloc matchBloc = MatchBloc();
+  // Aquí puedes inicializar tu lista de partidos.
 
   @override
   void initState() {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
     userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
-    BlocProvider.of<MatchBloc>(context).add(FetchMatchesUserEvent(userId!));
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
+    matchBloc.add(FetchMatchesUserEvent(userId!));
 
-    return Builder(builder: (BuildContext innerContext) {
-          return BlocBuilder<MatchBloc, MatchState>(
-            buildWhen: (previous, current) => current is! MatchActionState,
-            builder: (context, state) {
-              if (state is MatchesLoadedForUserState) {
-                matches = state.matches;
-              } else if (state is MatchErrorState) {
-                return const Center(child: Text('Error loading match data'));
-              } else if (state is MatchDeletedState) {
-                matches.remove(
-                    matches.firstWhere((match) => match.id == state.matchId));
-                Future.delayed(Duration.zero, () {
-                  ScaffoldMessenger.of(innerContext).showSnackBar(
-                      const SnackBar(content: Text('Match deleted')));
-                });
-                innerContext
-                    .read<MatchBloc>()
-                    .add(FetchMatchesUserEvent(userId!));
-              }
-              return Scaffold(
-                appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  backgroundColor: colorScheme.onPrimary,
-                  elevation: 0,
-                  
-                  centerTitle:
-                      false, // Cambiado a false para alinear a la izquierda
-                  title: Padding(
-                    padding: const EdgeInsets.all(1),
-                    child: Text(
-                      'Matches for $userName',
-                      style: TextStyle(
-                        fontSize: textTheme.headline5?.fontSize,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+    return BlocProvider(
+      create: (context) => matchBloc,
+      child: BlocConsumer<MatchBloc, MatchState>(
+        builder: (context, state) {
+          if (state is MatchErrorState) {
+            return const Center(child: Text('Error loading match data'));
+          } else if (state is MatchLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          // Retorna el Scaffold solo si los datos necesarios están cargados.
+          return matches == null
+              ? const Center(child: CircularProgressIndicator())
+              : Scaffold(
+                  appBar: AppBar(
+                    automaticallyImplyLeading: false,
+                    backgroundColor: colorScheme.onPrimary,
+                    elevation: 0,
+                    centerTitle:
+                        false, // Cambiado a false para alinear a la izquierda
+                    title: Padding(
+                      padding: const EdgeInsets.all(1),
+                      child: Text(
+                        'Matches for $userName',
+                        style: TextStyle(
+                          fontSize: textTheme.headline5?.fontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.add, color: Colors.black),
+                        onPressed: () {
+                          BlocProvider.of<GlobalBloc>(context).add(
+                              NavigateToIndexEvent(AppScreens.Matches.index));
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.refresh, color: Colors.black),
+                        onPressed: () {
+                          matchBloc.add(FetchMatchesUserEvent(userId!));
+                        },
+                      ),
+                    ],
                   ),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Icons.add, color: Colors.black),
-                      onPressed: () {
-                        BlocProvider.of<GlobalBloc>(context).add(
-                            NavigateToIndexEvent(AppScreens.Matches.index));
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.refresh, color: Colors.black),
-                      onPressed: () {
-                        BlocProvider.of<MatchBloc>(context)
-                            .add(FetchMatchesUserEvent(userId!));
-                      },
-                    ),
-                  ],
-                ),
-                body: state is MatchLoadingState
-                    ? const Center(child: CircularProgressIndicator())
-                    : ListView(
-                        children: [
-                          ..._buildMatchesList(matches, context, userId: userId)
-                        ],
-                      ),
-              );
-            },
-          );
-        });
+                  body: state is MatchLoadingState
+                      ? const Center(child: CircularProgressIndicator())
+                      : ListView(
+                          children: [
+                            ..._buildMatchesList(matches!, context,
+                                userId: userId)
+                          ],
+                        ),
+                );
+        },
+        listener: (BuildContext context, MatchState state) {
+          // Actualiza la lista de partidos cuando los datos estén cargados.
+          if (state is MatchesLoadedForUserState) {
+            matches = state.matches;
+          } else if (state is MatchDeletedState) {
+            matches?.removeWhere((match) => match.id == state.matchId);
+            Future.delayed(Duration.zero, () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Match deleted')));
+            });
+            matchBloc
+                .add(FetchMatchesUserEvent(userId!));
+          }
+        },
+      ),
+    );
   }
 
   List<Widget> _buildMatchesList(List<Match> matches, BuildContext context,
@@ -137,7 +145,7 @@ class _MyMatchesState extends State<MyMatches> {
       widgets.add(Card(
         elevation: 0,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        color: Colors.grey	[100],
+        color: Colors.grey[100],
         child: ListTile(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -184,7 +192,7 @@ class _MyMatchesState extends State<MyMatches> {
   }
 
   void _borrarPartido(Match match) {
-    BlocProvider.of<MatchBloc>(context).add(DeleteMatchEvent(match.id!));
+    matchBloc.add(DeleteMatchEvent(match.id!));
   }
 
   Color _statusColor(String status) {

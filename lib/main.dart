@@ -7,6 +7,7 @@ import 'package:flutter_app_sports/logic/blocs/connectivity/bloc/connectivity_bl
 import 'package:flutter_app_sports/logic/blocs/fetch/bloc/fetch_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
 import 'package:flutter_app_sports/presentation/router/app_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
             create: (context) =>
                 ConnectivityBloc(connectivity: Connectivity())),
         BlocProvider(create: (context) => FetchBloc()),
+        BlocProvider(create: (context) => ProfileBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

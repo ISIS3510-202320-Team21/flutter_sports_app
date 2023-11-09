@@ -26,22 +26,32 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
     on<addUserToMatchEvent>(_handleAddUserToMatchEvent);
     on<RateMatchEvent>(rateMatchEvent);
     on<DeleteMatchEvent>(_deleteMatch);
+    on<FetchCitiesRequested>(_FetchCitiesRequested);
+    on<FetchCourtsRequested>(_FetchCourtsRequested);
+    on<AllDataLoadedEvent>(_handleAllDataLoadedEvent);
   }
-  
-  FutureOr<void> matchInitialEvent(MatchInitialEvent event, Emitter<MatchState> emit) async {
+
+  FutureOr<void> matchInitialEvent(
+      MatchInitialEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      List<Match>? matches = await MatchRepository(userRepository: UserRepository() ).getMatchesForUser(userid: event.userId);
+      List<Match>? matches =
+          await MatchRepository(userRepository: UserRepository())
+              .getMatchesForUser(userid: event.userId);
       emit(MatchLoadedSuccessState(matches: matches!));
     } catch (e) {
       print(e);
       emit(MatchErrorState());
     }
   }
-FutureOr<void> _handleFetchPlayersForSportEvent(FetchMatchesSportsEvent event, Emitter<MatchState> emit) async {
+
+  FutureOr<void> _handleFetchPlayersForSportEvent(
+      FetchMatchesSportsEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      List<Match>? matches = await MatchRepository(userRepository: UserRepository()).getMatchesForSport(sportId: event.sportId, date: event.date);
+      List<Match>? matches =
+          await MatchRepository(userRepository: UserRepository())
+              .getMatchesForSport(sportId: event.sportId, date: event.date);
       emit(MatchesLoadedForSportState(matches!));
     } catch (e) {
       print(e);
@@ -49,10 +59,13 @@ FutureOr<void> _handleFetchPlayersForSportEvent(FetchMatchesSportsEvent event, E
     }
   }
 
-FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emitter<MatchState> emit) async {
+  FutureOr<void> _handleFetchPlayersForUserEvent(
+      FetchMatchesUserEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      List<Match>? matches = await MatchRepository(userRepository: UserRepository()).getMatchesForUser(userid: event.userId);
+      List<Match>? matches =
+          await MatchRepository(userRepository: UserRepository())
+              .getMatchesForUser(userid: event.userId);
       emit(MatchesLoadedForUserState(matches!));
     } catch (e) {
       print(e);
@@ -60,21 +73,24 @@ FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emit
     }
   }
 
-
-  FutureOr<void> matchClickedEvent(MatchClickedEvent event, Emitter<MatchState> emit) {
+  FutureOr<void> matchClickedEvent(
+      MatchClickedEvent event, Emitter<MatchState> emit) {
     print('Match clicked');
     emit(MatchClickActionState());
   }
 
-  FutureOr<void> newMatchNavigateEvent(NewMatchNavigateEvent event, Emitter<MatchState> emit) {
+  FutureOr<void> newMatchNavigateEvent(
+      NewMatchNavigateEvent event, Emitter<MatchState> emit) {
     print('New match navigate');
     emit(NewMatchNavigateActionState());
   }
 
-  FutureOr<void> _handleFetchLevelsEvent(FetchLevelsEvent event, Emitter<MatchState> emit) async {
+  FutureOr<void> _handleFetchLevelsEvent(
+      FetchLevelsEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      List<Level>? levels = await MatchRepository(userRepository: UserRepository()).getLevels();
+      List<Level>? levels =
+          await MatchRepository(userRepository: UserRepository()).getLevels();
       emit(LevelsLoadedState(levels!));
     } catch (e) {
       print(e);
@@ -82,10 +98,12 @@ FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emit
     }
   }
 
-  FutureOr<void> _handleCreateMatchEvent(CreateMatchEvent event, Emitter<MatchState> emit) async {
+  FutureOr<void> _handleCreateMatchEvent(
+      CreateMatchEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      Match? match = await MatchRepository(userRepository: UserRepository()).createMatch(event.match,event.userId);
+      Match? match = await MatchRepository(userRepository: UserRepository())
+          .createMatch(event.match, event.userId);
       emit(MatchCreatedState(match!));
     } catch (e) {
       print(e);
@@ -93,10 +111,12 @@ FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emit
     }
   }
 
-  FutureOr<void> _handleAddUserToMatchEvent(addUserToMatchEvent event, Emitter<MatchState> emit) async {
+  FutureOr<void> _handleAddUserToMatchEvent(
+      addUserToMatchEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      Match? match = await MatchRepository(userRepository: UserRepository()).addUserToMatch(event.userId,event.matchId);
+      Match? match = await MatchRepository(userRepository: UserRepository())
+          .addUserToMatch(event.userId, event.matchId);
       emit(MatchUpdatedMatchState(match!));
     } catch (e) {
       print(e);
@@ -104,24 +124,65 @@ FutureOr<void> _handleFetchPlayersForUserEvent(FetchMatchesUserEvent event, Emit
     }
   }
 
-  FutureOr<void> rateMatchEvent(RateMatchEvent event, Emitter<MatchState> emit) async {
+  FutureOr<void> rateMatchEvent(
+      RateMatchEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      await MatchRepository(userRepository: UserRepository()).rateMatch(event.user,event.match,event.rating);
-      Match? match = await MatchRepository(userRepository: UserRepository()).changeStatusMatch(event.match.id!, "Finished");
+      await MatchRepository(userRepository: UserRepository())
+          .rateMatch(event.user, event.match, event.rating);
+      Match? match = await MatchRepository(userRepository: UserRepository())
+          .getMatch(matchId: event.match.id!);
+      if (match?.rate1 != null && match?.rate2 != null) {
+        await MatchRepository(userRepository: UserRepository())
+          .changeStatusMatch(event.match.id!, "Finished");
+      }
       emit(MatchFinishedState(match!));
     } catch (e) {
       print(e);
       emit(MatchErrorState());
     }
   }
-Future<void> _deleteMatch(DeleteMatchEvent event, Emitter<MatchState> emit) async {
+
+  Future<void> _deleteMatch(
+      DeleteMatchEvent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      int xd = await MatchRepository(userRepository: UserRepository()).deleteMatch(event.matchId);
+      int xd = await MatchRepository(userRepository: UserRepository())
+          .deleteMatch(event.matchId);
       emit(MatchDeletedState(xd));
     } catch (e) {
       print(e);
     }
-}
+  }
+
+  FutureOr<void> _FetchCitiesRequested(
+      FetchCitiesRequested event, Emitter<MatchState> emit) async {
+    emit(MatchLoadingState());
+    try {
+      List<String>? cities =
+          await MatchRepository(userRepository: UserRepository()).fetchCities();
+      emit(CitiesLoadSuccess(cities!));
+    } catch (e) {
+      print(e);
+      emit(MatchErrorState());
+    }
+  }
+
+  FutureOr<void> _FetchCourtsRequested(
+      FetchCourtsRequested event, Emitter<MatchState> emit) async {
+    emit(MatchLoadingState());
+    try {
+      List<String>? courts =
+          await MatchRepository(userRepository: UserRepository()).fetchCourts();
+      emit(CourtsLoadSuccess(courts));
+    } catch (e) {
+      print(e);
+      emit(MatchErrorState());
+    }
+  }
+
+  FutureOr<void> _handleAllDataLoadedEvent(
+      AllDataLoadedEvent event, Emitter<MatchState> emit) async {
+    emit((AllDataLoadedState()));
+  }
 }

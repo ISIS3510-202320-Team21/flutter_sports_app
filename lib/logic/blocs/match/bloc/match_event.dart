@@ -74,3 +74,10 @@ class DeleteMatchEvent extends MatchEvent {
   @override
   List<Object> get props => [matchId];
 }
+
+class FetchCitiesRequested extends MatchEvent {}
+
+class FetchCourtsRequested extends MatchEvent {}
+
+class AllDataLoadedEvent extends MatchEvent {
+}
