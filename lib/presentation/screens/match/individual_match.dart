@@ -25,6 +25,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
   User? user;
   double? userRating=3;
   bool isUserInMatch = false;
+  MatchBloc matchBloc = MatchBloc();
 
   @override
   void initState() {
@@ -33,19 +34,9 @@ class _IndividualMatchState extends State<IndividualMatch> {
     isUserInMatch = widget.match.userCreated?.id == user?.id;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<MatchBloc>(
-      create: (context) => MatchBloc(),
-      child: Builder(
-        builder: (BuildContext innerContext) {
-          return _buildUI(innerContext);
-        },
-      ),
-    );
-  }
 
-  Widget _buildUI(BuildContext context) {
+@override
+  Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
@@ -73,7 +64,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
             ElevatedButton(
               child: const Text('Submit'),
               onPressed: () {
-                BlocProvider.of<MatchBloc>(context).add(
+                matchBloc.add(
                   RateMatchEvent(
                     user: user!,
                     match: widget.match,
@@ -123,6 +114,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
 
     return Scaffold(
       body: BlocListener<MatchBloc, MatchState>(
+        bloc: matchBloc,
         listener: (context, state) {
           if (state is MatchCreatedState) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -147,7 +139,11 @@ class _IndividualMatchState extends State<IndividualMatch> {
           }
         },
         child: BlocBuilder<MatchBloc, MatchState>(
+          bloc: matchBloc,
           builder: (context, state) {
+            if (state is MatchLoadingState){
+              return const Center(child: CircularProgressIndicator());
+            }
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
@@ -193,7 +189,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
                     if (widget.state == "Match") ...[
                       ElevatedButton(
                         onPressed: () {
-                          BlocProvider.of<MatchBloc>(context).add(
+                          matchBloc.add(
                               addUserToMatchEvent(user!.id, widget.match.id!));
                         },
                         style: ButtonStyle(

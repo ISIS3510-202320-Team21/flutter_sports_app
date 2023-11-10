@@ -35,7 +35,6 @@ class _MyAppState extends State<MyApp> {
             create: (context) => AuthenticationBloc()..add(CheckSession())),
         BlocProvider<CameraBloc>(create: (context) => CameraBloc()),
         BlocProvider(create: (context) => GlobalBloc()),
-        BlocProvider(create: (context) => MatchBloc()),
         BlocProvider(
             create: (context) =>
                 ConnectivityBloc(connectivity: Connectivity())),

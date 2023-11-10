@@ -84,3 +84,5 @@ class CourtsLoadSuccess extends MatchState {
 class AllDataLoadedState extends MatchState {
   AllDataLoadedState();
 }
+
+
