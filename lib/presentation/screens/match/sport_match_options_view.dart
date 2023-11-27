@@ -42,7 +42,6 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
     return Scaffold(
         body: RefreshIndicator(
       onRefresh: () async {
-        // Llama al evento para cargar de nuevo las coincidencias
         matchBloc.add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
       },
       child: BlocConsumer<MatchBloc, MatchState>(

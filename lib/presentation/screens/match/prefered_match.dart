@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/level.dart';
@@ -17,8 +19,7 @@ class PreferedMatch extends StatefulWidget {
   final Sport selectedSport;
   DateTime? selectedDate;
 
-  PreferedMatch(
-      {required this.selectedSport, this.selectedDate, Key? key})
+  PreferedMatch({required this.selectedSport, this.selectedDate, Key? key})
       : super(key: key);
 
   @override
@@ -54,11 +55,10 @@ class _PreferedMatchState extends State<PreferedMatch> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2025),
     );
-    if (picked != null && picked != widget.selectedDate) {
+    if (picked != null && picked != widget.selectedDate)
       setState(() {
         widget.selectedDate = picked;
       });
-    }
   }
 
   @override
@@ -82,20 +82,22 @@ class _PreferedMatchState extends State<PreferedMatch> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(children: [
-    Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListTile(
-        leading: Icon(Icons.calendar_today,
-            color: Theme.of(context).colorScheme.primary),
-        title: Text(
-          widget.selectedDate == null
-              ? "Select Date"
-              : DateFormat('dd/MM/yyyy').format(widget.selectedDate!),
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        onTap: () => _selectDate(context), // Agregado evento onTap
-      ),
-    ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ListTile(
+                      leading: Icon(Icons.calendar_today,
+                          color: Theme.of(context).colorScheme.primary),
+                      title: Text(
+                        widget.selectedDate == null
+                            ? "Select Date"
+                            : DateFormat('dd/MM/yyyy')
+                                .format(widget.selectedDate!),
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      onTap: () =>
+                          _selectDate(context), // Agregado evento onTap
+                    ),
+                  ),
                   const Divider(),
                   ListTile(
                     leading: widget.selectedSport.image != null &&

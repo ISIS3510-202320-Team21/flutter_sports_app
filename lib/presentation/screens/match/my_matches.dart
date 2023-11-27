@@ -6,6 +6,7 @@ import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MyMatches extends StatefulWidget {
@@ -101,8 +102,7 @@ class _MyMatchesState extends State<MyMatches> {
               ScaffoldMessenger.of(context)
                   .showSnackBar(const SnackBar(content: Text('Match deleted')));
             });
-            matchBloc
-                .add(FetchMatchesUserEvent(userId!));
+            matchBloc.add(FetchMatchesUserEvent(userId!));
           }
         },
       ),
@@ -139,56 +139,67 @@ class _MyMatchesState extends State<MyMatches> {
         lastStatus = match.status;
       }
 
-      bool isCreatedByCurrentUser = userId == match.userCreated?.id;
-      String opponentName = match.userJoined?.name ?? '...';
-
       widgets.add(Card(
-        elevation: 0,
+        elevation: 5,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        color: Colors.grey[100],
-        child: ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          title: Text(
-            isCreatedByCurrentUser
-                ? 'Match on ${match.sport?.name} with $opponentName'
-                : 'Match on ${match.sport?.name} with ${match.userCreated?.name}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              'Status: ${match.status}',
-              style: TextStyle(color: _statusColor(match.status)),
+        child: InkWell(
+          onTap: () {
+            _onMatchTap(context, match);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sport: ${match.sport?.name ?? 'Unknown'}',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4),
+                Text('Level: ${match.level?.name ?? 'Unknown'}'),
+                SizedBox(height: 4),
+                Text(
+                    'Date: ${DateFormat('dd/MM/yyyy').format(match.date ?? DateTime.now())}'),
+                SizedBox(height: 4),
+                Text('Time: ${match.time}'),
+                SizedBox(height: 4),
+                Text('Location: ${match.city}, ${match.court}'),
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Status: ${match.status}',
+                      style: TextStyle(color: _statusColor(match.status)),
+                    ),
+                    if (match.status == 'Pending')
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          _borrarPartido(match);
+                        },
+                      ),
+                  ],
+                ),
+              ],
             ),
           ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (match.status == 'Pending' || match.status == 'Out of Date')
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.black45),
-                  onPressed: () {
-                    _borrarPartido(match);
-                  },
-                ),
-              const Icon(Icons.arrow_forward_ios, color: Colors.black45),
-            ],
-          ),
-          onTap: () {
-            if (match.status == 'Finished') {
-              BlocProvider.of<GlobalBloc>(context)
-                  .add(NavigateToMatchEvent(match, "Finished"));
-            } else if (match.status == 'Approved') {
-              BlocProvider.of<GlobalBloc>(context)
-                  .add(NavigateToMatchEvent(match, "Rate"));
-            }
-          },
         ),
       ));
     }
 
     return widgets;
+  }
+
+  void _onMatchTap(BuildContext context, Match match) {
+    if (match.status == 'Finished') {
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToMatchEvent(match, "Finished"));
+    } else if (match.status == 'Approved') {
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToMatchEvent(match, "Rate"));
+    }
   }
 
   void _borrarPartido(Match match) {
