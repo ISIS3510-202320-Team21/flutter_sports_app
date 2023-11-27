@@ -34,19 +34,16 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   void initState() {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).user;
+    matchBloc.add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
   }
 
   @override
   Widget build(BuildContext context) {
-    matchBloc
-        .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
-        
     return Scaffold(
         body: RefreshIndicator(
       onRefresh: () async {
         // Llama al evento para cargar de nuevo las coincidencias
-        matchBloc
-            .add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
+        matchBloc.add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
       },
       child: BlocConsumer<MatchBloc, MatchState>(
         bloc: matchBloc,
@@ -71,9 +68,8 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                       setState(() {
                         selectedDate = pickedDate;
                       });
-                      matchBloc.add(
-                          FetchMatchesSportsEvent(
-                              widget.sport.id, selectedDate));
+                      matchBloc.add(FetchMatchesSportsEvent(
+                          widget.sport.id, selectedDate));
                     }
                   },
                   child: InputDecorator(
@@ -88,9 +84,8 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                                   selectedDate = null;
                                 });
                                 // También es necesario actualizar los matches ya que la fecha ha cambiado
-                                matchBloc.add(
-                                    FetchMatchesSportsEvent(
-                                        widget.sport.id, null));
+                                matchBloc.add(FetchMatchesSportsEvent(
+                                    widget.sport.id, null));
                               },
                             )
                           : Icon(Icons.arrow_drop_down),

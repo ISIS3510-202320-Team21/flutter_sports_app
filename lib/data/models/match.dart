@@ -41,9 +41,9 @@ class Match {
         MatchRepository(userRepository: userRepository);
 
     User? userCreated = await userRepository.getInfoUser(userid: userCreatedId);
-
     List<Sport>? sports = await sportRepository.fetchSports();
     List<Level>? levels = await matchRepository.getLevels();
+    
     Sport? sport;
     Level? level;
 

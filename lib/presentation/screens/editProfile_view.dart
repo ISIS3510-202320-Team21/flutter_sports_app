@@ -20,13 +20,13 @@ class _EditProfileViewState extends State<EditProfileView> {
   List<String> roles = [];
   List<String> universities = [];
   List<String> genders = [];
-  int userid = 0;
+  late User user;
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
-  final _roleController = TextEditingController();
-  final _universityController = TextEditingController();
-  final _genderController = TextEditingController();
+  var _phoneNumberController = TextEditingController();
+  var _roleController = TextEditingController();
+  var _universityController = TextEditingController();
+  var _genderController = TextEditingController();
   var _bornDate;
   final _formKey = GlobalKey<FormState>();
 
@@ -34,178 +34,191 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   void initState() {
-    // Lanza los eventos para cargar los datos al iniciar la vista
-    int? userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
-    userid = userId!;
-    editProfileBloc.add(EditProfileInitialEvent(userId: userId!));
+    user = BlocProvider.of<AuthenticationBloc>(context).user!;
+    editProfileBloc.add(EditProfileInitialEvent(userId: user.id));
+    _bornDate = user.bornDate;
+    _emailController.text = user.email;
+    _nameController.text = user.name;
+    _phoneNumberController = TextEditingController(text: user.phoneNumber);
+    _roleController = TextEditingController(text: user.role);
+    _universityController = TextEditingController(text: user.university);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    
+
     return BlocConsumer<EditProfileBloc, EditProfileState>(
-      bloc: editProfileBloc,
-      listenWhen: (previous, current) => current is EditProfileActionState,
-      buildWhen: (previous, current) => current is !EditProfileActionState,
-      listener: (context, state) {
-        if (state is SubmissionErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-          );
-        }
-        else if (state is SubmittedUserActionState){
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Profile.index));
-          editProfileBloc.add(EditProfileInitialEvent(userId: userid)); 
-          BlocProvider.of<AuthenticationBloc>(context).add(UpdateUserEvent(state.user));
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("User updated"),
-              backgroundColor: Colors.green),
-          );
-          _emailController.clear();
-          _nameController.clear();
-          _phoneNumberController.clear();
-          _roleController.clear();
-          _universityController.clear();
-          _genderController.clear();
-          _bornDate = null;
-        }
-      },
-      builder: (context, state) {
-        roles = editProfileBloc.roles;
-        universities = editProfileBloc.universities;
-        genders = editProfileBloc.genders;
-        
-        if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        switch (state.runtimeType) {
-          case EditProfileLoadingState:
-            return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
-                ));
-          default:
-            return Container(
-              constraints: const BoxConstraints.expand(),
-              color: Theme.of(context).colorScheme.background,
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * 0.05),
-                          child: Image.asset('assets/loginIcon.png'),
-                        ),
-                        _buildTextField(context, _nameController, 'Name', (text) {
-                          if (text == null || text.isEmpty) {
-                            return 'Can\'t be empty';
-                          }
-                          return null;
-                        }),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        _buildTextField(context, _emailController, 'Email...',
-                                (text) {
-                              if (text == null || text.isEmpty) {
-                                return 'Can\'t be empty';
-                              }
-                              if (!EmailValidator.validate(text)) {
-                                return 'Must be a valid email address';
-                              }
-                              return null;
-                            }),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        _buildPhoneNumberField(),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        _buildDatePicker(),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        _buildDropdown('Role', _roleController, roles),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        _buildDropdown(
-                            'University', _universityController, universities),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        _buildDropdown('Gender', _genderController, genders),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03,
-                        ),
-                        ElevatedButton(
-                          onPressed: () => _changeInfo(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: EdgeInsets.zero,
-                            minimumSize: const Size(143, 52),
+        bloc: editProfileBloc,
+        listenWhen: (previous, current) => current is EditProfileActionState,
+        buildWhen: (previous, current) => current is! EditProfileActionState,
+        listener: (context, state) {
+          if (state is SubmissionErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(state.message), backgroundColor: Colors.red),
+            );
+          } else if (state is SubmittedUserActionState) {
+            BlocProvider.of<GlobalBloc>(context)
+                .add(NavigateToIndexEvent(AppScreens.Profile.index));
+            editProfileBloc.add(EditProfileInitialEvent(userId: user.id));
+            BlocProvider.of<AuthenticationBloc>(context)
+                .add(UpdateUserEvent(state.user));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("User updated"), backgroundColor: Colors.green),
+            );
+            _emailController.text = state.user.email;
+            _nameController.text = state.user.name;
+            _phoneNumberController =
+                TextEditingController(text: state.user.phoneNumber);
+            _roleController = TextEditingController(text: state.user.role);
+            _universityController =
+                TextEditingController(text: state.user.university);
+            _genderController = TextEditingController(text: state.user.gender);
+            _bornDate = state.user.bornDate;
+          }
+        },
+        builder: (context, state) {
+          roles = editProfileBloc.roles;
+          universities = editProfileBloc.universities;
+          genders = editProfileBloc.genders;
+
+          if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          switch (state.runtimeType) {
+            case EditProfileLoadingState:
+              return const Scaffold(
+                  body: Center(
+                child: CircularProgressIndicator(),
+              ));
+            default:
+              return Container(
+                constraints: const BoxConstraints.expand(),
+                color: Theme.of(context).colorScheme.background,
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.05),
+                            child: Image.asset('assets/loginIcon.png'),
                           ),
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: ShapeDecoration(
-                                    color: Theme.of(context).primaryColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                          _buildTextField(
+                              context, _nameController, user.name, 'Name...',
+                              (text) {
+                            if (text == null || text.isEmpty) {
+                              return 'Can\'t be empty';
+                            }
+                            return null;
+                          }),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildTextField(
+                              context, _emailController, user.email, 'Email...',
+                              (text) {
+                            if (text == null || text.isEmpty) {
+                              return 'Can\'t be empty';
+                            }
+                            if (!EmailValidator.validate(text)) {
+                              return 'Must be a valid email address';
+                            }
+                            return null;
+                          }),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildPhoneNumberField(),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDatePicker(user.bornDate ?? DateTime.now()),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDropdown(
+                              'Role', _roleController, user.role!, roles),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDropdown('University', _universityController,
+                              user.university!, universities),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                          _buildDropdown('Gender', _genderController,
+                              user.gender!, genders),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03,
+                          ),
+                          ElevatedButton(
+                            onPressed: () => _changeInfo(context),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(143, 52),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: ShapeDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Positioned(
-                                child: Text(
-                                  'CHANGE INFO',
-                                  textAlign: TextAlign.center,
-                                  style: textTheme.titleLarge?.copyWith(
-                                    color:
-                                    Theme.of(context).colorScheme.onPrimary,
-                                    fontWeight: FontWeight.normal,
+                                Positioned(
+                                  child: Text(
+                                    'CHANGE INFO',
+                                    textAlign: TextAlign.center,
+                                    style: textTheme.titleLarge?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                      fontWeight: FontWeight.normal,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.04,
-                        ),
-                      ],
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          // default:
-          //   return const SizedBox();
-        }
-      }
-    );
+              );
+          }
+        });
   }
 
   Widget _buildTextField(
-      BuildContext context,
-      TextEditingController controller,
-      String labelText,
-      String? Function(String?) validator, {
-        bool isObscure = false,
-        TextInputType keyboardType = TextInputType.text,
-      }) {
+    BuildContext context,
+    TextEditingController controller,
+    String initialValue, 
+    String labelText,
+    String? Function(String?) validator, {
+    bool isObscure = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+
     return TextFormField(
       controller: controller,
       validator: validator,
@@ -246,8 +259,9 @@ class _EditProfileViewState extends State<EditProfileView> {
     return _buildTextField(
       context,
       _phoneNumberController,
+      user.phoneNumber ?? '',
       'Phone Number',
-          (val) {
+      (val) {
         if (val == null || val.isEmpty) return 'Can\'t be empty';
         if (!RegExp(r'^[0-9]+$').hasMatch(val)) {
           return 'Enter a valid phone number';
@@ -258,50 +272,63 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
   }
 
-  Widget _buildDatePicker() {
-    return TextFormField(
-      readOnly: true,
-      decoration: const InputDecoration(
-        labelText: 'Born Date',
-        border: OutlineInputBorder(),
-        suffixIcon: Icon(Icons.calendar_today),
-      ),
-      onTap: () async {
-        DateTime? pickedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime.now(),
-        );
-        if (pickedDate != null) {
-          setState(() {
-            _bornDate = pickedDate;
-          });
-        }
-      },
-      controller: TextEditingController(
-          text: _bornDate != null
-              ? DateFormat('dd/MM/yy').format(_bornDate!)
-              : ''),
-      validator: (val) {
-        if (val == null || val.isEmpty) return 'Please select a date';
-        return null;
-      },
-    );
-  }
+Widget _buildDatePicker(DateTime bornDate) {
+  // Configuración del formato de fecha
+  final dateFormat = DateFormat('dd/MM/yy');
+  // Configuración del controlador con la fecha inicial
+  final _dateController = TextEditingController(text: dateFormat.format(bornDate));
 
-  Widget _buildDropdown(
-      String label, TextEditingController controller, List<String> items) {
+  return TextFormField(
+    readOnly: true,
+    decoration: InputDecoration(
+      labelText: 'Born Date',
+      border: const OutlineInputBorder(),
+      suffixIcon: const Icon(Icons.calendar_today),
+    ),
+    controller: _dateController,
+    onTap: () async {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: bornDate,
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
+      if (pickedDate != null) {
+        setState(() {
+          _bornDate = pickedDate;
+          _dateController.text = dateFormat.format(pickedDate);
+        });
+      }
+    },
+    validator: (val) {
+      if (val == null || val.isEmpty) return 'Please select a date';
+      return null;
+    },
+  );
+}
+
+  Widget _buildDropdown(String label, TextEditingController controller,
+      String defaultValue, List<String> items) {
+    // Asegurarse de que el valor por defecto esté en la lista de opciones
+    if (!items.contains(defaultValue) && defaultValue.isNotEmpty) {
+      items.insert(0, defaultValue);
+    }
+
+    // Inicializar el controlador con el valor por defecto si está vacío
+    if (defaultValue.isNotEmpty && controller.text.isEmpty) {
+      controller.text = defaultValue;
+    }
+
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
       ),
       value: controller.text.isEmpty ? null : controller.text,
+      onChanged: (value) => setState(() => controller.text = value ?? ''),
       items: items
           .map((item) => DropdownMenuItem(value: item, child: Text(item)))
           .toList(),
-      onChanged: (value) => setState(() => controller.text = value!),
       validator: (value) {
         if (value == null || value.isEmpty) return 'Please select a $label';
         return null;
@@ -310,8 +337,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   void _changeInfo(BuildContext context) {
-    if (_formKey.currentState!.validate()) {  
-
+    if (_formKey.currentState!.validate()) {
       editProfileBloc.add(
         SubmitUserEvent(
           email: _emailController.text,
@@ -321,10 +347,9 @@ class _EditProfileViewState extends State<EditProfileView> {
           university: _universityController.text,
           gender: _genderController.text,
           bornDate: _bornDate,
-          userId: userid
+          userId: user.id,
         ),
       );
-      
     }
   }
 }

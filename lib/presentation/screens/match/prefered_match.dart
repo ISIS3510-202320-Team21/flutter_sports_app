@@ -15,9 +15,9 @@ import 'package:provider/provider.dart';
 
 class PreferedMatch extends StatefulWidget {
   final Sport selectedSport;
-  final DateTime? selectedDate;
+  DateTime? selectedDate;
 
-  const PreferedMatch(
+  PreferedMatch(
       {required this.selectedSport, this.selectedDate, Key? key})
       : super(key: key);
 
@@ -47,6 +47,20 @@ class _PreferedMatchState extends State<PreferedMatch> {
     matchBloc.add(FetchCourtsRequested());
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: widget.selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null && picked != widget.selectedDate) {
+      setState(() {
+        widget.selectedDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -58,10 +72,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
           }
           if (state is MatchLoadingState) {
             // Mientras los datos se están cargando o no todos están cargados, mostramos un loader.
-            return const Center(
-              child: CircularProgressIndicator()
-            );
-            
+            return const Center(child: CircularProgressIndicator());
           } else if (state is MatchErrorState) {
             return const Center(child: Text('Error loading data'));
           } else {
@@ -71,20 +82,20 @@ class _PreferedMatchState extends State<PreferedMatch> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ListTile(
-                      leading: Icon(Icons.calendar_today,
-                          color: Theme.of(context).colorScheme.primary),
-                      title: Text(
-                        widget.selectedDate == null
-                            ? "Select Date"
-                            : DateFormat('dd/MM/yyyy')
-                                .format(widget.selectedDate!),
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ),
-                  ),
+    Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListTile(
+        leading: Icon(Icons.calendar_today,
+            color: Theme.of(context).colorScheme.primary),
+        title: Text(
+          widget.selectedDate == null
+              ? "Select Date"
+              : DateFormat('dd/MM/yyyy').format(widget.selectedDate!),
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        onTap: () => _selectDate(context), // Agregado evento onTap
+      ),
+    ),
                   const Divider(),
                   ListTile(
                     leading: widget.selectedSport.image != null &&

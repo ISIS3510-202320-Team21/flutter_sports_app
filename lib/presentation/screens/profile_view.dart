@@ -111,8 +111,8 @@ class _ProfileViewState extends State<ProfileView> {
                     ConstrainedBox(
                       constraints: BoxConstraints.tightFor(width: buttonWidth),
                       child: ElevatedButton.icon(
-                        icon: Icon(Icons.settings, size: 28.0),
-                        label: Text('Settings', style: TextStyle(fontSize: 22)),
+                        icon: Icon(Icons.gavel, size: 28.0),
+                        label: Text('Claims', style: TextStyle(fontSize: 22)),
                         onPressed: () {},
                         style: iconButtonStyle,
                       ),
