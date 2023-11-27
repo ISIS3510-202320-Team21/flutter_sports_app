@@ -28,7 +28,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   List<Match> matches = [];
   MatchBloc matchBloc = MatchBloc();
 
-  final List<String> omittedStatuses = ['Finished', 'Out of Date', 'Approved'];
+  final List<String> omittedStatuses = ['Finished', 'Out of Date', 'Approved', 'Deleted'];
 
   @override
   void initState() {

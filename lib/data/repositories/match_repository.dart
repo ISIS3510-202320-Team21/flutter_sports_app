@@ -168,7 +168,7 @@ class MatchRepository {
   }
 
   Future<int> deleteMatch(int matchId) async {
-    final response = await http.delete(
+    final response = await http.put(
       Uri.parse('$backendUrl/matches/$matchId/'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

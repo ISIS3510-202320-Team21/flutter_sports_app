@@ -48,18 +48,21 @@ class _PreferedMatchState extends State<PreferedMatch> {
     matchBloc.add(FetchCourtsRequested());
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: widget.selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
-    );
-    if (picked != null && picked != widget.selectedDate)
-      setState(() {
-        widget.selectedDate = picked;
-      });
-  }
+Future<void> _selectDate(BuildContext context) async {
+  DateTime now = DateTime.now();
+  DateTime tomorrow = DateTime(now.year, now.month, now.day );
+
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: widget.selectedDate ?? tomorrow,
+    firstDate: tomorrow,
+    lastDate: DateTime(2025),
+  );
+  if (picked != null && picked != widget.selectedDate)
+    setState(() {
+      widget.selectedDate = picked;
+    });
+}
 
   @override
   Widget build(BuildContext context) {

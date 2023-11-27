@@ -117,6 +117,8 @@ class _MyMatchesState extends State<MyMatches> {
       'Pending': 2,
       'Finished': 3,
       'Out of Date': 4,
+      'Deleted': 5,
+
     };
 
     // Ordena las coincidencias basándote en el valor de su estado
@@ -127,6 +129,9 @@ class _MyMatchesState extends State<MyMatches> {
     String? lastStatus;
 
     for (var match in matches) {
+      if (match.status == 'Deleted') {
+        continue;
+      }
       // Añade un banner antes de la primera coincidencia de cada categoría
       if (match.status != lastStatus) {
         widgets.add(Padding(
@@ -214,6 +219,8 @@ class _MyMatchesState extends State<MyMatches> {
         return const Color(0xFF19647E);
       case 'Out of Date':
         return const Color(0xFFFF0000);
+      case 'Finished':
+        return const Color(0xFF000000);
       default:
         return Colors.black;
     }
