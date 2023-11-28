@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/level.dart';
@@ -15,10 +17,9 @@ import 'package:provider/provider.dart';
 
 class PreferedMatch extends StatefulWidget {
   final Sport selectedSport;
-  final DateTime? selectedDate;
+  DateTime? selectedDate;
 
-  const PreferedMatch(
-      {required this.selectedSport, this.selectedDate, Key? key})
+  PreferedMatch({required this.selectedSport, this.selectedDate, Key? key})
       : super(key: key);
 
   @override
@@ -47,6 +48,22 @@ class _PreferedMatchState extends State<PreferedMatch> {
     matchBloc.add(FetchCourtsRequested());
   }
 
+Future<void> _selectDate(BuildContext context) async {
+  DateTime now = DateTime.now();
+  DateTime tomorrow = DateTime(now.year, now.month, now.day );
+
+  final DateTime? picked = await showDatePicker(
+    context: context,
+    initialDate: widget.selectedDate ?? tomorrow,
+    firstDate: tomorrow,
+    lastDate: DateTime(2025),
+  );
+  if (picked != null && picked != widget.selectedDate)
+    setState(() {
+      widget.selectedDate = picked;
+    });
+}
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -58,10 +75,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
           }
           if (state is MatchLoadingState) {
             // Mientras los datos se están cargando o no todos están cargados, mostramos un loader.
-            return const Center(
-              child: CircularProgressIndicator()
-            );
-            
+            return const Center(child: CircularProgressIndicator());
           } else if (state is MatchErrorState) {
             return const Center(child: Text('Error loading data'));
           } else {
@@ -83,6 +97,8 @@ class _PreferedMatchState extends State<PreferedMatch> {
                                 .format(widget.selectedDate!),
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
+                      onTap: () =>
+                          _selectDate(context), // Agregado evento onTap
                     ),
                   ),
                   const Divider(),
