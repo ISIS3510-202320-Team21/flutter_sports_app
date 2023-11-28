@@ -5,6 +5,7 @@ import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_state.dart';
+import 'package:flutter_app_sports/presentation/screens/basic_statistics_view.dart';
 import 'package:flutter_app_sports/presentation/screens/editProfile_view.dart';
 import 'package:flutter_app_sports/presentation/screens/home_view.dart';
 import 'package:flutter_app_sports/presentation/screens/match/individual_match.dart';
@@ -24,6 +25,7 @@ import 'camera_view.dart';
 enum AppScreens {
   Home,
   Matches,
+  Statistics,
   Profile,
   Notifications,
   EditProfile,
@@ -38,6 +40,7 @@ enum AppScreens {
 final Map<AppScreens, String> screenTitles = {
   AppScreens.Home: "HOME",
   AppScreens.Matches: "NEW MATCH",
+  AppScreens.Statistics: "STATISTICS",
   AppScreens.Profile: "MY PROFILE",
   AppScreens.Notifications: "NOTIFICATIONS",
   AppScreens.EditProfile: "EDIT PROFILE",
@@ -46,11 +49,13 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.CameraScreen: "CAMERA",
   AppScreens.PreferedMatch: "PREFERRED MATCH",
   AppScreens.MatchDetails: "MATCH DETAILS"
+
 };
 
 final Map<AppScreens, Widget> screenViews = {
   AppScreens.Home: const HomeView(),
   AppScreens.Matches: const NewMatchesView(),
+  AppScreens.Statistics: StatisticsScreen(),
   AppScreens.Profile: const ProfileView(),
   AppScreens.Notifications: const NotificationsView(),
   AppScreens.EditProfile: const EditProfileView(),
