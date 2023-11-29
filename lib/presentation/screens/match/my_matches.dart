@@ -28,83 +28,131 @@ class _MyMatchesState extends State<MyMatches> {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
     userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
+    matchBloc.add(FetchMatchesUserEvent(userId!));
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-    matchBloc.add(FetchMatchesUserEvent(userId!));
 
-    return BlocProvider(
-      create: (context) => matchBloc,
-      child: BlocConsumer<MatchBloc, MatchState>(
-        listener: (context, state) {
-          // Actualiza la lista de partidos cuando los datos estén cargados.
-          if (state is MatchesLoadedForUserState) {
-            matches = state.matches;
-          } else if (state is MatchDeletedState) {
-            matches?.removeWhere((match) => match.id == state.matchId);
-            Future.delayed(Duration.zero, () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Match deleted')));
-            });
-            matchBloc.add(FetchMatchesUserEvent(userId!));
-          }
-        },
-        builder: (context, state) {
+    
+    matchBloc.add(FetchMatchesUserEvent(userId!));
+    return BlocConsumer<MatchBloc, MatchState>(
+      bloc: matchBloc,
+      listener: (context, state) {
+        // Actualiza la lista de partidos cuando los datos estén cargados.
+        if (state is MatchesLoadedForUserState) {
+          matches = state.matches;
+          
+        } else if (state is MatchDeletedState) {
+          matches?.removeWhere((match) => match.id == state.matchId);
+          Future.delayed(Duration.zero, () {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('Match deleted')));
+          });
+          matchBloc.add(FetchMatchesUserEvent(userId!));
+        }
+      },
+      builder: (context, state) {
+        if (state is MatchLoadingState) {
           return Scaffold(
+            backgroundColor: Colors.white,
             body: Stack(
               children: [
-                // Verifica si hay partidos y decide qué widget mostrar
-                if (matches != null && matches!.isEmpty)
-                  const Center(
-                      child: Text("You don't have any matches... Yet."))
-                else
-                  ListView(
-                    children: [
-                      // ...resto de tu código de ListView...
-                      if (matches != null)
-                        ..._buildMatchesList(matches!, context, userId: userId),
-                    ],
-                  ),
-                Positioned(
-                  bottom: MediaQuery.of(context).size.height * 0.05,
-                  right: MediaQuery.of(context).size.width * 0.05,
-                  child: Column(
-                    children: [
-                      // Espacio entre los botones
-                      SizedBox(
-                        child: FloatingActionButton(
-                          backgroundColor: colorScheme.onPrimary,
-                          elevation: 2,
-                          child: const Icon(Icons.replay, color: Colors.black),
-                          onPressed: () {
-                            matchBloc.add(FetchMatchesUserEvent(userId!));
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        child: FloatingActionButton(
-                          backgroundColor: colorScheme.onPrimary,
-                          elevation: 2,
-                          child: const Icon(Icons.add, color: Colors.black),
-                          onPressed: () {
-                            BlocProvider.of<GlobalBloc>(context).add(
-                              NavigateToIndexEvent(AppScreens.Matches.index),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                Center(
+                  child: CircularProgressIndicator(),
                 ),
+                Positioned(
+                bottom: MediaQuery.of(context).size.height * 0.05,
+                right: MediaQuery.of(context).size.width * 0.05,
+                child: Column(
+                  children: [
+                    // Espacio entre los botones
+                    SizedBox(
+                      child: FloatingActionButton(
+                        heroTag: "SODUFNSID",
+                        backgroundColor: colorScheme.onPrimary,
+                        elevation: 2,
+                        child: const Icon(Icons.replay, color: Colors.black),
+                        onPressed: () {
+                          matchBloc.add(FetchMatchesUserEvent(userId!));
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      child: FloatingActionButton(
+                        heroTag: "SODUFNSID2",
+                        backgroundColor: colorScheme.onPrimary,
+                        elevation: 2,
+                        child: const Icon(Icons.add, color: Colors.black),
+                        onPressed: () {
+                          BlocProvider.of<GlobalBloc>(context).add(
+                            NavigateToIndexEvent(AppScreens.Matches.index),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              )
               ],
-            ),
+              ),
           );
-        },
-      ),
+        }
+        return Scaffold(
+          body: Stack(
+            children: [
+              // Verifica si hay partidos y decide qué widget mostrar
+              if (matches != null && matches!.isEmpty)
+                const Center(child: Text("You don't have any matches... Yet."))
+              else
+                ListView(
+                  children: [
+                    // ...resto de tu código de ListView...
+                    if (matches != null)
+                      ..._buildMatchesList(matches!, context, userId: userId),
+                  ],
+                ),
+              Positioned(
+                bottom: MediaQuery.of(context).size.height * 0.05,
+                right: MediaQuery.of(context).size.width * 0.05,
+                child: Column(
+                  children: [
+                    // Espacio entre los botones
+                    SizedBox(
+                      child: FloatingActionButton(
+                        heroTag: "SODUFNSIDasd",
+                        backgroundColor: colorScheme.onPrimary,
+                        elevation: 2,
+                        child: const Icon(Icons.replay, color: Colors.black),
+                        onPressed: () {
+                          matchBloc.add(FetchMatchesUserEvent(userId!));
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      child: FloatingActionButton(
+                        heroTag: "SODUFNSID2asdasdasd",
+                        backgroundColor: colorScheme.onPrimary,
+                        elevation: 2,
+                        child: const Icon(Icons.add, color: Colors.black),
+                        onPressed: () {
+                          BlocProvider.of<GlobalBloc>(context).add(
+                            NavigateToIndexEvent(AppScreens.Matches.index),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -146,7 +194,6 @@ class _MyMatchesState extends State<MyMatches> {
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         elevation: 2,
         surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
-
         child: InkWell(
           onTap: () {
             _onMatchTap(context, match);

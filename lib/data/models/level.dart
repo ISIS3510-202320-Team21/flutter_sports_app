@@ -9,4 +9,8 @@ class Level {
       id: json['id'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+      };
 }

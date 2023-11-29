@@ -79,6 +79,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
               ),
               // body: CameraPreview(cameraBloc.getController()),
               floatingActionButton: FloatingActionButton(
+                
                 // Provide an onPressed callback.
                 onPressed: () async {
                   try {

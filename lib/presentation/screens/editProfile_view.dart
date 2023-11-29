@@ -185,12 +185,14 @@ class _EditProfileViewState extends State<EditProfileView> {
                                   child: Text(
                                     'CHANGE INFO',
                                     textAlign: TextAlign.center,
-                                    style: textTheme.titleLarge?.copyWith(
+                                    style: textTheme.titleMedium?.copyWith(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onPrimary,
                                       fontWeight: FontWeight.normal,
+
                                     ),
+
                                   ),
                                 ),
                               ],
@@ -232,7 +234,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme.of(context).colorScheme.error,
           ),
         ),
         focusedBorder: OutlineInputBorder(

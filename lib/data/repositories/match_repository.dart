@@ -85,7 +85,6 @@ class MatchRepository {
       },
       body: jsonEncode(match.toJson()),
     );
-
     if (response.statusCode == 200) {
       return Match.createFromJson(
           jsonDecode(utf8.decode(response.bodyBytes)), userRepository);

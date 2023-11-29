@@ -105,7 +105,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                             _selectDate(context), // Agregado evento onTap
                       ),
                     ),
-                    
+                    const SizedBox(height: 10),
                     ListTile(
                       leading: widget.selectedSport.image != null &&
                               widget.selectedSport.image!.isNotEmpty
@@ -129,7 +129,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                       title: Text(widget.selectedSport.name,
                           style: Theme.of(context).textTheme.titleMedium),
                     ),
-                    
+                    const SizedBox(height: 10),
                     ListTile(
                       title: Text(
                         selectedStartTime == null || selectedEndTime == null
@@ -210,7 +210,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                         }
                       },
                     ),
-                    
+                    const SizedBox(height: 10),
                     ListTile(
                       title: Text(
                         selectedLevel?.name ?? "Select Level",
@@ -220,7 +220,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                         _showLevelDialog(context, levels);
                       },
                     ),
-                    
+                    const SizedBox(height: 10),
                     ListTile(
                       title: Text(
                         selectedCourt ?? "Select Court",
@@ -231,7 +231,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                             courts); // Esta función mostrará el diálogo de selección de cancha.
                       },
                     ),
-                    
+                    const SizedBox(height: 10),
                     ListTile(
                       title: Text(
                         selectedCity ?? "Select City",
@@ -242,8 +242,18 @@ class _PreferedMatchState extends State<PreferedMatch> {
                             cities); // Esta función mostrará el diálogo de selección de ciudad.
                       },
                     ),
-                    
+                    const SizedBox(height: 10),
                     ElevatedButton(
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all<Size>(
+                            const Size(double.infinity, 50)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                        ),
+                      ),
                       onPressed: () {
                         DateTime now = DateTime.now();
                         if (widget.selectedDate != null &&

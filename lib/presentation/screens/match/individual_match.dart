@@ -156,6 +156,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
                           : "No Date",
                       subtitle: "Date",
                     ),
+                    const SizedBox(height: 8),
                     buildListTile2(
                         title: widget.match.sport?.name ?? "Unknown"),
                     buildListTile(

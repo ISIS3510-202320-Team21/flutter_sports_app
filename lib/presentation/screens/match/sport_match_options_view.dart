@@ -28,6 +28,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   List<Match> matches = [];
   MatchBloc matchBloc = MatchBloc();
 
+
   final List<String> omittedStatuses = ['Finished', 'Out of Date', 'Approved', 'Deleted'];
 
   @override
@@ -39,6 +40,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
 
   @override
   Widget build(BuildContext context) {
+    matchBloc.add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         body: RefreshIndicator(
