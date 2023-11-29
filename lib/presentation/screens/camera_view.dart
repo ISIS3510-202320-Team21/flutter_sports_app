@@ -4,6 +4,9 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
+import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -58,6 +61,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       listener: (context, state) {
         if (state is SavedPhotoActionState) {
           BlocProvider.of<AuthenticationBloc>(context).add(UpdateUserEvent(state.user));
+          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(AppScreens.Profile.index));
         }
       },
       builder: (context, state) {

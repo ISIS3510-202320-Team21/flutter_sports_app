@@ -231,7 +231,9 @@ class _EditProfileViewState extends State<EditProfileView> {
         fillColor: Theme.of(context).colorScheme.surface.withOpacity(1),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),

@@ -72,174 +72,175 @@ class _HomeViewState extends State<HomeView> {
     final colorScheme = Theme.of(context).colorScheme;
     ScreenUtil.init(context);
     checkInitialConnectivity();
-    return 
-    BlocListener<AuthenticationBloc, AuthenticationState>(
-      listener: (context, state) {
-       if (state is Authenticated) {
-          user = state.usuario;
-        }
-      },
-      child: BlocConsumer<HomeBloc, HomeState>(
-      bloc: homeBloc,
-      listenWhen: (previous, current) => current is HomeActionState,
-      buildWhen: (previous, current) => current is! HomeActionState,
-      listener: (context, state) {
-        if (state is HomeNavigateToNotificationState) {
-          BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(3));
-        } else if (state is HomeNavigateToReservationState) {
-          const url = 'https://centrodeportivo.bookeau.com/#/login';
-          launchUrl(Uri.parse(url));
-        } else if (state is HomeNavigateToManageMatchesState) {
-          BlocProvider.of<GlobalBloc>(context)
-              .add(NavigateToIndexEvent(AppScreens.MyMatches.index));
-        } else if (state is HomeNavigateToQuickMatchState) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const MatchesView()));
-        } else if (state is HomeNavigateToNewMatchState) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const MatchesView()));
-        } else if (state is HomeNavigateToProfileState) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const ProfileView()));
-        } else if (state is RecentSportsLoaded) {
-          sports = state.sports;
-          homeBloc.add(SaveSportsUserStorageRecent(state.sports));
-          homeBloc.add(HomeLoadedSuccessEvent());
-        } else if (state is FetchErrorState) {
-          print(state.error);
-        }
-      },
-      builder: (context, state) {
-        if (state is SportsLoadingRecent) {
-          return const Scaffold(
-              body: Center(
-            child: CircularProgressIndicator(),
-          ));
-        }
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+        listener: (context, state) {
+          if (state is Authenticated) {
+            user = state.usuario;
+          }
+        },
+        child: BlocConsumer<HomeBloc, HomeState>(
+          bloc: homeBloc,
+          listenWhen: (previous, current) => current is HomeActionState,
+          buildWhen: (previous, current) => current is! HomeActionState,
+          listener: (context, state) {
+            if (state is HomeNavigateToNotificationState) {
+              BlocProvider.of<GlobalBloc>(context)
+                  .add(NavigateToIndexEvent(AppScreens.Notifications.index));
+            } else if (state is HomeNavigateToReservationState) {
+              const url = 'https://centrodeportivo.bookeau.com/#/login';
+              launchUrl(Uri.parse(url));
+            } else if (state is HomeNavigateToManageMatchesState) {
+              BlocProvider.of<GlobalBloc>(context)
+                  .add(NavigateToIndexEvent(AppScreens.MyMatches.index));
+            } else if (state is HomeNavigateToQuickMatchState) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MatchesView()));
+            } else if (state is HomeNavigateToNewMatchState) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MatchesView()));
+            } else if (state is HomeNavigateToProfileState) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfileView()));
+            } else if (state is RecentSportsLoaded) {
+              sports = state.sports;
+              homeBloc.add(SaveSportsUserStorageRecent(state.sports));
+              homeBloc.add(HomeLoadedSuccessEvent());
+            } else if (state is FetchErrorState) {
+              print(state.error);
+            }
+          },
+          builder: (context, state) {
+            if (state is SportsLoadingRecent) {
+              return const Scaffold(
+                  body: Center(
+                child: CircularProgressIndicator(),
+              ));
+            }
 
-        return Scaffold(
-            backgroundColor: colorScheme.onPrimary,
-            body: Center(
-          child: RefreshIndicator(
-            onRefresh: _handleRefresh,
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                    builder: (context, authState) {
-                      if (notifications.isNotEmpty) {
-                        final title = notifications.isNotEmpty
-                            ? notifications.first.name
-                            : "Go and see your notifications!";
+            return Scaffold(
+                backgroundColor: colorScheme.onPrimary,
+                body: Center(
+                  child: RefreshIndicator(
+                    onRefresh: _handleRefresh,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                            builder: (context, authState) {
+                              if (notifications.isNotEmpty) {
+                                final title = notifications.isNotEmpty
+                                    ? notifications.first.name
+                                    : "Go and see your notifications!";
 
-                        return CustomButtonNotifications(
-                          key: UniqueKey(),
-                          title: title,
-                          imageAsset: "assets/arrow_1.png",
-                          onPressed: goToNotifications,
-                        );
-                      } else {
-                        return CustomButtonNotifications(
-                          key: UniqueKey(),
-
-                          title: "You don't have any notifications",
-                          imageAsset: "assets/arrow_1.png",
-                          onPressed: goToNotifications,
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  WeatherDisplay(
-                    latitude: latitude,
-                    longitude: longitude,
-                  ),
-                  const SizedBox(height: 16),
-                  RefreshIndicator(
-                      onRefresh:
-                          _handleRefresh, // La función que se llamará para refrescar
-                      child: SingleChildScrollView(
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'Welcome back ',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: colorScheme.onBackground,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: user.name,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 3),
-                              Text(
-                                'What would you like to do today?',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: colorScheme.onBackground),
-                              ),
-                              const SizedBox(height: 32),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _buildActionButton(
-                                    title: 'Go to field reservation',
-                                    imageAsset: 'assets/field_reservation.png',
-                                    onPressed: goToFieldReservation,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _buildActionButton(
-                                    title: 'Manage your matches',
-                                    imageAsset: 'assets/reserva_1.png',
-                                    onPressed: goToManageMatches,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              Wrap(
-                                spacing: 16,
-                                runSpacing: 16,
-                                alignment: WrapAlignment.center,
-                                children: sports.map((sport) {
-                                  return _buildActionButton2(
-                                    title: sport.name,
-                                    imageAsset: sport.image!,
-                                    onPressed: () => goToNewMatch(sport),
-                                  );
-                                }).toList(),
-                              )
-                            ],
+                                return CustomButtonNotifications(
+                                  key: UniqueKey(),
+                                  title: title,
+                                  imageAsset: "assets/arrow_1.png",
+                                  onPressed: goToNotifications,
+                                );
+                              } else {
+                                return CustomButtonNotifications(
+                                  key: UniqueKey(),
+                                  title: "You don't have any notifications",
+                                  imageAsset: "assets/arrow_1.png",
+                                  onPressed: goToNotifications,
+                                );
+                              }
+                            },
                           ),
-                        ),
-                      )),
-                ],
-              ),
-            ),
-          ),
+                          const SizedBox(height: 16),
+                          WeatherDisplay(
+                            latitude: latitude,
+                            longitude: longitude,
+                          ),
+                          const SizedBox(height: 16),
+                          RefreshIndicator(
+                              onRefresh:
+                                  _handleRefresh, // La función que se llamará para refrescar
+                              child: SingleChildScrollView(
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Welcome back ',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: colorScheme.onBackground,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: user.name,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                color: colorScheme.primary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 3),
+                                      Text(
+                                        'What would you like to do today?',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: colorScheme.onBackground),
+                                      ),
+                                      const SizedBox(height: 32),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          _buildActionButton(
+                                            title: 'Go to field reservation',
+                                            imageAsset:
+                                                'assets/field_reservation.png',
+                                            onPressed: goToFieldReservation,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          _buildActionButton(
+                                            title: 'Manage your matches',
+                                            imageAsset: 'assets/reserva_1.png',
+                                            onPressed: goToManageMatches,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Wrap(
+                                        spacing: 16,
+                                        runSpacing: 16,
+                                        alignment: WrapAlignment.center,
+                                        children: sports.map((sport) {
+                                          return _buildActionButton2(
+                                            title: sport.name,
+                                            imageAsset: sport.image!,
+                                            onPressed: () =>
+                                                goToNewMatch(sport),
+                                          );
+                                        }).toList(),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ));
+          },
         ));
-      },
-    )
-    );	
-    
   }
 
   Widget _buildActionButton(
@@ -256,7 +257,7 @@ class _HomeViewState extends State<HomeView> {
         surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
       ),
       child: SizedBox(
-        width: 300,
+        width: 302,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
