@@ -143,6 +143,7 @@ class _HomeViewState extends State<HomeView> {
                       } else {
                         return CustomButtonNotifications(
                           key: UniqueKey(),
+
                           title: "You don't have any notifications",
                           imageAsset: "assets/arrow_1.png",
                           onPressed: goToNotifications,
@@ -248,11 +249,11 @@ class _HomeViewState extends State<HomeView> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFEAEAEA),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        elevation: 0,
+        elevation: 2,
+        surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
       ),
       child: SizedBox(
         width: 300,
@@ -288,11 +289,11 @@ class _HomeViewState extends State<HomeView> {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFEAEAEA),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
-          elevation: 0,
+          surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
+          elevation: 2,
         ),
         child: Row(
           children: [
@@ -372,12 +373,12 @@ class CustomButtonNotifications extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          elevation: 0, // Sin sombra
+          elevation: 2, // Sin sombra
           padding: EdgeInsets.zero, // Sin relleno interno
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0), // Sin bordes redondeados
           ),
-          backgroundColor: const Color(0xFFEAEAEA), // Color de fondo
+          surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

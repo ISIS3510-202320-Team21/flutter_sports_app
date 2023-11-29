@@ -82,7 +82,6 @@ class _IndividualMatchState extends State<IndividualMatch> {
 
     ListTile buildListTile(
         {IconData? icon, required String title, String? subtitle}) {
-      print("Subtitle: $title");
       return ListTile(
         leading: Icon(icon, color: colorScheme.primary),
         title: Text(title, style: theme.textTheme.subtitle1),
@@ -157,30 +156,24 @@ class _IndividualMatchState extends State<IndividualMatch> {
                           : "No Date",
                       subtitle: "Date",
                     ),
-                    const Divider(),
                     buildListTile2(
                         title: widget.match.sport?.name ?? "Unknown"),
-                    const Divider(),
                     buildListTile(
                       icon: Icons.terrain,
                       title: "Level: ${widget.match.level?.name ?? 'Unknown'}",
                     ),
-                    const Divider(),
                     buildListTile(
                       icon: Icons.access_time,
                       title: "Time: ${widget.match.time}",
                     ),
-                    const Divider(),
                     buildListTile(
                       icon: Icons.place,
                       title: "Court: ${widget.match.court}",
                     ),
-                    const Divider(),
                     buildListTile(
                       icon: Icons.location_city,
                       title: "City: ${widget.match.city}",
                     ),
-                    const Divider(),
                     buildListTile(
                       icon: Icons.person,
                       title:
@@ -197,18 +190,6 @@ class _IndividualMatchState extends State<IndividualMatch> {
                           padding: MaterialStateProperty.all(
                               const EdgeInsets.symmetric(
                                   vertical: 20, horizontal: 30)),
-                          backgroundColor:
-                              MaterialStateProperty.all(colorScheme.primary),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          shadowColor:
-                              MaterialStateProperty.all(Colors.black45),
-                          elevation: MaterialStateProperty.all(5),
-                          overlayColor:
-                              MaterialStateProperty.all(Colors.black12),
                         ),
                         child: const Text(
                           "Match!",

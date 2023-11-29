@@ -118,8 +118,8 @@ class _NewMatchesViewState extends State<NewMatchesView> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          elevation: 0,
-                          color: const Color(0xFFEAEAEA),
+                          elevation: 1,
+                          surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
                           child: Stack(
                             children: [
                               Positioned(

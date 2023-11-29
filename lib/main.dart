@@ -44,17 +44,20 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         onGenerateRoute: _appRouter.onGenerateRoute,
+            
+
         theme: ThemeData(
           fontFamily: 'Lato',
           primaryColor: const Color(0xFF19647E),
           colorScheme: const ColorScheme.light(
             primary: Color(0xFF19647E),
             secondary: Color(0xFF28AFB0),
-            background: Color(0xFFF5F5F5),
+            background: Color(0xFFFFFFFF),
             onPrimary: Color(0xFFFFFFFF),
-            onSecondary: Color(0x00F5F5F5),
+            onSecondary: Color.fromARGB(0, 214, 212, 212),
             onBackground: Color(0xFF37392E),
             onSurface: Color(0xFF37392E),
+            surface: Color(0xFFFFFFFF),
             onError: Color(0xFF000000),
             error: Color(0xFF000000),
           ),

@@ -11,13 +11,10 @@ class StatisticsScreen extends StatelessWidget {
     return BlocProvider<StatisticsBloc>(
       create: (context) => StatisticsBloc()..add(LoadStatistics()),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Statistics'),
-        ),
         body: BlocBuilder<StatisticsBloc, StatisticsState>(
           builder: (context, state) {
             if (state is StatisticsLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             } else if (state is StatisticsLoaded) {
               return ListView.builder(
                 itemCount: state.statistics.length,
@@ -29,7 +26,7 @@ class StatisticsScreen extends StatelessWidget {
               return Center(child: Text(state.message));
             }
             // Si el estado es inicial o no se reconoce, muestra un mensaje de bienvenida.
-            return Center(child: Text('Welcome to Statistics'));
+            return const Center(child: const Text('Welcome to Statistics'));
           },
         ),
       ),

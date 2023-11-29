@@ -33,21 +33,25 @@ class _ProfileViewState extends State<ProfileView> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorTheme = Theme.of(context).colorScheme;
+final ButtonStyle profileButtonStyle = ButtonStyle(
+  elevation: MaterialStateProperty.all(2),
+  surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.onPrimary),
+  foregroundColor: MaterialStateProperty.all(colorTheme.onError),
+  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(10), // Ajusta el radio aquí
+  )),
+  padding: MaterialStateProperty.all(EdgeInsets.all(16.0)),
+);
 
-    final ButtonStyle profileButtonStyle = ButtonStyle(
-      elevation: MaterialStateProperty.all(0),
-      backgroundColor: MaterialStateProperty.all(const Color(0xFFEAEAEA)),
-      foregroundColor: MaterialStateProperty.all(colorTheme.onError),
-      shape: MaterialStateProperty.all(CircleBorder()),
-      padding: MaterialStateProperty.all(EdgeInsets.all(16.0)),
-    );
-
-    final ButtonStyle iconButtonStyle = ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(const Color(0xFFEAEAEA)),
-      foregroundColor: MaterialStateProperty.all(colorTheme.onError),
-      elevation: MaterialStateProperty.all(0),
-      padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 15.0)),
-    );
+final ButtonStyle iconButtonStyle = ButtonStyle(
+  foregroundColor: MaterialStateProperty.all(colorTheme.onError),
+  elevation: MaterialStateProperty.all(2),
+  surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.onPrimary),
+  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(10), // Ajusta el radio aquí
+  )),
+  padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 15.0)),
+);
 
     final buttonWidth = MediaQuery.of(context).size.width / 2;
 

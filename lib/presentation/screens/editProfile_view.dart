@@ -140,7 +140,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.02,
                           ),
-                          _buildDatePicker(user.bornDate ?? DateTime.now()),
+                          _buildDatePicker(),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.02,
                           ),
@@ -272,40 +272,37 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
   }
 
-Widget _buildDatePicker(DateTime bornDate) {
-  // Configuración del formato de fecha
-  final dateFormat = DateFormat('dd/MM/yy');
-  // Configuración del controlador con la fecha inicial
-  final _dateController = TextEditingController(text: dateFormat.format(bornDate));
-
-  return TextFormField(
-    readOnly: true,
-    decoration: InputDecoration(
-      labelText: 'Born Date',
-      border: const OutlineInputBorder(),
-      suffixIcon: const Icon(Icons.calendar_today),
-    ),
-    controller: _dateController,
-    onTap: () async {
-      DateTime? pickedDate = await showDatePicker(
-        context: context,
-        initialDate: bornDate,
-        firstDate: DateTime(1900),
-        lastDate: DateTime.now(),
-      );
-      if (pickedDate != null) {
-        setState(() {
-          _bornDate = pickedDate;
-          _dateController.text = dateFormat.format(pickedDate);
-        });
-      }
-    },
-    validator: (val) {
-      if (val == null || val.isEmpty) return 'Please select a date';
-      return null;
-    },
-  );
-}
+  Widget _buildDatePicker() {
+    return TextFormField(
+      readOnly: true,
+      decoration: const InputDecoration(
+        labelText: 'Born Date',
+        border: OutlineInputBorder(),
+        suffixIcon: Icon(Icons.calendar_today),
+      ),
+      onTap: () async {
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(1900),
+          lastDate: DateTime.now(),
+        );
+        if (pickedDate != null) {
+          setState(() {
+            _bornDate = pickedDate;
+          });
+        }
+      },
+      controller: TextEditingController(
+          text: _bornDate != null
+              ? DateFormat('dd/MM/yy').format(_bornDate!)
+              : ''),
+      validator: (val) {
+        if (val == null || val.isEmpty) return 'Please select a date';
+        return null;
+      },
+    );
+  }
 
   Widget _buildDropdown(String label, TextEditingController controller,
       String defaultValue, List<String> items) {

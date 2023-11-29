@@ -46,9 +46,9 @@ class _SignUpViewState extends State<SignUpView> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
         elevation: 0.0,
         title: Text(
-          
           "SIGN UP",
           style: textTheme.headlineSmall?.copyWith(
               color: Theme.of(context).colorScheme.onBackground,
@@ -99,6 +99,8 @@ class _SignUpViewState extends State<SignUpView> {
               return Container(
                 constraints: const BoxConstraints.expand(),
                 color: Theme.of(context).colorScheme.background,
+                
+
                 child: Form(
                   key: _formKey,
                   child: Padding(
@@ -242,7 +244,7 @@ class _SignUpViewState extends State<SignUpView> {
                     ),
                   ),
                 ),
-              ); // Extract the form build method for readability.
+              ); 
             },
           );
         },
@@ -270,7 +272,9 @@ class _SignUpViewState extends State<SignUpView> {
         fillColor: Theme.of(context).colorScheme.surface.withOpacity(1),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.9)	,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),

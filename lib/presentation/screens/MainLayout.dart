@@ -133,12 +133,15 @@ class _MainLayoutState extends State<MainLayout> {
     return true;
   }
 
-  Widget iconButtonWithRoundedSquare(
-      BuildContext context, IconData icon, VoidCallback onPressed) {
-    return Padding(
-      padding: const EdgeInsets.all(6),
-      child: InkWell(
-        onTap: onPressed,
+Widget iconButtonWithRoundedSquare(
+  BuildContext context, IconData icon, VoidCallback onPressed) {
+  return Padding(
+    padding: const EdgeInsets.all(6),
+    child: InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(12),
+      child: Material(
+        elevation: 2, // Ajusta la elevación según tu preferencia
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -153,8 +156,10 @@ class _MainLayoutState extends State<MainLayout> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -215,6 +220,7 @@ class _MainLayoutState extends State<MainLayout> {
             appBar: AppBar(
               automaticallyImplyLeading: false,
               backgroundColor: colorScheme.onPrimary,
+              surfaceTintColor: colorScheme.onPrimary,
               elevation: 0.0,
               title: Text(
                 screenTitles[_selectedScreen]!,

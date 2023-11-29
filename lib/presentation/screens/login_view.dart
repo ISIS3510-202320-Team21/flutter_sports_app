@@ -34,8 +34,11 @@ class LoginView extends StatelessWidget {
             ));
           }
           return Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.onPrimary,
             appBar: AppBar(
               automaticallyImplyLeading: false,
+              
+              surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
               elevation: 0.0,
               title: Text(
                 "LOGIN",
@@ -47,7 +50,9 @@ class LoginView extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
             body: Container(
+              
               constraints: const BoxConstraints.expand(),
+              
               color: Theme.of(context).colorScheme.background,
               child: Form(
                 key: _formKey,
@@ -190,7 +195,9 @@ class LoginView extends StatelessWidget {
         fillColor: Theme.of(context).colorScheme.surface.withOpacity(1),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.9)	,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
