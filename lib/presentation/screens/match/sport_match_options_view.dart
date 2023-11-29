@@ -28,6 +28,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   List<Match> matches = [];
   MatchBloc matchBloc = MatchBloc();
 
+
   final List<String> omittedStatuses = ['Finished', 'Out of Date', 'Approved', 'Deleted'];
 
   @override
@@ -39,6 +40,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
 
   @override
   Widget build(BuildContext context) {
+    matchBloc.add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
     return Scaffold(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         body: RefreshIndicator(
@@ -78,11 +80,9 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                   },
                   child: InputDecorator(
                     decoration: InputDecoration(
-                      labelText: 'Fecha',
-                      border: OutlineInputBorder(),
                       suffixIcon: selectedDate != null
                           ? IconButton(
-                              icon: Icon(Icons.clear),
+                              icon: Icon(Icons.clear, size: 20.0, color: Colors.black),
                               onPressed: () {
                                 setState(() {
                                   selectedDate = null;
@@ -102,7 +102,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                         Text(
                           selectedDate != null
                               ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
-                              : 'Selecciona una fecha',
+                              : 'Select a date',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -117,10 +117,11 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                   .map((match) => _buildMatchTile(match))
                   .toList(),
               ListTile(
-                leading: const Icon(Icons.add_circle, size: 40.0),
+                leading: const Icon(Icons.add_circle, size: 40.0, color: Colors.black),
                 title:
                     const Text('Add your preferred times and wait for a match'),
-                trailing: const Icon(Icons.arrow_forward_ios),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20.0),
+                
                 onTap: () {
                   if (selectedDate == null) {
                     ScaffoldMessenger.of(context).showSnackBar(

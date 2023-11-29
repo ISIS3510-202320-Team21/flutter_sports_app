@@ -35,28 +35,13 @@ class Match {
 
   static Future<Match> createFromJson(
       Map<String, dynamic> json, UserRepository userRepository) async {
-    int userCreatedId = json['user_created_id'];
-    SportRepository sportRepository = SportRepository();
-    MatchRepository matchRepository =
-        MatchRepository(userRepository: userRepository);
+    MatchRepository(userRepository: userRepository);
 
-    User? userCreated = await userRepository.getInfoUser(userid: userCreatedId);
-    List<Sport>? sports = await sportRepository.fetchSports();
-    List<Level>? levels = await matchRepository.getLevels();
-    
-    Sport? sport;
-    Level? level;
+    User userCreated = User.fromJson(json['user_created']);
 
-    if (json['sport_id'] != null) {
-      sport = sports?.firstWhere((element) => element.id == json['sport_id']);
-    } else {
-      sport = Sport.fromJson(json['sport']);
-    }
-    if (json['level_id'] != null) {
-      level = levels?.firstWhere((element) => element.id == json['level_id']);
-    } else {
-      level = Level.fromJson(json['level']);
-    }
+    Sport sport = Sport.fromJson(json['sport']);
+    Level level = Level.fromJson(json['level']);
+
     return Match(
       date: DateFormat("dd/MM/yyyy").parse(json['date']),
       time: json['time'],
