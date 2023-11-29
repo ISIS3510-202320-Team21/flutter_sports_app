@@ -1,7 +1,7 @@
 // A screen that allows users to take a picture using a given camera.
 import 'dart:async';
 import 'dart:io';
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
@@ -31,12 +31,28 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraDescription camera;
   int? userId;
 
-  @override
-  void initState() {
-    cameraBloc.add(CameraInitialEvent());
-    userId = BlocProvider.of<AuthenticationBloc>(context).user!.id;
-    super.initState();
+@override
+void initState() {
+  super.initState();
+  _requestCameraPermission();
+  cameraBloc.add(CameraInitialEvent());
+  userId = BlocProvider.of<AuthenticationBloc>(context).user!.id;
+}
+
+Future<void> _requestCameraPermission() async {
+  var cameraStatus = await Permission.camera.status;
+  if (!cameraStatus.isGranted) {
+    await Permission.camera.request();
   }
+
+  // Opcional: Vuelve a comprobar si se otorgaron los permisos y maneja la lógica en consecuencia
+  cameraStatus = await Permission.camera.status;
+  if (!cameraStatus.isGranted) {
+    // Manejar la lógica si los permisos no se otorgan (por ejemplo, mostrar un mensaje)
+  } else {
+    // Los permisos se otorgaron, continua con la inicialización de la cámara
+  }
+}
 
 
   @override

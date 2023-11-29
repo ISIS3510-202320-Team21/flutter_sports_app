@@ -159,6 +159,7 @@ class _MyMatchesState extends State<MyMatches> {
   List<Widget> _buildMatchesList(List<Match> matches, BuildContext context,
       {int? userId}) {
     // Asigna un valor a cada estado para poder ordenar las coincidencias
+
     Map<String, int> statusOrder = {
       'Approved': 1,
       'Pending': 2,
