@@ -68,6 +68,7 @@ Future<void> _selectDate(BuildContext context) async {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: BlocConsumer<MatchBloc, MatchState>(
+      
         bloc: matchBloc,
         builder: (context, state) {
           if (!allDataLoaded) {
@@ -81,8 +82,10 @@ Future<void> _selectDate(BuildContext context) async {
           } else {
             // Una vez que todos los datos estén cargados, construimos la UI correspondiente.
             return Padding(
+              
               padding: const EdgeInsets.all(16.0),
               child: Padding(
+                
                 padding: const EdgeInsets.all(16.0),
                 child: Column(children: [
                   Padding(

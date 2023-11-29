@@ -113,6 +113,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
     }
 
     return Scaffold(
+      backgroundColor: colorScheme.onPrimary,
       body: BlocListener<MatchBloc, MatchState>(
         bloc: matchBloc,
         listener: (context, state) {

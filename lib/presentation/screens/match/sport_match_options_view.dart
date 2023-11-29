@@ -40,6 +40,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
         body: RefreshIndicator(
       onRefresh: () async {
         matchBloc.add(FetchMatchesSportsEvent(widget.sport.id, selectedDate));
@@ -48,7 +49,11 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
         bloc: matchBloc,
         builder: (context, state) {
           if (state is MatchLoadingState) {
-            return const Center(child: CircularProgressIndicator());
+            return const Scaffold(
+              backgroundColor: Colors.white,
+                body: Center(
+              child: CircularProgressIndicator(),
+            ));
           }
           return ListView(
             children: [
@@ -119,6 +124,7 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                 onTap: () {
                   if (selectedDate == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
+                      
                       const SnackBar(
                         content: Text('Please select a date first!'),
                         duration: Duration(seconds: 2),

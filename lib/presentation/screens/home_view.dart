@@ -118,6 +118,7 @@ class _HomeViewState extends State<HomeView> {
         }
 
         return Scaffold(
+            backgroundColor: colorScheme.onPrimary,
             body: Center(
           child: RefreshIndicator(
             onRefresh: _handleRefresh,

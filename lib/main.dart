@@ -47,18 +47,16 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           fontFamily: 'Lato',
           primaryColor: const Color(0xFF19647E),
-          colorScheme: const ColorScheme(
+          colorScheme: const ColorScheme.light(
             primary: Color(0xFF19647E),
             secondary: Color(0xFF28AFB0),
             background: Color(0xFFF5F5F5),
-            surface: Color(0x00EBEBEB),
             onPrimary: Color(0xFFFFFFFF),
             onSecondary: Color(0x00F5F5F5),
             onBackground: Color(0xFF37392E),
             onSurface: Color(0xFF37392E),
             onError: Color(0xFF000000),
             error: Color(0xFF000000),
-            brightness: Brightness.light,
           ),
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: const TextTheme(

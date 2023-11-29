@@ -23,15 +23,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
     return Container(
       height: 70,
-      decoration: BoxDecoration(
-        color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-        border: Border(
-          top: BorderSide(
-            color: colorScheme.onBackground.withOpacity(0.2),
-            width: 1.0,
-          ),
-        ),
-      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: AppScreens.values.map((screen) {
