@@ -79,6 +79,7 @@ class _ProfileViewState extends State<ProfileView> {
             height: 80.0,
           );
         return Scaffold(
+          backgroundColor: colorTheme.onPrimary,
           body: SingleChildScrollView(
             child: Center(
               child: Padding(

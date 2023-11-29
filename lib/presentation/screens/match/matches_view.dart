@@ -50,6 +50,7 @@ class _MatchesViewState extends State<MatchesView> {
           case MatchLoadedSuccessState:
             final successState = state as MatchLoadedSuccessState;
             return Scaffold(
+              backgroundColor: Colors.white,
               body: Column(
                 children: [
                   Row(

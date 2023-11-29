@@ -55,6 +55,7 @@ class _NewMatchesViewState extends State<NewMatchesView> {
       },
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: colorScheme.onPrimary,
           body: ListView(
             children: [
               Padding(

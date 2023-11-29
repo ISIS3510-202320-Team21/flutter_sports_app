@@ -49,9 +49,9 @@ class _MyMatchesState extends State<MyMatches> {
           return matches == null
               ? const Center(child: CircularProgressIndicator())
               : Scaffold(
+                backgroundColor: colorScheme.onPrimary,
                   appBar: AppBar(
                     automaticallyImplyLeading: false,
-                    backgroundColor: colorScheme.onPrimary,
                     elevation: 0,
                     centerTitle:
                         false, // Cambiado a false para alinear a la izquierda
@@ -147,6 +147,7 @@ class _MyMatchesState extends State<MyMatches> {
       widgets.add(Card(
         elevation: 5,
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        surfaceTintColor: Colors.white,
         child: InkWell(
           onTap: () {
             _onMatchTap(context, match);
