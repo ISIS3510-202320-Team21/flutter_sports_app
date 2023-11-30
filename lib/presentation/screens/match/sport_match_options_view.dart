@@ -58,8 +58,8 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
         },
         child: Column(
           children: [
-            Expanded(child:
-            BlocConsumer<MatchBloc, MatchState>(
+            Expanded(
+              child: BlocConsumer<MatchBloc, MatchState>(
                 bloc: matchBloc,
                 builder: (context, state) {
                   if (state is MatchLoadingState) {
@@ -134,6 +134,17 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                           .take(maxdisplayedMatchesCount)
                           .map((match) => _buildMatchTile(match))
                           .toList(),
+                      if (pendingMatches.isEmpty)
+                        Center(
+                          child: Text(
+                            'No matches found',
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,),
+                          ),
+                        ),
                       if (pendingMatches.length > maxdisplayedMatchesCount)
                         Center(
                           child: ElevatedButton(
@@ -159,12 +170,14 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
               ),
             ),
             Container(
-                child: ListTile(
-                  leading: const Icon(Icons.add_circle, size: 30, color: Colors.black),
-                  title: const Text('Add your preferred times and wait for a match'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 20.0),
-                  onTap: () {
-                    if (selectedDate == null) {
+              child: ListTile(
+                leading:
+                    const Icon(Icons.add_circle, size: 30, color: Colors.black),
+                title:
+                    const Text('Add your preferred times and wait for a match'),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 20.0),
+                onTap: () {
+                  if (selectedDate == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Please select a date first!'),
@@ -176,9 +189,9 @@ class _SportMatchOptionsViewState extends State<SportMatchOptionsView> {
                         NavigateToPrefferedMatchEvent(
                             widget.sport, selectedDate));
                   }
-                  },
-                ),
+                },
               ),
+            ),
           ],
         ),
       ),
