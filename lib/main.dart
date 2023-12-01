@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +29,46 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final AppRouter _appRouter = AppRouter();
   String red = 'unknown';
+  bool _isConnected = true;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+    checkInitialConnectivity();
+  }
+
+  void checkInitialConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    _updateConnectionStatus(connectivityResult);
+  }
+
+  void _updateConnectionStatus(ConnectivityResult result) {
+    setState(() {
+      _isConnected = result != ConnectivityResult.none;
+    });
+    if (_isConnected) {
+      _retryConnection();
+    }
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
+
+  void _retryConnection() {}
   @override
   Widget build(BuildContext context) {
+    if (_isConnected) {
+      red = 'online';
+    }
+    else {
+      red = 'offline';
+    }
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthenticationBloc>(
@@ -44,8 +84,6 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         onGenerateRoute: _appRouter.onGenerateRoute,
-            
-
         theme: ThemeData(
           fontFamily: 'Lato',
           primaryColor: const Color(0xFF19647E),
@@ -69,7 +107,6 @@ class _MyAppState extends State<MyApp> {
             headlineLarge: TextStyle(color: Color(0xFF37392E)),
           ),
         ),
-
         builder: (context, child) {
           return Builder(
             builder: (context) {
@@ -78,7 +115,7 @@ class _MyAppState extends State<MyApp> {
                   if (state is ConnectivityOffline) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Se perdió la conexión a Internet.'),
+                        content: Text('Internet connection lost. Please check your connection.'),
                         duration: Duration(seconds: 2),
                       ),
                     );
@@ -86,7 +123,7 @@ class _MyAppState extends State<MyApp> {
                   } else if (state is ConnectivityOnline && red != 'unknown') {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Se recuperó la conexión a Internet.'),
+                        content: Text('Internet connection restored.'),
                         duration: Duration(seconds: 2),
                       ),
                     );
