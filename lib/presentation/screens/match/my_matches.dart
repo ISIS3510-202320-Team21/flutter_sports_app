@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
@@ -28,14 +29,23 @@ class _MyMatchesState extends State<MyMatches> {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
     userId = BlocProvider.of<AuthenticationBloc>(context).user?.id;
-    matchBloc.add(FetchMatchesUserEvent(userId!));
+    // matchBloc.add(FetchMatchesUserEvent(userId!));
+  }
+
+  void checkInitialConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      matchBloc.add(FetchMatchesUserStorageRecent());
+    } else {
+      matchBloc.add(FetchMatchesUserEvent(userId!));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
-
+    checkInitialConnectivity();
     
     matchBloc.add(FetchMatchesUserEvent(userId!));
     return BlocConsumer<MatchBloc, MatchState>(
@@ -44,7 +54,7 @@ class _MyMatchesState extends State<MyMatches> {
         // Actualiza la lista de partidos cuando los datos estén cargados.
         if (state is MatchesLoadedForUserState) {
           matches = state.matches;
-          
+          matchBloc.add(SaveMatchesUserStorageRecent(state.matches));
         } else if (state is MatchDeletedState) {
           matches?.removeWhere((match) => match.id == state.matchId);
           Future.delayed(Duration.zero, () {

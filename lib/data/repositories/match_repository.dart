@@ -5,6 +5,7 @@ import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_sports/data/services/config_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MatchRepository {
   final String? backendUrl = ConfigService.backendUrl;
@@ -30,6 +31,22 @@ class MatchRepository {
     } else {
       throw Exception('Failed to get matches: ${response.statusCode}');
     }
+  }
+
+  Future<List<Match>> getMatchesForUserStorageRecent() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? matchesJson = prefs.getString('matches');
+    if (matchesJson == null) {
+      return [];
+    }
+    List<dynamic> matchesList = jsonDecode(matchesJson) as List;
+    return matchesList.map((json) => Match.fromJson(json)).toList();
+  }
+
+  Future<void> saveMatchesForUserStorageRecent(List<Match> matches) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String matchesJson = jsonEncode(matches.map((match) => match.toJson()).toList());
+    await prefs.setString('matches', matchesJson);
   }
 
   Future<Match?> changeStatusMatch(int matchId, String status) async {

@@ -149,9 +149,9 @@ class UserRepository {
 
 
 
-Future<void> saveSportsUserStorageRecent(List<Sport> sports) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  String sportsJson = jsonEncode(sports.map((sport) => sport.toJson()).toList());
-  await prefs.setString('sports', sportsJson);
-}
+  Future<void> saveSportsUserStorageRecent(List<Sport> sports) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String sportsJson = jsonEncode(sports.map((sport) => sport.toJson()).toList());
+    await prefs.setString('sports', sportsJson);
+  }
 }
