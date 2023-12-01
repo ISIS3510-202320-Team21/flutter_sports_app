@@ -8,9 +8,6 @@ class ClaimsView extends StatelessWidget {
     return BlocProvider<ClaimsBloc>(
       create: (context) => ClaimsBloc(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Claims'),
-        ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -39,8 +36,8 @@ class ClaimsView extends StatelessWidget {
                 onPressed: () {
                   // Aquí puedes agregar lógica para enviar el claim
                   //BlocProvider.of<ClaimsBloc>(context).add(
-                    // Agrega el evento correspondiente para manejar el envío
-                    // Puedes definir tu propio evento en el Bloc
+                  // Agrega el evento correspondiente para manejar el envío
+                  // Puedes definir tu propio evento en el Bloc
                   //);
                 },
                 child: Text('Submit'),
@@ -52,4 +49,3 @@ class ClaimsView extends StatelessWidget {
     );
   }
 }
-  
