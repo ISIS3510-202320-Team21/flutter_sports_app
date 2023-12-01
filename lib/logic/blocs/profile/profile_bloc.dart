@@ -13,6 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileLogoutButtonClickedEvent>(profileLogoutButtonClickedEvent);
     on<ProfileAddProfilePictureButtonClickedEvent>(profileAddProfilePictureButtonClickedEvent);
     on<ProfileUpdateImageEvent>(profileUpdateImageEvent);
+    on<ProfileClaimsButtonClickedEvent>(profileClaimsButtonClickedEvent);
   }
 
   FutureOr<void> profileEditButtonClickedEvent(ProfileEditButtonClickedEvent event, Emitter<ProfileState> emit) {
@@ -37,5 +38,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   FutureOr<void> profileUpdateImageEvent(ProfileUpdateImageEvent event, Emitter<ProfileState> emit) {
     emit(ProfileLoadedSuccessState(user: event.user));
+  }
+
+  FutureOr<void> profileClaimsButtonClickedEvent(ProfileClaimsButtonClickedEvent event, Emitter<ProfileState> emit) {
+    print('Claims clicked');
+    emit(ProfileNavigateToClaimsState());
   }
 }

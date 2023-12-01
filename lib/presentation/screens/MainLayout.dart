@@ -15,6 +15,7 @@ import 'package:flutter_app_sports/presentation/screens/match/prefered_match.dar
 import 'package:flutter_app_sports/presentation/screens/match/sport_match_options_view.dart';
 import 'package:flutter_app_sports/presentation/screens/notifications_view.dart';
 import 'package:flutter_app_sports/presentation/screens/profile_view.dart';
+import 'package:flutter_app_sports/presentation/screens/claims_view.dart';
 import 'package:flutter_app_sports/presentation/widgets/CustomBottomNavigationBar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
@@ -33,7 +34,8 @@ enum AppScreens {
   SportMatchOptions,
   CameraScreen,
   PreferedMatch,
-  MatchDetails
+  MatchDetails,
+  Claims
   // Agrega nuevas pantallas aquí
 }
 
@@ -48,7 +50,8 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.SportMatchOptions: "MATCH OPTIONS",
   AppScreens.CameraScreen: "CAMERA",
   AppScreens.PreferedMatch: "PREFERRED MATCH",
-  AppScreens.MatchDetails: "MATCH DETAILS"
+  AppScreens.MatchDetails: "MATCH DETAILS",
+  AppScreens.Claims: "CLAIMS"
 
 };
 
@@ -93,7 +96,8 @@ final Map<AppScreens, Widget> screenViews = {
         userCreated: null,
         court: "xd"),
     state: "",
-  )
+  ),
+  AppScreens.Claims:  ClaimsView()
 };
 
 class MainLayout extends StatefulWidget {
