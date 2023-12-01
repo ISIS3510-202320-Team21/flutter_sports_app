@@ -100,7 +100,7 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
                           : Icon(Icons.account_circle, size: 80.0),
                     ),
                     SizedBox(height: 20),
-                    Text(userName ?? 'User', style: textTheme.headline5),
+                    Text(userName ?? 'User', style: textTheme.headlineSmall),
                     SizedBox(height: 40),
                     ConstrainedBox(
                       constraints: BoxConstraints.tightFor(width: buttonWidth),
