@@ -1,6 +1,9 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/level.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
@@ -38,6 +41,8 @@ class _PreferedMatchState extends State<PreferedMatch> {
   List<String>? courts;
   bool allDataLoaded = false;
   MatchBloc matchBloc = MatchBloc();
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  bool _isConnected = true;
 
   @override
   void initState() {
@@ -46,6 +51,35 @@ class _PreferedMatchState extends State<PreferedMatch> {
     matchBloc.add(FetchLevelsEvent());
     matchBloc.add(FetchCitiesRequested());
     matchBloc.add(FetchCourtsRequested());
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+    checkInitialConnectivity();
+  }
+
+  void checkInitialConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    _updateConnectionStatus(connectivityResult);
+  }
+
+  void _updateConnectionStatus(ConnectivityResult result) {
+    setState(() {
+      _isConnected = result != ConnectivityResult.none;
+    });
+    if (_isConnected) {
+      _retryConnection();
+    }
+  }
+
+  void _retryConnection() {
+    matchBloc.add(FetchLevelsEvent());
+    matchBloc.add(FetchCitiesRequested());
+    matchBloc.add(FetchCourtsRequested());
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -65,9 +99,33 @@ class _PreferedMatchState extends State<PreferedMatch> {
     }
   }
 
-  
   @override
   Widget build(BuildContext context) {
+    if (!_isConnected) {
+      return Container(
+        color: Colors.white,
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.wifi_off,
+                size: 100,
+                color: Colors.grey,
+              ),
+              SizedBox(height: 20),
+              Text(
+                "No internet connection available.",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     return Container(
       color: Colors.white,
       child: SingleChildScrollView(

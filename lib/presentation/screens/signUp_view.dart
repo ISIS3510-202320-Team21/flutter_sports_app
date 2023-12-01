@@ -252,17 +252,22 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  Widget _buildTextField(
-    BuildContext context,
-    TextEditingController controller,
-    String labelText,
-    String? Function(String?) validator, {
-    bool isObscure = false,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return TextFormField(
-      controller: controller,
-      validator: validator,
+Widget _buildTextField(
+  BuildContext context,
+  TextEditingController controller,
+  String labelText,
+  String? Function(String?) validator, {
+  bool isObscure = false,
+  TextInputType keyboardType = TextInputType.text,
+}) {
+  return TextFormField(
+    controller: controller,
+    validator: (value) {
+      if (RegExp(r'[^\u0000-\u007F]+').hasMatch(value ?? '')) {
+        return 'Please enter only valid characters';
+      }
+      return validator(value);
+    },
       obscureText: isObscure,
       keyboardType: keyboardType,
       decoration: InputDecoration(
