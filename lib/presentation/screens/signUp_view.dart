@@ -116,7 +116,7 @@ class _SignUpViewState extends State<SignUpView> {
                           ),
                           _buildTextField(context, _nameController, 'Name',
                               (text) {
-                            if (text == null || text.isEmpty) {
+                            if (text == null || text.isEmpty || text.trim().isEmpty) {
                               return 'Can\'t be empty';
                             }
                             return null;
@@ -126,7 +126,7 @@ class _SignUpViewState extends State<SignUpView> {
                           ),
                           _buildTextField(context, _emailController, 'Email...',
                               (text) {
-                            if (text == null || text.isEmpty) {
+                            if (text == null || text.isEmpty || text.trim().isEmpty) {
                               return 'Can\'t be empty';
                             }
                             if (!EmailValidator.validate(text)) {
@@ -140,7 +140,7 @@ class _SignUpViewState extends State<SignUpView> {
                           _buildTextField(
                               context, _passwordController, 'Password...',
                               (text) {
-                            if (text == null || text.isEmpty) {
+                            if (text == null || text.isEmpty || text.trim().isEmpty) {
                               return 'Can\'t be empty';
                             }
                             return null;
