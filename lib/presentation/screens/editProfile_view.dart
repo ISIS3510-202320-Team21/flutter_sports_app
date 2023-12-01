@@ -121,7 +121,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                           _buildTextField(
                               context, _nameController, user.name, 'Name...',
                               (text) {
-                            if (text == null || text.isEmpty) {
+                            if (text == null || text.isEmpty || text.trim().isEmpty) {
                               return 'Can\'t be empty';
                             }
                             return null;
