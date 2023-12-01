@@ -47,16 +47,28 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     user = BlocProvider.of<AuthenticationBloc>(context).user!;
     notifications = user.notifications!;
+    _loadWeatherData();
   }
 
   void checkInitialConnectivity() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-      homeBloc.add(FetchSportsUserStorageRecent());
-    } else {
-      homeBloc.add(FetchSportsRecent(user));
-    }
+  connectivityResult = await (Connectivity().checkConnectivity());
+  //setState(() {}); 
+
+  if (_hasConnectivity) {
+    homeBloc.add(FetchSportsRecent(user));
+  } else {
+    homeBloc.add(FetchSportsUserStorageRecent());
   }
+}
+
+    Future<void> _loadWeatherData() async {
+      connectivityResult = await (Connectivity().checkConnectivity());
+      if (_hasConnectivity) {
+        homeBloc.add(FetchSportsRecent(user));
+      } else {
+        homeBloc.add(FetchSportsUserStorageRecent());
+      }
+    }
 
   Future<void> _handleRefresh() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -116,12 +128,13 @@ class _HomeViewState extends State<HomeView> {
                 child: CircularProgressIndicator(),
               ));
             }
-
             return Scaffold(
                 backgroundColor: colorScheme.onPrimary,
                 body: Center(
                   child: RefreshIndicator(
-                    onRefresh: _handleRefresh,
+                    onRefresh: () async {
+                      await _loadWeatherData(); // Llamamos a la función para cargar datos
+                    },
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(
@@ -151,10 +164,22 @@ class _HomeViewState extends State<HomeView> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          WeatherDisplay(
-                            latitude: latitude,
-                            longitude: longitude,
-                          ),
+                          Builder(
+                              builder: (BuildContext context) {
+                                return _hasConnectivity
+                                    ? WeatherDisplay(
+                                        latitude: latitude,
+                                        longitude: longitude,
+                                      )
+                                    : Text(
+                                        "There's no connection",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.red,
+                                        ),
+                                      );
+                              },
+                            ),
                           const SizedBox(height: 16),
                           RefreshIndicator(
                               onRefresh:
@@ -242,6 +267,9 @@ class _HomeViewState extends State<HomeView> {
           },
         ));
   }
+
+  bool get _hasConnectivity => connectivityResult != ConnectivityResult.none;
+  late ConnectivityResult connectivityResult;
 
   Widget _buildActionButton(
       {required String title,
