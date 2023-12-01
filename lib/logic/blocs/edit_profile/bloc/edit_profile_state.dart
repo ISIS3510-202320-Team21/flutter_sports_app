@@ -32,4 +32,6 @@ class SubmittedUserActionState extends EditProfileActionState {
   });
 }
 
+class NoInternetActionState extends EditProfileActionState {}
+
 class ProfileNavigateActionState extends EditProfileActionState {}

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,6 +20,7 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
     on<EditProfileInitialEvent>(editProfileInitialEvent);
     on<SubmitUserEvent>(submitUserEvent);
     on<ProfileNavigateEvent>(profileNavigateEvent);
+    on<NoInternetEvent>(noInternetEvent);
   }
 
   FutureOr<void> editProfileInitialEvent(EditProfileInitialEvent event, Emitter<EditProfileState> emit) async {
@@ -50,15 +52,27 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
         userid: event.userId
       );
       emit(SubmittedUserActionState(user: usuario!));
-    } catch (e) {
+    }
+    catch (e) {
       print(e);
-      emit(EditProfileErrorState());
-      emit(SubmissionErrorState(message: e.toString()));
+      if (e is SocketException) {
+        emit(EditProfileErrorState());
+        emit(NoInternetActionState());
+      }
+      else{
+        emit(EditProfileErrorState());
+        emit(SubmissionErrorState(message: e.toString()));
+      }
     }
   }
 
   FutureOr<void> profileNavigateEvent(ProfileNavigateEvent event, Emitter<EditProfileState> emit) {
     print('Go to profile');
     emit(ProfileNavigateActionState());
+  }
+
+  FutureOr<void> noInternetEvent(NoInternetEvent event, Emitter<EditProfileState> emit) {
+    print('There is no internet');
+    emit(NoInternetActionState());
   }
 }
