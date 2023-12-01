@@ -41,6 +41,15 @@ class FetchMatchesUserEvent extends MatchEvent {
   FetchMatchesUserEvent(this.userId);
 }
 
+class FetchMatchesUserStorageRecent extends MatchEvent{
+  FetchMatchesUserStorageRecent();
+}
+
+class SaveMatchesUserStorageRecent extends MatchEvent{
+  final List<Match> matches;
+  SaveMatchesUserStorageRecent(this.matches);
+}
+
 class MatchesLoadedForUserEvent extends MatchEvent {
   final List<Match> matches;
   MatchesLoadedForUserEvent(this.matches);

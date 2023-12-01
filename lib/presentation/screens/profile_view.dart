@@ -67,6 +67,10 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
           BlocProvider.of<AuthenticationBloc>(context)
               .add(UpdateUserEvent(state.user));
         }
+        else if (state is ProfileNavigateToClaimsState){
+          BlocProvider.of<GlobalBloc>(context)
+              .add(NavigateToIndexEvent(AppScreens.Claims.index));
+        }
       },
       builder: (context, state) {
         // String? profileImagePath =
@@ -100,7 +104,7 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
                           : Icon(Icons.account_circle, size: 80.0),
                     ),
                     SizedBox(height: 20),
-                    Text(userName ?? 'User', style: textTheme.headline5),
+                    Text(userName ?? 'User', style: textTheme.headlineSmall),
                     SizedBox(height: 40),
                     ConstrainedBox(
                       constraints: BoxConstraints.tightFor(width: buttonWidth),
@@ -118,7 +122,7 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
                       child: ElevatedButton.icon(
                         icon: Icon(Icons.gavel, size: 28.0),
                         label: Text('Claims', style: TextStyle(fontSize: 22)),
-                        onPressed: () {},
+                        onPressed: () => _claims(context),
                         style: iconButtonStyle,
                       ),
                     ),
@@ -145,6 +149,10 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
   void _editProfile(BuildContext context) =>
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(AppScreens.EditProfile.index));
+
+  void _claims(BuildContext context) =>
+      BlocProvider.of<GlobalBloc>(context)
+          .add(NavigateToIndexEvent(AppScreens.Claims.index));
 
   void logOut() async {
 // Aquí puedes agregar el código para limpiar el estado de los blocs si es necesario

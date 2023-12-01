@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/models/match.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
@@ -95,10 +96,20 @@ class _IndividualMatchState extends State<IndividualMatch> {
     }) {
       return ListTile(
         leading: widget.match.sport?.image != null
-            ? CircleAvatar(
-                radius: 30.0,
-                backgroundImage: NetworkImage(widget.match.sport!.image!),
-                backgroundColor: Colors.transparent,
+            ? CachedNetworkImage(
+                imageUrl: widget.match.sport!.image!,
+                width: 50,
+                height: 100,
+                placeholder: (context, url) => const Center(
+                  child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.0,
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               )
             : Icon(
                 icon ?? Icons.sports,

@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,6 +59,12 @@ class _EditProfileViewState extends State<EditProfileView> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                   content: Text(state.message), backgroundColor: Colors.red),
+            );
+          } else if (state is NoInternetActionState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text("No internet connection"),
+                  backgroundColor: Colors.red),
             );
           } else if (state is SubmittedUserActionState) {
             BlocProvider.of<GlobalBloc>(context)
@@ -341,7 +348,8 @@ Widget _buildTextField(
     );
   }
 
-  void _changeInfo(BuildContext context) {
+  void _changeInfo(BuildContext context) async {
+
     if (_formKey.currentState!.validate()) {
       editProfileBloc.add(
         SubmitUserEvent(
@@ -356,5 +364,25 @@ Widget _buildTextField(
         ),
       );
     }
+
+    // var connectivityResult = await (Connectivity().checkConnectivity());
+    // if (connectivityResult == ConnectivityResult.none) {
+    //   editProfileBloc.add(NoInternetEvent());
+    // } else {
+    //   if (_formKey.currentState!.validate()) {
+    //     editProfileBloc.add(
+    //       SubmitUserEvent(
+    //         email: _emailController.text,
+    //         name: _nameController.text,
+    //         phoneNumber: _phoneNumberController.text,
+    //         role: _roleController.text,
+    //         university: _universityController.text,
+    //         gender: _genderController.text,
+    //         bornDate: _bornDate,
+    //         userId: user.id,
+    //       ),
+    //     );
+    //   }
+    // }
   }
 }

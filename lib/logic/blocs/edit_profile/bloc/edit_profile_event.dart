@@ -33,3 +33,5 @@ class SubmitUserEvent extends EditProfileEvent {
 }
 
 class ProfileNavigateEvent extends EditProfileEvent {}
+
+class NoInternetEvent extends EditProfileEvent {}

@@ -19,6 +19,10 @@ class ProfileAddProfilePictureButtonClickedEvent extends ProfileEvent {
 
 }
 
+class ProfileClaimsButtonClickedEvent extends ProfileEvent {
+
+}
+
 class ProfileUpdateImageEvent extends ProfileEvent {
   final User user;
 

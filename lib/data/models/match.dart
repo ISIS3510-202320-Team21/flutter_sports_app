@@ -60,6 +60,29 @@ class Match {
     );
   }
 
+  factory Match.fromJson(Map<String, dynamic> json) {
+    User userCreated = User.fromJson(json['user_created']);
+    Sport sport = Sport.fromJson(json['sport']);
+    Level level = Level.fromJson(json['level']);
+
+    return Match(
+      date: DateFormat("dd/MM/yyyy").parse(json['date']),
+      time: json['time'],
+      rate1: json['rate1'] != null ? double.parse(json['rate1']) : null,
+      rate2: json['rate2'] != null ? double.parse(json['rate2']) : null,
+      status: json['status'],
+      city: json['city'],
+      court: json['court'],
+      id: json['id'],
+      sport: sport,
+      level: level,
+      userCreated: userCreated!,
+      userJoined: json['user_joined'] != null
+          ? User.fromJson(json['user_joined'])
+          : null,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'date': DateFormat("dd/MM/yyyy").format(date!),
         'time': time,
