@@ -26,8 +26,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   @override
   void initState() {
     super.initState();
-    startDate = DateTime.now();
-    endDate = DateTime.now().add(const Duration(days: 30));
     final user = BlocProvider.of<AuthenticationBloc>(context).user!;
     userId = user.id;
     _startPeriodicUpdates();
@@ -75,7 +73,6 @@ Future<void> _showDateRangePicker(BuildContext context, StateSetter setState,
         LoadStatistics(
             userId: userId, startDate: startDate!, endDate: endDate!),
       );
-      // Si es necesario, actualiza el estado del UI aquí también.
     }
   }
 
@@ -103,13 +100,6 @@ void _showBottomSheet(BuildContext context) {
                     date: endDate,
                     onPressed: () => _showDateRangePicker(
                         context, setState, isStartDate: false),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _loadStatistics();
-                    },
-                    child: const Text('Apply'),
                   ),
                 ],
               ),
