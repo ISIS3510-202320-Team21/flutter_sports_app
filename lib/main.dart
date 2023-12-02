@@ -12,6 +12,7 @@ import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.da
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/statistics/statistic_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/statistics/statistic_event.dart';
 import 'package:flutter_app_sports/presentation/router/app_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -88,7 +89,8 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider(
             create: (context) =>
-                StatisticsBloc(userRepository: widget.userRepository)),
+                StatisticsBloc(userRepository: widget.userRepository),
+            ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

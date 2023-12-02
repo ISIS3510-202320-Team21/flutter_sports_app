@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:ffi';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/data/models/classes.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/statistics/statistic_bloc.dart';
@@ -17,11 +19,9 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  late DateTime startDate;
-  late DateTime endDate;
+  DateTime? startDate;
+  DateTime? endDate;
   late int userId;
-  double _arrowAngle = 0.0;
-  double _panelPosition = 0;
   late bool isPanelOpen = false;
   @override
   void initState() {
@@ -30,17 +30,27 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     endDate = DateTime.now().add(const Duration(days: 30));
     final user = BlocProvider.of<AuthenticationBloc>(context).user!;
     userId = user.id;
+    _startPeriodicUpdates();
   }
 
-  void _loadStatistics() {
-    BlocProvider.of<StatisticsBloc>(context).add(
-      LoadStatistics(userId: userId, startDate: startDate, endDate: endDate),
-    );
+  void _startPeriodicUpdates() {
+    if (startDate == null || endDate == null) {
+      BlocProvider.of<StatisticsBloc>(context, listen: false)
+          .add(WaitStatistics());
+    } else {
+      Timer.periodic(const Duration(seconds: 10), (timer) {
+        BlocProvider.of<StatisticsBloc>(context, listen: false).add(
+          LoadStatistics(
+              userId: userId, startDate: startDate!, endDate: endDate!),
+        );
+      });
+    }
   }
 
-  Future<void> _showDateRangePicker(BuildContext context,
-      {bool isStartDate = true}) async {
-    final DateTime initialDate = isStartDate ? startDate : endDate;
+Future<void> _showDateRangePicker(BuildContext context, StateSetter setState,
+    {bool isStartDate = true}) async {
+    final DateTime initialDate =
+        (isStartDate ? startDate : endDate) ?? DateTime.now();
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -56,87 +66,77 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         endDate = pickedDate;
       }
     });
+    _loadStatistics();
   }
 
-  void _showBottomSheet(BuildContext context) {
+  void _loadStatistics() {
+    if (startDate != null && endDate != null) {
+      BlocProvider.of<StatisticsBloc>(context).add(
+        LoadStatistics(
+            userId: userId, startDate: startDate!, endDate: endDate!),
+      );
+      // Si es necesario, actualiza el estado del UI aquí también.
+    }
+  }
+
+void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildDateButton(
-                icon: Icons.calendar_today,
-                label: 'Start: ',
-                date: startDate,
-                onPressed: () {
-                  Navigator.pop(context);
-                  _showDateRangePicker(context, isStartDate: true);
-                },
+        return StatefulBuilder(  // Usa StatefulBuilder aquí
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildDateButton(
+                    icon: Icons.calendar_today,
+                    label: 'Start: ',
+                    date: startDate,
+                    onPressed: () => _showDateRangePicker(
+                        context, setState, isStartDate: true),
+                  ),
+                  _buildDateButton(
+                    icon: Icons.calendar_today,
+                    label: 'End: ',
+                    date: endDate,
+                    onPressed: () => _showDateRangePicker(
+                        context, setState, isStartDate: false),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _loadStatistics();
+                    },
+                    child: const Text('Apply'),
+                  ),
+                ],
               ),
-              _buildDateButton(
-                icon: Icons.calendar_today,
-                label: 'End: ',
-                date: endDate,
-                onPressed: () {
-                  Navigator.pop(context);
-                  _showDateRangePicker(context, isStartDate: false);
-                },
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _loadStatistics();
-                },
-                child: const Text('Apply'),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(child: _buildMainContent()),
+        body: Center(
+          child: BlocBuilder<StatisticsBloc, StatisticsState>(
+            builder: (context, state) {
+              // Aquí, pasas el estado actual al método _buildMainContent.
+              return _buildMainContent(state);
+            },
+          ),
+        ),
         floatingActionButton: FloatingActionButton(
           heroTag: "statistics",
           onPressed: () => _showBottomSheet(context),
           child: const Icon(Icons.date_range),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCollapsedPanel() {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _arrowAngle =
-              isPanelOpen ? 0 : 3.14159; // Esto rotará la flecha 180 grados
-          isPanelOpen = !isPanelOpen;
-        });
-      },
-      child: Container(
-        color: Colors
-            .white, // Asegúrate de que el contenedor tenga un color de fondo si es necesario
-        padding: const EdgeInsets.symmetric(
-            horizontal: 16.0), // Ajusta el relleno según sea necesario
-        alignment: Alignment.centerLeft, // Alinea el contenido a la izquierda
-        child: const Row(
-          children: <Widget>[
-            Expanded(
-              child: const Text(
-                'Slide up to select a date range',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -157,18 +157,25 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Widget _buildMainContent() {
+  Widget _buildMainContent(StatisticsState state) {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Título del gráfico
-          const Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text(
-              'Top Sports by Matches',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+          const Text(
+            'Top Sports by Matches',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
+
+          // Rango de fechas debajo del título principal
+          Text(
+            'Between ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : 'Start Date'} and ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : 'End Date'}',
+            style: const TextStyle(fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
+
+          // Espacio después del título
+          const SizedBox(height: 10),
           BlocBuilder<StatisticsBloc, StatisticsState>(
             builder: (context, state) {
               if (state is StatisticsLoading) {
@@ -318,7 +325,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildDateButton(
       {required IconData icon,
       required String label,
-      required DateTime date,
+      DateTime? date,
       required VoidCallback onPressed}) {
     return TextButton(
       onPressed: onPressed,
@@ -326,39 +333,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         children: [
           Icon(icon),
           const SizedBox(width: 8),
-          Text('$label${DateFormat('dd/MM/yyyy').format(date)}',
+          Text(
+              date != null
+                  ? '$label${DateFormat('dd/MM/yyyy').format(date)}'
+                  : '$label Not Set',
               style: const TextStyle(fontSize: 16)),
         ],
       ),
     );
   }
 
-  Widget _buildSlidingPanel() {
-    // Este es el panel deslizable
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Aquí puedes agregar una flecha u otro indicador
-          _buildDateButton(
-            icon: Icons.calendar_today,
-            label: 'Start: ',
-            date: startDate,
-            onPressed: () => _showDateRangePicker(context, isStartDate: true),
-          ),
-          _buildDateButton(
-            icon: Icons.calendar_today,
-            label: 'End: ',
-            date: endDate,
-            onPressed: () => _showDateRangePicker(context, isStartDate: false),
-          ),
-          ElevatedButton(
-            onPressed: _loadStatistics,
-            child: const Text('Apply'),
-          ),
-        ],
-      ),
-    );
-  }
 }

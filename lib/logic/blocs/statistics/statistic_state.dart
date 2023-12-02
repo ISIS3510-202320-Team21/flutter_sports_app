@@ -13,6 +13,8 @@ class StatisticsLoaded extends StatisticsState {
   StatisticsLoaded(this.statistics);
 }
 
+class StatisticsWait extends StatisticsState {}
+
 class StatisticsError extends StatisticsState {
   final String message;
 
