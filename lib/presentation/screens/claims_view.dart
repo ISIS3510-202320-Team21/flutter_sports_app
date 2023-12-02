@@ -14,23 +14,23 @@ class ClaimsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Subtítulo
-              Text(
+              const Text(
                 'Submit your claim',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Cuadro de texto
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Enter your claim here...',
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 5,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Botón de envío
               ElevatedButton(
                 onPressed: () {
@@ -40,7 +40,7 @@ class ClaimsView extends StatelessWidget {
                   // Puedes definir tu propio evento en el Bloc
                   //);
                 },
-                child: Text('Submit'),
+                child: const Text('Submit'),
               ),
             ],
           ),
