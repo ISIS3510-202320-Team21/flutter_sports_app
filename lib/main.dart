@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/data/repositories/user_repository.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/camera/bloc/camera_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/connectivity/bloc/connectivity_bloc.dart';
@@ -10,17 +11,20 @@ import 'package:flutter_app_sports/logic/blocs/fetch/bloc/fetch_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/statistics/statistic_bloc.dart';
 import 'package:flutter_app_sports/presentation/router/app_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  final userRepository = UserRepository();
+  runApp(MyApp(userRepository: userRepository));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final UserRepository userRepository;
+  const MyApp({Key? key, required this.userRepository}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -65,8 +69,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     if (_isConnected) {
       red = 'online';
-    }
-    else {
+    } else {
       red = 'offline';
     }
     return MultiBlocProvider(
@@ -80,6 +83,12 @@ class _MyAppState extends State<MyApp> {
                 ConnectivityBloc(connectivity: Connectivity())),
         BlocProvider(create: (context) => FetchBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
+        RepositoryProvider<UserRepository>(
+          create: (context) => widget.userRepository,
+        ),
+        BlocProvider(
+            create: (context) =>
+                StatisticsBloc(userRepository: widget.userRepository)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -115,7 +124,8 @@ class _MyAppState extends State<MyApp> {
                   if (state is ConnectivityOffline) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Internet connection lost. Please check your connection.'),
+                        content: Text(
+                            'Internet connection lost. Please check your connection.'),
                         duration: Duration(seconds: 2),
                       ),
                     );

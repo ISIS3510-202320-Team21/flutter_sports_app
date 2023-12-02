@@ -41,12 +41,22 @@ class _HomeViewState extends State<HomeView> {
   double longitude = 0;
   List<Sport> sports = [];
   List<Notification2.Notification> notifications = [];
+  ConnectivityResult connectivityResult = ConnectivityResult.none;
 
-  @override
+ @override
   void initState() {
     super.initState();
+    // Inicialización de user y notifications se mueve aquí si requieren el context
     user = BlocProvider.of<AuthenticationBloc>(context).user!;
     notifications = user.notifications!;
+    // Iniciar la carga de los datos del tiempo y la conectividad
+    _initConnectivityAndWeatherData();
+  }
+
+  // Método para inicializar la conectividad y cargar los datos del tiempo
+  void _initConnectivityAndWeatherData() async {
+    // Inicializar connectivityResult
+    connectivityResult = await Connectivity().checkConnectivity();
     _loadWeatherData();
   }
 
@@ -269,7 +279,6 @@ class _HomeViewState extends State<HomeView> {
   }
 
   bool get _hasConnectivity => connectivityResult != ConnectivityResult.none;
-  late ConnectivityResult connectivityResult;
 
   Widget _buildActionButton(
       {required String title,

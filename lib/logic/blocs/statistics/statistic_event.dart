@@ -1,4 +1,9 @@
-// statistic_event.dart
 abstract class StatisticsEvent {}
 
-class LoadStatistics extends StatisticsEvent {}
+class LoadStatistics extends StatisticsEvent {
+  final int userId;
+  final DateTime startDate;
+  final DateTime endDate;
+
+  LoadStatistics({required this.userId, required this.startDate, required this.endDate});
+}

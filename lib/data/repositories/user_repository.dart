@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_app_sports/data/models/classes.dart';
 import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -147,11 +148,38 @@ class UserRepository {
     return sportsList.map((json) => Sport.fromJson(json)).toList();
   }
 
-
-
   Future<void> saveSportsUserStorageRecent(List<Sport> sports) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String sportsJson = jsonEncode(sports.map((sport) => sport.toJson()).toList());
+    String sportsJson =
+        jsonEncode(sports.map((sport) => sport.toJson()).toList());
     await prefs.setString('sports', sportsJson);
+  }
+
+  Future<List<SportMatchCount>> getUserMatchesCountBySport({
+    required int userId,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
+    final response = await http.get(
+      Uri.parse('$backendUrl/users/$userId/matches/count-by-sport')
+          .replace(queryParameters: {
+        'start_date': startDate.toIso8601String(),
+        'end_date': endDate.toIso8601String(),
+      }),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Convertimos la respuesta JSON en una lista de objetos SportMatchCount
+      List<dynamic> jsonData = jsonDecode(response.body);
+      return jsonData
+          .map<SportMatchCount>((json) => SportMatchCount.fromJson(json))
+          .toList();
+    } else {
+      throw Exception(
+          'Failed to fetch user matches count by sport: ${response.statusCode}');
+    }
   }
 }
