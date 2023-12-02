@@ -95,6 +95,7 @@ Future<void> _requestCameraPermission() async {
               ),
               // body: CameraPreview(cameraBloc.getController()),
               floatingActionButton: FloatingActionButton(
+                heroTag: "cameraBtn",
                 
                 // Provide an onPressed callback.
                 onPressed: () async {

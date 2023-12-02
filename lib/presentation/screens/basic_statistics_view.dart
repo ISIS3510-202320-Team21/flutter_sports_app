@@ -105,6 +105,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       child: Scaffold(
         body: Center(child: _buildMainContent()),
         floatingActionButton: FloatingActionButton(
+          heroTag: "statistics",
           onPressed: () => _showBottomSheet(context),
           child: const Icon(Icons.date_range),
         ),
@@ -249,15 +250,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                     (double value, TitleMeta meta) {
                                   final String sportName =
                                       state.statistics[value.toInt()].name;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      sportName,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
+                                  return RotatedBox(
+                                    quarterTurns: 3, // Rota el texto 90 grados
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        sportName,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      textAlign: TextAlign.center,
                                     ),
                                   );
                                 },
@@ -293,7 +297,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       width: 300,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
                         children: legendItems,
                       ),
                     ),
