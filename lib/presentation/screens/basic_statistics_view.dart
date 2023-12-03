@@ -21,29 +21,32 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   late int userId;
   late bool isPanelOpen = false;
   bool isOffline = false;
-  
-   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   @override
   void initState() {
     super.initState();
     final user = BlocProvider.of<AuthenticationBloc>(context).user!;
     userId = user.id;
-        _connectivitySubscription =
+    _connectivitySubscription =
         Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
-        checkInitialConnectivity();
+    checkInitialConnectivity();
     _startPeriodicUpdates();
   }
-   void checkInitialConnectivity() async {
+
+  void checkInitialConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     _updateConnectionStatus(connectivityResult);
   }
-    void _updateConnectionStatus(ConnectivityResult result) {
+
+  void _updateConnectionStatus(ConnectivityResult result) {
     setState(() {
       isOffline = result == ConnectivityResult.none;
     });
   }
-    @override
+
+  @override
   void dispose() {
     _connectivitySubscription?.cancel();
     super.dispose();
@@ -73,7 +76,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (pickedDate == null) return; // User canceled
+    if (pickedDate == null) return; 
+
+    if (isStartDate) {
+      if (endDate != null && pickedDate.isAfter(endDate!)) {
+        return;
+      }
+    } else {
+      if (startDate != null && pickedDate.isBefore(startDate!)) {
+        return;
+      }
+    }
 
     setState(() {
       if (isStartDate) {
@@ -142,6 +155,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ),
     );
   }
+
   Widget _buildLegendItem(String name, Color color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -156,7 +170,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ],
     );
   }
-    Widget _buildOfflineWidget() {
+
+  Widget _buildOfflineWidget() {
     return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
