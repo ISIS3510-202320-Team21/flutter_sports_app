@@ -254,7 +254,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       StatisticsLoaded state, BuildContext context) {
     double chartWidth = MediaQuery.of(context).size.width;
 
-    // Determinar los top 3 deportes y colores
     var sortedStatistics = List.of(state.statistics);
     sortedStatistics.sort((a, b) => b.matchCount.compareTo(a.matchCount));
     var top3sports = sortedStatistics.take(3).map((e) => e.name).toList();
@@ -266,7 +265,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     List<String> top = ["Top 1", "Top 2", "Top 3"];
 
-    // Crear leyenda
     List<Widget> legendItems = List.generate(
       top3sports.length,
       (index) => _buildLegendItem(top[index], topColors[index]),
@@ -302,7 +300,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           barTouchResponse.spot!.touchedBarGroupIndex;
                       double touchedValue =
                           state.statistics[touchedIndex].matchCount.toDouble();
-                      // Aquí puedes hacer algo con el valor tocado
                       print(
                           "Barra tocada: $touchedIndex, Valor: $touchedValue");
                     }
