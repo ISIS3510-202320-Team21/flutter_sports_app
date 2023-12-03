@@ -196,76 +196,8 @@ class _PreferedMatchState extends State<PreferedMatch> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       onTap: () async {
-                        final TimeOfDay? pickedStart = await showTimePicker(
-                          context: context,
-                          initialTime: selectedStartTime != null
-                              ? TimeOfDay.fromDateTime(selectedStartTime!)
-                              : TimeOfDay.now(),
-                          builder: (BuildContext context, Widget? child) {
-                            return Theme(
-                              data: ThemeData.light().copyWith(
-                                primaryColor: Colors.blue,
-                                buttonTheme: const ButtonThemeData(
-                                  textTheme: ButtonTextTheme.primary,
-                                ),
-                                dialogBackgroundColor: Colors.white,
-                              ),
-                              child: child!,
-                            );
-                          },
-                        );
-
-                        if (pickedStart != null) {
-                          setState(() {
-                            selectedStartTime = DateTime(
-                                DateTime.now().year,
-                                DateTime.now().month,
-                                DateTime.now().day,
-                                pickedStart.hour,
-                                pickedStart.minute);
-
-                            showTimePicker(
-                              context: context,
-                              initialTime:
-                                  TimeOfDay.fromDateTime(selectedStartTime!)
-                                      .replacing(hour: pickedStart.hour + 1),
-                              builder: (BuildContext context, Widget? child) {
-                                return Theme(
-                                  data: ThemeData.light().copyWith(
-                                    primaryColor: Colors.blue,
-                                    buttonTheme: const ButtonThemeData(
-                                      textTheme: ButtonTextTheme.primary,
-                                    ),
-                                    dialogBackgroundColor: Colors.white,
-                                  ),
-                                  child: child!,
-                                );
-                              },
-                            ).then((pickedEnd) {
-                              if (pickedEnd != null &&
-                                  (pickedEnd.hour > pickedStart.hour ||
-                                      (pickedEnd.hour == pickedStart.hour &&
-                                          pickedEnd.minute >
-                                              pickedStart.minute))) {
-                                setState(() {
-                                  selectedEndTime = DateTime(
-                                      DateTime.now().year,
-                                      DateTime.now().month,
-                                      DateTime.now().day,
-                                      pickedEnd.hour,
-                                      pickedEnd.minute);
-                                });
-                              } else if (pickedEnd != null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        "End time should be after start time."),
-                                  ),
-                                );
-                              }
-                            });
-                          });
-                        }
+                        _selectStartTime(
+                            context); // Usar _selectStartTime en lugar de showTimePicker directamente
                       },
                     ),
                     const SizedBox(height: 10),
@@ -462,5 +394,91 @@ class _PreferedMatchState extends State<PreferedMatch> {
         },
       ),
     );
+  }
+
+  Future<void> _selectStartTime(BuildContext context) async {
+    final TimeOfDay? pickedStart = await showTimePicker(
+      context: context,
+      initialTime: selectedStartTime != null
+          ? TimeOfDay.fromDateTime(selectedStartTime!)
+          : TimeOfDay.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.blue,
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedStart != null) {
+      setState(() {
+        selectedStartTime = DateTime(DateTime.now().year, DateTime.now().month,
+            DateTime.now().day, pickedStart.hour, pickedStart.minute);
+      });
+
+      // Solo abre el selector de hora de finalización si la hora de inicio es antes de las 11 PM
+      if (pickedStart.hour < 24) {
+        _selectEndTime(context, pickedStart);
+      }
+    }
+  }
+
+  Future<void> _selectEndTime(
+      BuildContext context, TimeOfDay pickedStart) async {
+    try {
+      TimeOfDay.fromDateTime(selectedStartTime!)
+          .replacing(minute: pickedStart.minute + 30);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("You cannot create matches on different days."),
+        ),
+      );
+      selectedStartTime = null;
+      selectedEndTime = null;
+      return;
+    }
+    final TimeOfDay? pickedEnd = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(selectedStartTime!)
+          .replacing(minute: pickedStart.minute + 30),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.blue,
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedEnd != null) {
+      // Verificar si la hora de finalización es antes de la hora de inicio
+      if (pickedEnd.hour > pickedStart.hour ||
+          (pickedEnd.hour == pickedStart.hour &&
+              pickedEnd.minute > pickedStart.minute)) {
+        setState(() {
+          selectedEndTime = DateTime(DateTime.now().year, DateTime.now().month,
+              DateTime.now().day, pickedEnd.hour, pickedEnd.minute);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                "La hora de finalización debe ser posterior a la hora de inicio."),
+          ),
+        );
+      }
+    }
   }
 }

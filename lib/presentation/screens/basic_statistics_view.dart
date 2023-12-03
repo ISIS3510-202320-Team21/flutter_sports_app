@@ -32,21 +32,21 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   void _startPeriodicUpdates() {
-    if (startDate == null || endDate == null) {
-      BlocProvider.of<StatisticsBloc>(context, listen: false)
-          .add(WaitStatistics());
-    } else {
-      Timer.periodic(const Duration(seconds: 10), (timer) {
+    Timer.periodic(const Duration(seconds: 10), (timer) {
+      if (startDate == null || endDate == null) {
+        BlocProvider.of<StatisticsBloc>(context, listen: false)
+            .add(WaitStatistics());
+      } else {
         BlocProvider.of<StatisticsBloc>(context, listen: false).add(
           LoadStatistics(
               userId: userId, startDate: startDate!, endDate: endDate!),
         );
-      });
-    }
+      }
+    });
   }
 
-Future<void> _showDateRangePicker(BuildContext context, StateSetter setState,
-    {bool isStartDate = true}) async {
+  Future<void> _showDateRangePicker(BuildContext context, StateSetter setState,
+      {bool isStartDate = true}) async {
     final DateTime initialDate =
         (isStartDate ? startDate : endDate) ?? DateTime.now();
     final DateTime? pickedDate = await showDatePicker(
@@ -76,11 +76,12 @@ Future<void> _showDateRangePicker(BuildContext context, StateSetter setState,
     }
   }
 
-void _showBottomSheet(BuildContext context) {
+  void _showBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
-        return StatefulBuilder(  // Usa StatefulBuilder aquí
+        return StatefulBuilder(
+          // Usa StatefulBuilder aquí
           builder: (BuildContext context, StateSetter setState) {
             return Container(
               padding: const EdgeInsets.all(16),
@@ -91,15 +92,15 @@ void _showBottomSheet(BuildContext context) {
                     icon: Icons.calendar_today,
                     label: 'Start: ',
                     date: startDate,
-                    onPressed: () => _showDateRangePicker(
-                        context, setState, isStartDate: true),
+                    onPressed: () => _showDateRangePicker(context, setState,
+                        isStartDate: true),
                   ),
                   _buildDateButton(
                     icon: Icons.calendar_today,
                     label: 'End: ',
                     date: endDate,
-                    onPressed: () => _showDateRangePicker(
-                        context, setState, isStartDate: false),
+                    onPressed: () => _showDateRangePicker(context, setState,
+                        isStartDate: false),
                   ),
                 ],
               ),
@@ -109,7 +110,6 @@ void _showBottomSheet(BuildContext context) {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -156,15 +156,11 @@ void _showBottomSheet(BuildContext context) {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-
-          // Rango de fechas debajo del título principal
           Text(
             'Between ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : 'Start Date'} and ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : 'End Date'}',
             style: const TextStyle(fontSize: 16),
             textAlign: TextAlign.center,
           ),
-
-          // Espacio después del título
           const SizedBox(height: 10),
           BlocBuilder<StatisticsBloc, StatisticsState>(
             builder: (context, state) {
@@ -332,5 +328,4 @@ void _showBottomSheet(BuildContext context) {
       ),
     );
   }
-
 }
