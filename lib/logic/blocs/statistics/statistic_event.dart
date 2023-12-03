@@ -7,3 +7,5 @@ class LoadStatistics extends StatisticsEvent {
 
   LoadStatistics({required this.userId, required this.startDate, required this.endDate});
 }
+
+class WaitStatistics extends StatisticsEvent {}

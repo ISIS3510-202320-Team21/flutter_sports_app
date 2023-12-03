@@ -16,7 +16,6 @@ import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class PreferedMatch extends StatefulWidget {
   final Sport selectedSport;
@@ -196,76 +195,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       onTap: () async {
-                        final TimeOfDay? pickedStart = await showTimePicker(
-                          context: context,
-                          initialTime: selectedStartTime != null
-                              ? TimeOfDay.fromDateTime(selectedStartTime!)
-                              : TimeOfDay.now(),
-                          builder: (BuildContext context, Widget? child) {
-                            return Theme(
-                              data: ThemeData.light().copyWith(
-                                primaryColor: Colors.blue,
-                                buttonTheme: const ButtonThemeData(
-                                  textTheme: ButtonTextTheme.primary,
-                                ),
-                                dialogBackgroundColor: Colors.white,
-                              ),
-                              child: child!,
-                            );
-                          },
-                        );
-
-                        if (pickedStart != null) {
-                          setState(() {
-                            selectedStartTime = DateTime(
-                                DateTime.now().year,
-                                DateTime.now().month,
-                                DateTime.now().day,
-                                pickedStart.hour,
-                                pickedStart.minute);
-
-                            showTimePicker(
-                              context: context,
-                              initialTime:
-                                  TimeOfDay.fromDateTime(selectedStartTime!)
-                                      .replacing(hour: pickedStart.hour + 1),
-                              builder: (BuildContext context, Widget? child) {
-                                return Theme(
-                                  data: ThemeData.light().copyWith(
-                                    primaryColor: Colors.blue,
-                                    buttonTheme: const ButtonThemeData(
-                                      textTheme: ButtonTextTheme.primary,
-                                    ),
-                                    dialogBackgroundColor: Colors.white,
-                                  ),
-                                  child: child!,
-                                );
-                              },
-                            ).then((pickedEnd) {
-                              if (pickedEnd != null &&
-                                  (pickedEnd.hour > pickedStart.hour ||
-                                      (pickedEnd.hour == pickedStart.hour &&
-                                          pickedEnd.minute >
-                                              pickedStart.minute))) {
-                                setState(() {
-                                  selectedEndTime = DateTime(
-                                      DateTime.now().year,
-                                      DateTime.now().month,
-                                      DateTime.now().day,
-                                      pickedEnd.hour,
-                                      pickedEnd.minute);
-                                });
-                              } else if (pickedEnd != null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        "End time should be after start time."),
-                                  ),
-                                );
-                              }
-                            });
-                          });
-                        }
+                        _selectStartTime(context);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -462,5 +392,111 @@ class _PreferedMatchState extends State<PreferedMatch> {
         },
       ),
     );
+  }
+
+  Future<void> _selectStartTime(BuildContext context) async {
+    TimeOfDay now = TimeOfDay.now();
+    try {
+      TimeOfDay(hour: now.hour, minute: now.minute + 5); // Sumar 5 minutos
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("You cannot create matches on different days."),
+        ),
+      );
+      selectedStartTime = null;
+      selectedEndTime = null;
+      return;
+    }
+    final TimeOfDay? pickedStart = await showTimePicker(
+      context: context,
+      initialTime: selectedStartTime != null
+          ? TimeOfDay.fromDateTime(selectedStartTime!)
+          : now,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.blue,
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedStart != null) {
+      setState(() {
+        selectedStartTime = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+          pickedStart.hour,
+          pickedStart.minute,
+        );
+      });
+
+      // Solo abre el selector de hora de finalización si la hora de inicio es antes de las 11 PM
+      if (pickedStart.hour < 24) {
+        _selectEndTime(context, pickedStart);
+      }
+    }
+  }
+
+  Future<void> _selectEndTime(
+      BuildContext context, TimeOfDay pickedStart) async {
+    try {
+      TimeOfDay.fromDateTime(selectedStartTime!)
+          .replacing(minute: pickedStart.minute + 30);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("You cannot create matches on different days."),
+        ),
+      );
+      selectedStartTime = null;
+      selectedEndTime = null;
+      return;
+    }
+    final TimeOfDay? pickedEnd = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(selectedStartTime!)
+          .replacing(minute: pickedStart.minute + 30),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Colors.blue,
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedEnd != null) {
+      // Verificar si la hora de finalización es antes de la hora de inicio
+      if (pickedEnd.hour > pickedStart.hour ||
+          (pickedEnd.hour == pickedStart.hour &&
+              pickedEnd.minute > pickedStart.minute)) {
+        setState(() {
+          selectedEndTime = DateTime(DateTime.now().year, DateTime.now().month,
+              DateTime.now().day, pickedEnd.hour, pickedEnd.minute);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                "The end time must be after the start time. Please select a valid time."),
+          ),
+        );
+        selectedStartTime = null;
+        selectedEndTime = null;
+      }
+    }
   }
 }

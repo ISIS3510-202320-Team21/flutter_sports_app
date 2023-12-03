@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
 import 'statistic_event.dart';
@@ -8,23 +10,28 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
 
   StatisticsBloc({required this.userRepository}) : super(StatisticsInitial()) {
     on<LoadStatistics>(_onLoadStatistics);
+    on<WaitStatistics>(_onWaitStatistics);
   }
 
 // En el StatisticsBloc
-Future<void> _onLoadStatistics(
-    LoadStatistics event, Emitter<StatisticsState> emit) async {
-  emit(StatisticsLoading());
-  try {
-    var statsData = await userRepository.getUserMatchesCountBySport(
-      userId: event.userId,
-      startDate: event.startDate,
-      endDate: event.endDate,
-    );
-    // Asumiendo que cada elemento de la lista es convertible a String directamente.
-    emit(StatisticsLoaded(statsData));
-  } catch (e) {
-    emit(StatisticsError('Failed to load statistics: ${e.toString()}'));
+  Future<void> _onLoadStatistics(
+      LoadStatistics event, Emitter<StatisticsState> emit) async {
+    emit(StatisticsLoading());
+    try {
+      var statsData = await userRepository.getUserMatchesCountBySport(
+        userId: event.userId,
+        startDate: event.startDate,
+        endDate: event.endDate,
+      );
+      // Asumiendo que cada elemento de la lista es convertible a String directamente.
+      emit(StatisticsLoaded(statsData));
+    } catch (e) {
+      emit(StatisticsError('Failed to load statistics: ${e.toString()}'));
+    }
   }
-}
 
+  FutureOr<void> _onWaitStatistics(
+      WaitStatistics event, Emitter<StatisticsState> emit) async {
+    emit(StatisticsWait());
+  }
 }

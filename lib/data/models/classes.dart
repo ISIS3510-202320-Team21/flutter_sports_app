@@ -12,4 +12,12 @@ class SportMatchCount {
       matchCount: json['match_count'] as int,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'imageUrl': imageUrl,
+      'matchCount': matchCount,
+    };
+  }
 }
