@@ -396,7 +396,6 @@ class _PreferedMatchState extends State<PreferedMatch> {
 
   Future<void> _selectStartTime(BuildContext context) async {
     TimeOfDay now = TimeOfDay.now();
-
     try {
       TimeOfDay(hour: now.hour, minute: now.minute + 5); // Sumar 5 minutos
     } catch (e) {
