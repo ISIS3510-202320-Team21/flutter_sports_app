@@ -16,7 +16,6 @@ import 'package:flutter_app_sports/logic/blocs/match/bloc/match_bloc.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class PreferedMatch extends StatefulWidget {
   final Sport selectedSport;
@@ -196,8 +195,7 @@ class _PreferedMatchState extends State<PreferedMatch> {
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       onTap: () async {
-                        _selectStartTime(
-                            context); // Usar _selectStartTime en lugar de showTimePicker directamente
+                        _selectStartTime(context);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -397,11 +395,25 @@ class _PreferedMatchState extends State<PreferedMatch> {
   }
 
   Future<void> _selectStartTime(BuildContext context) async {
+    TimeOfDay now = TimeOfDay.now();
+
+    try {
+      TimeOfDay(hour: now.hour, minute: now.minute + 5); // Sumar 5 minutos
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("You cannot create matches on different days."),
+        ),
+      );
+      selectedStartTime = null;
+      selectedEndTime = null;
+      return;
+    }
     final TimeOfDay? pickedStart = await showTimePicker(
       context: context,
       initialTime: selectedStartTime != null
           ? TimeOfDay.fromDateTime(selectedStartTime!)
-          : TimeOfDay.now(),
+          : now,
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -418,8 +430,13 @@ class _PreferedMatchState extends State<PreferedMatch> {
 
     if (pickedStart != null) {
       setState(() {
-        selectedStartTime = DateTime(DateTime.now().year, DateTime.now().month,
-            DateTime.now().day, pickedStart.hour, pickedStart.minute);
+        selectedStartTime = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+          pickedStart.hour,
+          pickedStart.minute,
+        );
       });
 
       // Solo abre el selector de hora de finalización si la hora de inicio es antes de las 11 PM
@@ -475,9 +492,11 @@ class _PreferedMatchState extends State<PreferedMatch> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
-                "La hora de finalización debe ser posterior a la hora de inicio."),
+                "The end time must be after the start time. Please select a valid time."),
           ),
         );
+        selectedStartTime = null;
+        selectedEndTime = null;
       }
     }
   }

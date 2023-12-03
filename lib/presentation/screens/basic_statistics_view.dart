@@ -116,10 +116,23 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return SafeArea(
       child: Scaffold(
         body: Center(
-          child: BlocBuilder<StatisticsBloc, StatisticsState>(
-            builder: (context, state) {
-              // Aquí, pasas el estado actual al método _buildMainContent.
-              return _buildMainContent(state);
+          child: StreamBuilder<StatisticsState>(
+            stream: BlocProvider.of<StatisticsBloc>(context)
+                .stream, // Escucha el stream del Bloc
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              if (snapshot.hasData) {
+                return _buildMainContent(
+                    context,
+                    snapshot
+                        .data!); // Pasamos el estado al método _buildMainContent
+              }
+              return Text('No data available');
             },
           ),
         ),
@@ -147,164 +160,155 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     );
   }
 
-  Widget _buildMainContent(StatisticsState state) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const Text(
-            'Top Sports by Matches',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+Widget _buildMainContent(BuildContext context, StatisticsState state) {
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+        const Text(
+          'Top Sports by Matches',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          'Between ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : 'Start Date'} and ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : 'End Date'}',
+          style: const TextStyle(fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 10),
+        // Aquí manejas los diferentes estados
+        if (state is StatisticsLoading) 
+          const Center(child: CircularProgressIndicator())
+        else if (state is StatisticsLoaded) 
+          ...[_buildStatisticsLoadedUI(state, context)] // Usar spread operator
+        else if (state is StatisticsError) 
+          Center(child: Text(state.message))
+        else 
+          const Center(
+            child: Text('Select a date range to view statistics.'),
           ),
-          Text(
-            'Between ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : 'Start Date'} and ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : 'End Date'}',
-            style: const TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          BlocBuilder<StatisticsBloc, StatisticsState>(
-            builder: (context, state) {
-              if (state is StatisticsLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is StatisticsLoaded) {
-                double chartWidth = MediaQuery.of(context).size.width;
+      ],
+    ),
+  );
+}
 
-                // Determinar los top 3 deportes y colores
-                var sortedStatistics = List.of(state.statistics);
-                sortedStatistics
-                    .sort((a, b) => b.matchCount.compareTo(a.matchCount));
-                var top3sports =
-                    sortedStatistics.take(3).map((e) => e.name).toList();
-                List<Color> topColors = [
-                  Colors.blue,
-                  Colors.green,
-                  Colors.red,
-                ];
+  Widget _buildStatisticsLoadedUI(
+      StatisticsLoaded state, BuildContext context) {
+    double chartWidth = MediaQuery.of(context).size.width;
 
-                List<String> top = ["Top 1", "Top 2", "Top 3"];
+    // Determinar los top 3 deportes y colores
+    var sortedStatistics = List.of(state.statistics);
+    sortedStatistics.sort((a, b) => b.matchCount.compareTo(a.matchCount));
+    var top3sports = sortedStatistics.take(3).map((e) => e.name).toList();
+    List<Color> topColors = [
+      Colors.blue,
+      Colors.green,
+      Colors.red,
+    ];
 
-                // Crear leyenda
-                List<Widget> legendItems = List.generate(
-                  top3sports.length,
-                  (index) => _buildLegendItem(top[index], topColors[index]),
-                );
+    List<String> top = ["Top 1", "Top 2", "Top 3"];
 
-                return Column(
-                  children: [
-                    SizedBox(
-                      width: chartWidth,
-                      height: 400,
-                      child: BarChart(
-                        BarChartData(
-                          alignment: BarChartAlignment.spaceAround,
-                          barTouchData: BarTouchData(
-                            touchTooltipData: BarTouchTooltipData(
-                              tooltipBgColor: Colors.grey,
-                              getTooltipItem:
-                                  (group, groupIndex, rod, rodIndex) {
-                                String sportName =
-                                    state.statistics[group.x.toInt()].name;
-                                String value = state
-                                    .statistics[group.x.toInt()].matchCount
-                                    .toString();
-                                return BarTooltipItem(
-                                  '$sportName\n$value Matches',
-                                  const TextStyle(color: Colors.white),
-                                );
-                              },
+    // Crear leyenda
+    List<Widget> legendItems = List.generate(
+      top3sports.length,
+      (index) => _buildLegendItem(top[index], topColors[index]),
+    );
+
+    return Column(
+      children: [
+        SizedBox(
+          width: chartWidth,
+          height: 400,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              barTouchData: BarTouchData(
+                touchTooltipData: BarTouchTooltipData(
+                  tooltipBgColor: Colors.grey,
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    String sportName = state.statistics[group.x.toInt()].name;
+                    String value =
+                        state.statistics[group.x.toInt()].matchCount.toString();
+                    return BarTooltipItem(
+                      '$sportName\n$value Matches',
+                      const TextStyle(color: Colors.white),
+                    );
+                  },
+                ),
+                touchCallback: (FlTouchEvent event, barTouchResponse) {
+                  setState(() {
+                    if (event.isInterestedForInteractions &&
+                        barTouchResponse != null &&
+                        barTouchResponse.spot != null) {
+                      int touchedIndex =
+                          barTouchResponse.spot!.touchedBarGroupIndex;
+                      double touchedValue =
+                          state.statistics[touchedIndex].matchCount.toDouble();
+                      // Aquí puedes hacer algo con el valor tocado
+                      print(
+                          "Barra tocada: $touchedIndex, Valor: $touchedValue");
+                    }
+                  });
+                },
+              ),
+              titlesData: FlTitlesData(
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 100,
+                    getTitlesWidget: (double value, TitleMeta meta) {
+                      final String sportName =
+                          state.statistics[value.toInt()].name;
+                      return RotatedBox(
+                        quarterTurns: 3, // Rota el texto 90 grados
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            sportName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
                             ),
-                            touchCallback:
-                                (FlTouchEvent event, barTouchResponse) {
-                              setState(() {
-                                if (event.isInterestedForInteractions &&
-                                    barTouchResponse != null &&
-                                    barTouchResponse.spot != null) {
-                                  int touchedIndex = barTouchResponse
-                                      .spot!.touchedBarGroupIndex;
-                                  double touchedValue = state
-                                      .statistics[touchedIndex].matchCount
-                                      .toDouble();
-                                  // Aquí puedes hacer algo con el valor tocado
-                                  print(
-                                      "Barra tocada: $touchedIndex, Valor: $touchedValue");
-                                }
-                              });
-                            },
+                            textAlign: TextAlign.center,
                           ),
-                          titlesData: FlTitlesData(
-                            topTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                reservedSize: 100,
-                                getTitlesWidget:
-                                    (double value, TitleMeta meta) {
-                                  final String sportName =
-                                      state.statistics[value.toInt()].name;
-                                  return RotatedBox(
-                                    quarterTurns: 3, // Rota el texto 90 grados
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                        sportName,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          gridData: const FlGridData(show: false),
-                          borderData: FlBorderData(show: false),
-                          barGroups:
-                              state.statistics.asMap().entries.map((entry) {
-                            int index = top3sports.indexOf(entry.value.name);
-                            Color barColor =
-                                index != -1 ? topColors[index] : Colors.grey;
-
-                            return BarChartGroupData(
-                              x: entry.key,
-                              barRods: [
-                                BarChartRodData(
-                                  toY: entry.value.matchCount.toDouble(),
-                                  color: barColor,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(4)),
-                                  rodStackItems: [],
-                                ),
-                              ],
-                              showingTooltipIndicators: [],
-                            );
-                          }).toList(),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 300,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: legendItems,
-                      ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              gridData: const FlGridData(show: false),
+              borderData: FlBorderData(show: false),
+              barGroups: state.statistics.asMap().entries.map((entry) {
+                int index = top3sports.indexOf(entry.value.name);
+                Color barColor = index != -1 ? topColors[index] : Colors.grey;
+
+                return BarChartGroupData(
+                  x: entry.key,
+                  barRods: [
+                    BarChartRodData(
+                      toY: entry.value.matchCount.toDouble(),
+                      color: barColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
+                      rodStackItems: [],
                     ),
                   ],
+                  showingTooltipIndicators: [],
                 );
-              } else if (state is StatisticsError) {
-                return Center(child: Text(state.message));
-              }
-              return const Center(
-                child: Text('Select a date range to view statistics.'),
-              );
-            },
+              }).toList(),
+            ),
           ),
-        ],
-      ),
+        ),
+        SizedBox(
+          width: 300,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: legendItems,
+          ),
+        ),
+      ],
     );
   }
 
