@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:ffi';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_sports/data/models/classes.dart';
-import 'package:flutter_app_sports/data/repositories/user_repository.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/statistics/statistic_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/statistics/statistic_event.dart';
 import 'package:flutter_app_sports/logic/blocs/statistics/statistic_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class StatisticsScreen extends StatefulWidget {
   @override
@@ -23,16 +20,37 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   DateTime? endDate;
   late int userId;
   late bool isPanelOpen = false;
+  bool isOffline = false;
+  
+   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+
   @override
   void initState() {
     super.initState();
     final user = BlocProvider.of<AuthenticationBloc>(context).user!;
     userId = user.id;
+        _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+        checkInitialConnectivity();
     _startPeriodicUpdates();
+  }
+   void checkInitialConnectivity() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    _updateConnectionStatus(connectivityResult);
+  }
+    void _updateConnectionStatus(ConnectivityResult result) {
+    setState(() {
+      isOffline = result == ConnectivityResult.none;
+    });
+  }
+    @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
   }
 
   void _startPeriodicUpdates() {
-    Timer.periodic(const Duration(seconds: 10), (timer) {
+    Timer.periodic(const Duration(seconds: 20), (timer) {
       if (startDate == null || endDate == null) {
         BlocProvider.of<StatisticsBloc>(context, listen: false)
             .add(WaitStatistics());
@@ -115,27 +133,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: StreamBuilder<StatisticsState>(
-            stream: BlocProvider.of<StatisticsBloc>(context)
-                .stream, // Escucha el stream del Bloc
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
-              if (snapshot.hasData) {
-                return _buildMainContent(
-                    context,
-                    snapshot
-                        .data!); // Pasamos el estado al método _buildMainContent
-              }
-              return Text('No data available');
-            },
-          ),
-        ),
+        body: isOffline ? _buildOfflineWidget() : _buildStatisticsWidget(),
         floatingActionButton: FloatingActionButton(
           heroTag: "statistics",
           onPressed: () => _showBottomSheet(context),
@@ -144,7 +142,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ),
     );
   }
-
   Widget _buildLegendItem(String name, Color color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -159,37 +156,60 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ],
     );
   }
+    Widget _buildOfflineWidget() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.bar_chart_outlined, size: 80, color: Colors.grey),
+          SizedBox(height: 20),
+          Text("You are offline and you can't see the statistics."),
+        ],
+      ),
+    );
+  }
 
-Widget _buildMainContent(BuildContext context, StatisticsState state) {
-  return SingleChildScrollView(
-    child: Column(
-      children: [
-        const Text(
-          'Top Sports by Matches',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
-        Text(
-          'Between ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : 'Start Date'} and ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : 'End Date'}',
-          style: const TextStyle(fontSize: 16),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 10),
-        // Aquí manejas los diferentes estados
-        if (state is StatisticsLoading) 
-          const Center(child: CircularProgressIndicator())
-        else if (state is StatisticsLoaded) 
-          ...[_buildStatisticsLoadedUI(state, context)] // Usar spread operator
-        else if (state is StatisticsError) 
-          Center(child: Text(state.message))
-        else 
-          const Center(
-            child: Text('Select a date range to view statistics.'),
+  Widget _buildStatisticsWidget() {
+    return Center(
+      child: BlocBuilder<StatisticsBloc, StatisticsState>(
+        builder: (context, state) {
+          return _buildMainContent(context, state);
+        },
+      ),
+    );
+  }
+
+  Widget _buildMainContent(BuildContext context, StatisticsState state) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const Text(
+            'Top Sports by Matches',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
-      ],
-    ),
-  );
-}
+          Text(
+            'Between ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : 'Start Date'} and ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : 'End Date'}',
+            style: const TextStyle(fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 10),
+          // Aquí manejas los diferentes estados
+          if (state is StatisticsLoading)
+            const Center(child: CircularProgressIndicator())
+          else if (state is StatisticsLoaded) ...[
+            _buildStatisticsLoadedUI(state, context)
+          ] // Usar spread operator
+          else if (state is StatisticsError)
+            Center(child: Text(state.message))
+          else
+            const Center(
+              child: Text('Select a date range to view statistics.'),
+            ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildStatisticsLoadedUI(
       StatisticsLoaded state, BuildContext context) {
