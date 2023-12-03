@@ -9,3 +9,4 @@ class LoadStatistics extends StatisticsEvent {
 }
 
 class WaitStatistics extends StatisticsEvent {}
+class StatisticsResetEvent extends StatisticsEvent {}

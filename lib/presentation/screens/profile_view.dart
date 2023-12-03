@@ -3,6 +3,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/statistics/statistic_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/statistics/statistic_event.dart';
 import 'package:flutter_app_sports/presentation/screens/MainLayout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restart_app/restart_app.dart';
@@ -39,7 +41,7 @@ final ButtonStyle profileButtonStyle = ButtonStyle(
   shape: MaterialStateProperty.all(RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(10), // Ajusta el radio aquí
   )),
-  padding: MaterialStateProperty.all(EdgeInsets.all(16.0)),
+  padding: MaterialStateProperty.all(const EdgeInsets.all(16.0)),
 );
 
 final ButtonStyle iconButtonStyle = ButtonStyle(
@@ -49,7 +51,7 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
   shape: MaterialStateProperty.all(RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(10), // Ajusta el radio aquí
   )),
-  padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 15.0)),
+  padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15.0)),
 );
 
     final buttonWidth = MediaQuery.of(context).size.width / 2;
@@ -90,7 +92,7 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
           body: SingleChildScrollView(
             child: Center(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -100,37 +102,37 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
                       style: profileButtonStyle,
                       child: userImage != null
                           ? image
-                          : Icon(Icons.account_circle, size: 80.0),
+                          : const Icon(Icons.account_circle, size: 80.0),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Text(userName ?? 'User', style: textTheme.headlineSmall),
-                    SizedBox(height: 40),
+                    const SizedBox(height: 40),
                     ConstrainedBox(
                       constraints: BoxConstraints.tightFor(width: buttonWidth),
                       child: ElevatedButton.icon(
-                        icon: Icon(Icons.edit, size: 28.0),
-                        label: Text('Edit my profile',
+                        icon: const Icon(Icons.edit, size: 28.0),
+                        label: const Text('Edit my profile',
                             style: TextStyle(fontSize: 22)),
                         onPressed: () => _editProfile(context),
                         style: iconButtonStyle,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ConstrainedBox(
                       constraints: BoxConstraints.tightFor(width: buttonWidth),
                       child: ElevatedButton.icon(
-                        icon: Icon(Icons.gavel, size: 28.0),
-                        label: Text('Claims', style: TextStyle(fontSize: 22)),
+                        icon: const Icon(Icons.gavel, size: 28.0),
+                        label: const Text('Claims', style: TextStyle(fontSize: 22)),
                         onPressed: () => _claims(context),
                         style: iconButtonStyle,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ConstrainedBox(
                       constraints: BoxConstraints.tightFor(width: buttonWidth),
                       child: ElevatedButton.icon(
-                        icon: Icon(Icons.logout, size: 28.0),
-                        label: Text('Log out', style: TextStyle(fontSize: 22)),
+                        icon: const Icon(Icons.logout, size: 28.0),
+                        label: const Text('Log out', style: TextStyle(fontSize: 22)),
                         onPressed: logOut,
                         style: iconButtonStyle,
                       ),
@@ -162,6 +164,7 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     BlocProvider.of<AuthenticationBloc>(context).add(SignOutRequested());
     BlocProvider.of<GlobalBloc>(context).add(NavigateToIndexEvent(0));
+    BlocProvider.of<StatisticsBloc>(context).add(StatisticsResetEvent());
     
     await prefs.clear();
 
@@ -169,9 +172,9 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
     // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginScreen()), (Route<dynamic> route) => false);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('You have been successfully logged out.'),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
 

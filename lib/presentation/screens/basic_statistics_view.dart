@@ -21,6 +21,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   late int userId;
   late bool isPanelOpen = false;
   bool isOffline = false;
+  bool stop = false;
+  Timer? _updateTimer;
 
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
@@ -46,24 +48,40 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   }
 
+  void stopPeriodicUpdates() {
+    _updateTimer?.cancel(); // Cancela el temporizador
+  }
+
   @override
   void dispose() {
+    _updateTimer?.cancel();
     _connectivitySubscription?.cancel();
     super.dispose();
   }
 
   void _startPeriodicUpdates() {
-    Timer.periodic(const Duration(seconds: 20), (timer) {
-      if (startDate == null || endDate == null) {
-        BlocProvider.of<StatisticsBloc>(context, listen: false)
-            .add(WaitStatistics());
-      } else {
-        BlocProvider.of<StatisticsBloc>(context, listen: false).add(
-          LoadStatistics(
-              userId: userId, startDate: startDate!, endDate: endDate!),
-        );
+    // Detiene el timer si ya está corriendo
+    _updateTimer?.cancel();
+
+    // Inicia un nuevo timer
+    _updateTimer = Timer.periodic(const Duration(seconds: 20), (timer) {
+      if (mounted) {
+        if (startDate == null || endDate == null) {
+          BlocProvider.of<StatisticsBloc>(context, listen: false)
+              .add(WaitStatistics());
+        } else {
+          BlocProvider.of<StatisticsBloc>(context, listen: false).add(
+            LoadStatistics(
+                userId: userId, startDate: startDate!, endDate: endDate!),
+          );
+        }
       }
     });
+  }
+
+  void _stopPeriodicUpdates() {
+    _updateTimer?.cancel();
+    _updateTimer = null;
   }
 
   Future<void> _showDateRangePicker(BuildContext context, StateSetter setState,
@@ -76,7 +94,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (pickedDate == null) return; 
+    if (pickedDate == null) return;
 
     if (isStartDate) {
       if (endDate != null && pickedDate.isAfter(endDate!)) {
@@ -188,6 +206,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return Center(
       child: BlocBuilder<StatisticsBloc, StatisticsState>(
         builder: (context, state) {
+          if (state is StatisticsLogout) {
+            _stopPeriodicUpdates();
+          } else {
+            _startPeriodicUpdates();
+          }
+
           return _buildMainContent(context, state);
         },
       ),
