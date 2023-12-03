@@ -396,18 +396,6 @@ class _PreferedMatchState extends State<PreferedMatch> {
 
   Future<void> _selectStartTime(BuildContext context) async {
     TimeOfDay now = TimeOfDay.now();
-    try {
-      TimeOfDay(hour: now.hour, minute: now.minute + 5); // Sumar 5 minutos
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("You cannot create matches on different days."),
-        ),
-      );
-      selectedStartTime = null;
-      selectedEndTime = null;
-      return;
-    }
     final TimeOfDay? pickedStart = await showTimePicker(
       context: context,
       initialTime: selectedStartTime != null
@@ -447,23 +435,10 @@ class _PreferedMatchState extends State<PreferedMatch> {
 
   Future<void> _selectEndTime(
       BuildContext context, TimeOfDay pickedStart) async {
-    try {
-      TimeOfDay.fromDateTime(selectedStartTime!)
-          .replacing(minute: pickedStart.minute + 30);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("You cannot create matches on different days."),
-        ),
-      );
-      selectedStartTime = null;
-      selectedEndTime = null;
-      return;
-    }
     final TimeOfDay? pickedEnd = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(selectedStartTime!)
-          .replacing(minute: pickedStart.minute + 30),
+          .replacing(minute: pickedStart.minute),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(

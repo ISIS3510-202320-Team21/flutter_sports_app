@@ -26,7 +26,6 @@ class _ProfileViewState extends State<ProfileView> {
     super.initState();
     userName = BlocProvider.of<AuthenticationBloc>(context).user?.name;
     userImage = BlocProvider.of<AuthenticationBloc>(context).user?.imageUrl;
-    print(userImage);
   }
 
   @override

@@ -194,7 +194,6 @@ Widget iconButtonWithRoundedSquare(
               _navigationHistory.add(_selectedScreen);
             }
             _selectedScreen = AppScreens.SportMatchOptions;
-            print("selected screen sports");
             screenViews[AppScreens.SportMatchOptions] =
                 SportMatchOptionsView(sport: state.sport);
             selectedSport = state.sport;
@@ -205,7 +204,6 @@ Widget iconButtonWithRoundedSquare(
               _navigationHistory.add(_selectedScreen);
             }
             _selectedScreen = AppScreens.PreferedMatch;
-            print("selected screen preffered match");
             screenViews[AppScreens.PreferedMatch] = PreferedMatch(
                 selectedSport: state.sport, selectedDate: state.selectedDate);
           }
@@ -215,7 +213,6 @@ Widget iconButtonWithRoundedSquare(
               _navigationHistory.add(_selectedScreen);
             }
             _selectedScreen = AppScreens.MatchDetails;
-            print("selected screen match details");
             screenViews[AppScreens.MatchDetails] =
                 IndividualMatch(match: state.match, state: state.status);
           }
