@@ -20,3 +20,5 @@ class StatisticsError extends StatisticsState {
 
   StatisticsError(this.message);
 }
+
+class StatisticsLogout extends StatisticsState {}

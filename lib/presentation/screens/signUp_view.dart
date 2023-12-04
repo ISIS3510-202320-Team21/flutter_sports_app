@@ -32,10 +32,7 @@ class _SignUpViewState extends State<SignUpView> {
   @override
   void initState() {
     super.initState();
-    // Lanza los eventos para cargar los datos al iniciar la vista
-    BlocProvider.of<FetchBloc>(context).add(FetchRolesRequested());
-    BlocProvider.of<FetchBloc>(context).add(FetchUniversitiesRequested());
-    BlocProvider.of<FetchBloc>(context).add(FetchGendersRequested());
+    BlocProvider.of<FetchBloc>(context).add(FetchInitialDataRequested ());
   }
 
   @override
@@ -66,36 +63,23 @@ class _SignUpViewState extends State<SignUpView> {
           return BlocConsumer<FetchBloc, FetchState>(
             listener: (context, fetchState) {
               // React to the state changes of FetchBloc
-              if (fetchState is RolesLoadSuccess) {
+              if (fetchState is LoadedInitialData) {
                 setState(() {
                   roles = fetchState.roles;
-                });
-              }
-              if (fetchState is UniversitiesLoadSuccess) {
-                setState(() {
                   universities = fetchState.universities;
-                });
-              }
-              if (fetchState is GendersLoadSuccess) {
-                setState(() {
                   genders = fetchState.genders;
                 });
               }
             },
             builder: (context, fetchState) {
-              // This will rebuild whenever FetchBloc's state changes.
-              if (fetchState is RolesLoadInProgress ||
-                  fetchState is UniversitiesLoadInProgress ||
-                  fetchState is GendersLoadInProgress) {
+              if (fetchState is DataLoadInProgress) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              // If any of the data lists is empty, it means data is not fetched yet.
               if (roles.isEmpty || universities.isEmpty || genders.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              // Once all the data is loaded, you can build your form.
               return Container(
                 constraints: const BoxConstraints.expand(),
                 color: Theme.of(context).colorScheme.background,

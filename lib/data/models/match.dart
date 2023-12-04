@@ -43,7 +43,7 @@ class Match {
     Level level = Level.fromJson(json['level']);
 
     return Match(
-      date: DateFormat("dd/MM/yyyy").parse(json['date']),
+      date: DateFormat("yyyy-MM-ddTHH:mm:ss").parse(json['date'], true),
       time: json['time'],
       rate1: json['rate1'] != null ? double.parse(json['rate1']) : null,
       rate2: json['rate2'] != null ? double.parse(json['rate2']) : null,
@@ -66,7 +66,7 @@ class Match {
     Level level = Level.fromJson(json['level']);
 
     return Match(
-      date: DateFormat("dd/MM/yyyy").parse(json['date']),
+      date: DateFormat("yyyy-MM-ddTHH:mm:ss").parse(json['date'], true),
       time: json['time'],
       rate1: json['rate1'] != null ? double.parse(json['rate1']) : null,
       rate2: json['rate2'] != null ? double.parse(json['rate2']) : null,
@@ -84,7 +84,7 @@ class Match {
   }
 
   Map<String, dynamic> toJson() => {
-        'date': DateFormat("dd/MM/yyyy").format(date!),
+        'date': date?.toIso8601String(),
         'time': time,
         'status': status,
         'court': court,

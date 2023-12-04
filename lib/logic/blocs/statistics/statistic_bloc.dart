@@ -11,6 +11,7 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   StatisticsBloc({required this.userRepository}) : super(StatisticsInitial()) {
     on<LoadStatistics>(_onLoadStatistics);
     on<WaitStatistics>(_onWaitStatistics);
+    on<StatisticsResetEvent>(_onResetStatistics);
   }
 
 // En el StatisticsBloc
@@ -33,5 +34,9 @@ class StatisticsBloc extends Bloc<StatisticsEvent, StatisticsState> {
   FutureOr<void> _onWaitStatistics(
       WaitStatistics event, Emitter<StatisticsState> emit) async {
     emit(StatisticsWait());
+  }
+  FutureOr<void> _onResetStatistics(
+      StatisticsResetEvent event, Emitter<StatisticsState> emit) async {
+    emit(StatisticsLogout());
   }
 }
