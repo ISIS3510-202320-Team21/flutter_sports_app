@@ -75,11 +75,6 @@ class _PreferedMatchState extends State<PreferedMatch> {
     matchBloc.add(FetchCourtsRequested());
   }
 
-  @override
-  void dispose() {
-    _connectivitySubscription?.cancel();
-    super.dispose();
-  }
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime now = DateTime.now();

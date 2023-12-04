@@ -58,6 +58,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     _connectivitySubscription?.cancel();
     super.dispose();
   }
+  
 
   void _startPeriodicUpdates() {
     // Detiene el timer si ya está corriendo

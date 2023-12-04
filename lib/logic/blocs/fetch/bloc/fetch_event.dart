@@ -5,11 +5,7 @@ abstract class FetchEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class FetchRolesRequested extends FetchEvent {}
-
-class FetchUniversitiesRequested extends FetchEvent {}
-
-class FetchGendersRequested extends FetchEvent {}
+class FetchInitialDataRequested extends FetchEvent {}
 
 
 // Add other events as necessary

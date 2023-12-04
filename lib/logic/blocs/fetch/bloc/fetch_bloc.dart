@@ -7,35 +7,19 @@ class FetchBloc extends Bloc<FetchEvent, FetchState> {
   final AuthRepository _authRepository = AuthRepository();
 
   FetchBloc() : super(FetchInitial()) {
-    on<FetchRolesRequested>((event, emit) async {
-      emit(RolesLoadInProgress());
+    on<FetchInitialDataRequested>((event, emit) async {
+      emit(DataLoadInProgress());
       try {
         List<String> roles = await _authRepository.fetchRoles();
-        emit(RolesLoadSuccess(roles));
-      } catch (e) {
-        emit(FetchLoadError(e.toString()));
-      }
-    });
-
-    on<FetchUniversitiesRequested>((event, emit) async {
-      emit(UniversitiesLoadInProgress());
-      try {
         List<String> universities = await _authRepository.fetchUniversities();
-        emit(UniversitiesLoadSuccess(universities));
+        List<String> genders = await _authRepository.fetchGenders();
+        
+        emit(LoadedInitialData(roles, universities, genders));
       } catch (e) {
         emit(FetchLoadError(e.toString()));
       }
     });
 
-    on<FetchGendersRequested>((event, emit) async {
-      emit(GendersLoadInProgress());
-      try {
-        List<String> genders = await _authRepository.fetchGenders();
-        emit(GendersLoadSuccess(genders));
-      } catch (e) {
-        emit(FetchLoadError(e.toString()));
-      }
-    });
 
   }
 }

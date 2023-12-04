@@ -14,6 +14,7 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
     ScreenUtil.init(context);
 
     return Scaffold(
@@ -34,26 +35,26 @@ class LoginView extends StatelessWidget {
             ));
           }
           return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.onPrimary,
+            backgroundColor: theme.colorScheme.onPrimary,
             appBar: AppBar(
               automaticallyImplyLeading: false,
               
-              surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
+              surfaceTintColor: theme.colorScheme.onPrimary,
               elevation: 0.0,
               title: Text(
                 "LOGIN",
                 style: textTheme.headlineSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: theme.colorScheme.onBackground,
                     fontWeight: FontWeight.bold),
               ),
               toolbarHeight: 0.1 * ScreenUtil().screenHeight,
-              backgroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: theme.colorScheme.onPrimary,
             ),
             body: Container(
               
               constraints: const BoxConstraints.expand(),
               
-              color: Theme.of(context).colorScheme.background,
+              color: theme.colorScheme.background,
               child: Form(
                 key: _formKey,
                 child: Padding(
@@ -96,7 +97,7 @@ class LoginView extends StatelessWidget {
                         ElevatedButton(
                           onPressed: () => _login(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: theme.primaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -108,7 +109,7 @@ class LoginView extends StatelessWidget {
                               Positioned.fill(
                                 child: Container(
                                   decoration: ShapeDecoration(
-                                    color: Theme.of(context).primaryColor,
+                                    color: theme.primaryColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     ),
@@ -121,7 +122,7 @@ class LoginView extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                   style: textTheme.titleLarge?.copyWith(
                                     color:
-                                        Theme.of(context).colorScheme.onPrimary,
+                                        theme.colorScheme.onPrimary,
                                     fontWeight: FontWeight.normal,
                                   ),
                                 ),
@@ -142,7 +143,7 @@ class LoginView extends StatelessWidget {
                               textAlign: TextAlign.center,
                               text: TextSpan(
                                 style: textTheme.titleLarge?.copyWith(
-                                    color: Theme.of(context)
+                                    color: theme
                                         .colorScheme
                                         .onBackground,
                                     fontWeight: FontWeight.bold),
@@ -153,7 +154,7 @@ class LoginView extends StatelessWidget {
                                     text: 'Sign up',
                                     style: TextStyle(
                                       color:
-                                          Theme.of(context).colorScheme.primary,
+                                          theme.colorScheme.primary,
                                     ),
                                   ),
                                 ],
