@@ -54,7 +54,6 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
       emit(SubmittedUserActionState(user: usuario!));
     }
     catch (e) {
-      print(e);
       if (e is SocketException) {
         emit(EditProfileErrorState());
         emit(NoInternetActionState());
