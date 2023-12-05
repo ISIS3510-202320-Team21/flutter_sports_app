@@ -49,16 +49,8 @@ class _HomeViewState extends State<HomeView> {
     // Inicialización de user y notifications se mueve aquí si requieren el context
     user = BlocProvider.of<AuthenticationBloc>(context).user!;
     notifications = user.notifications!;
-    // Iniciar la carga de los datos del tiempo y la conectividad
-    _initConnectivityAndWeatherData();
   }
 
-  // Método para inicializar la conectividad y cargar los datos del tiempo
-  void _initConnectivityAndWeatherData() async {
-    // Inicializar connectivityResult
-    connectivityResult = await Connectivity().checkConnectivity();
-    _loadWeatherData();
-  }
 
   void checkInitialConnectivity() async {
   connectivityResult = await (Connectivity().checkConnectivity());
@@ -181,7 +173,7 @@ class _HomeViewState extends State<HomeView> {
                                         latitude: latitude,
                                         longitude: longitude,
                                       )
-                                    : Text(
+                                    : const Text(
                                         "There's no connection",
                                         style: TextStyle(
                                           fontSize: 16,

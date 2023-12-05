@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/data/repositories/user_repository.dart';
 import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/camera/bloc/camera_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/claims/bloc/claims_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/connectivity/bloc/connectivity_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/fetch/bloc/fetch_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
@@ -84,6 +85,7 @@ class _MyAppState extends State<MyApp> {
                 ConnectivityBloc(connectivity: Connectivity())),
         BlocProvider(create: (context) => FetchBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
+        // BlocProvider<ClaimsBloc>(create: (context) => ClaimsBloc())
         RepositoryProvider<UserRepository>(
           create: (context) => widget.userRepository,
         ),

@@ -34,13 +34,30 @@ class ClaimsView extends StatelessWidget {
               // Botón de envío
               ElevatedButton(
                 onPressed: () {
-                  // Aquí puedes agregar lógica para enviar el claim
-                  //BlocProvider.of<ClaimsBloc>(context).add(
-                  // Agrega el evento correspondiente para manejar el envío
-                  // Puedes definir tu propio evento en el Bloc
-                  //);
+                  // Obtener el texto del cuadro de texto
+                  String claimContent = ''; // Puedes obtener el texto aquí
+
+                  // Enviar el evento al Bloc
+                  BlocProvider.of<ClaimsBloc>(context).add(
+                    ClaimsSubmitButtonPressedEvent(claimContent: claimContent),
+                  );
                 },
                 child: const Text('Submit'),
+              ),
+              SizedBox(height: 16),
+              // Manejar la respuesta del envío (opcional)
+              BlocBuilder<ClaimsBloc, ClaimsState>(
+                builder: (context, state) {
+                  if (state is ClaimsSubmitButtonPressedState) {
+                    if (state.isSubmitting) {
+                      return CircularProgressIndicator();
+                    } else {
+                      // Puedes mostrar un mensaje de éxito o error aquí según el estado
+                      // state.isSubmitting indica si se está enviando o no
+                    }
+                  }
+                  return Container();
+                },
               ),
             ],
           ),
