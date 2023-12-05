@@ -22,9 +22,6 @@ class ClaimsRepository {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       // Claim enviado con éxito.
-      print("RESPUESTA ENVIADA CON EXITOOOOO!");
-      print("El usuario es:");
-      print(userId);
     } else {
       throw Exception('Failed to submit claim: ${response.statusCode}');
     }
