@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sports/logic/blocs/profile/profile_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/statistics/statistic_bloc.dart';
@@ -71,6 +72,12 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
         else if (state is ProfileNavigateToClaimsState){
           BlocProvider.of<GlobalBloc>(context)
               .add(NavigateToIndexEvent(AppScreens.Claims.index));
+        } else if (state is NoInternetState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("You need internet connection to edit your profile!"),
+                backgroundColor: Colors.red),
+          );
         }
       },
       builder: (context, state) {
@@ -147,9 +154,16 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
     );
   }
 
-  void _editProfile(BuildContext context) =>
+  void _editProfile(BuildContext context) async {
+    var connectivityResult = await(Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      BlocProvider.of<ProfileBloc>(context)
+          .add(NoInternetEvent());
+    } else {
       BlocProvider.of<GlobalBloc>(context)
           .add(NavigateToIndexEvent(AppScreens.EditProfile.index));
+    }
+  }
 
   void _claims(BuildContext context) =>
       BlocProvider.of<GlobalBloc>(context)

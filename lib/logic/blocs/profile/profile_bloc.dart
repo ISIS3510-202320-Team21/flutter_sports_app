@@ -14,6 +14,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileAddProfilePictureButtonClickedEvent>(profileAddProfilePictureButtonClickedEvent);
     on<ProfileUpdateImageEvent>(profileUpdateImageEvent);
     on<ProfileClaimsButtonClickedEvent>(profileClaimsButtonClickedEvent);
+    on<NoInternetEvent>(noInternetEvent);
+  }
+
+  FutureOr<void> noInternetEvent(NoInternetEvent event, Emitter<ProfileState> emit) {
+    print('There is no internet');
+    emit(NoInternetState());
   }
 
   FutureOr<void> profileEditButtonClickedEvent(ProfileEditButtonClickedEvent event, Emitter<ProfileState> emit) {
