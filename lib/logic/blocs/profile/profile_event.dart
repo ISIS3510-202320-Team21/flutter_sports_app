@@ -23,6 +23,10 @@ class ProfileClaimsButtonClickedEvent extends ProfileEvent {
 
 }
 
+class NoInternetEvent extends ProfileEvent {
+
+}
+
 class ProfileUpdateImageEvent extends ProfileEvent {
   final User user;
 

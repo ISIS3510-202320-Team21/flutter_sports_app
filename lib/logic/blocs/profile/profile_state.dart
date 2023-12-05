@@ -32,6 +32,10 @@ class ProfileNavigateToSettingsState extends ProfileActionState {
   
 }
 
+class NoInternetState extends ProfileActionState {
+
+}
+
 class ProfileNavigateToLogoutState extends ProfileActionState {
  
 }
