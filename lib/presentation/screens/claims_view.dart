@@ -42,16 +42,11 @@ class _ClaimsViewState extends State<ClaimsView> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return isOffline ? _buildOfflineWidget() : _buildClaimsWidget(context);
-  }
-
   Widget _buildOfflineWidget() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: const <Widget>[
           Icon(Icons.signal_wifi_off, size: 80, color: Colors.grey),
           SizedBox(height: 20),
           Text("No internet connection."),
@@ -92,31 +87,36 @@ class _ClaimsViewState extends State<ClaimsView> {
                   maxLines: 5,
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    String claimContent = _claimController.text;
-                    BlocProvider.of<ClaimsBloc>(context).add(
-                      ClaimsSubmitButtonPressedEvent(
-                        claimContent: claimContent,
-                        userId: userId,
-                      ),
-                    );
+                BlocConsumer<ClaimsBloc, ClaimsState>(
+                  listener: (context, state) {
+                    if (state is ClaimsSubmitSuccessState) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Claim sent!')),
+                      );
+                      _claimController.clear();
+                    }
                   },
-                  child: const Text('Submit'),
-                ),
-                const SizedBox(height: 16),
-                BlocBuilder<ClaimsBloc, ClaimsState>(
                   builder: (context, state) {
                     if (state is ClaimsSubmitButtonPressedState && state.isSubmitting) {
                       return const CircularProgressIndicator();
-                    } else if (state is ClaimsSubmitSuccessState) {
-                      return const Text('Claim submitted successfully!');
                     } else if (state is ClaimsSubmitErrorState) {
                       return Text('Error submitting claim: ${state.error}');
                     }
-                    return Container();
+                    return ElevatedButton(
+                      onPressed: () {
+                        String claimContent = _claimController.text;
+                        BlocProvider.of<ClaimsBloc>(context).add(
+                          ClaimsSubmitButtonPressedEvent(
+                            claimContent: claimContent,
+                            userId: userId,
+                          ),
+                        );
+                      },
+                      child: const Text('Submit'),
+                    );
                   },
                 ),
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -125,5 +125,10 @@ class _ClaimsViewState extends State<ClaimsView> {
     } else {
       return Center(child: Text("User not authenticated"));
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isOffline ? _buildOfflineWidget() : _buildClaimsWidget(context);
   }
 }
