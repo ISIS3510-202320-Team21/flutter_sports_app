@@ -25,7 +25,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   }
 
   FutureOr<void> notificationClickedEvent(NotificationClickedEvent event, Emitter<NotificationState> emit) {
-    print('Notification clicked');
     emit(NotificationClickActionState());
   }
 }

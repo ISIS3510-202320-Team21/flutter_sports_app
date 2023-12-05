@@ -38,7 +38,6 @@ class LoginView extends StatelessWidget {
             backgroundColor: theme.colorScheme.onPrimary,
             appBar: AppBar(
               automaticallyImplyLeading: false,
-              
               surfaceTintColor: theme.colorScheme.onPrimary,
               elevation: 0.0,
               title: Text(
@@ -51,9 +50,7 @@ class LoginView extends StatelessWidget {
               backgroundColor: theme.colorScheme.onPrimary,
             ),
             body: Container(
-              
               constraints: const BoxConstraints.expand(),
-              
               color: theme.colorScheme.background,
               child: Form(
                 key: _formKey,
