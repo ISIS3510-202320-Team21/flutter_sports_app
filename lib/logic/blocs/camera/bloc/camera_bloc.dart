@@ -66,7 +66,6 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   Future<CameraController> getCameraController() async {
     final cameras = await availableCameras();
-    //final camera = cameras.first;
     final camera = cameras.firstWhere((description) => description.lensDirection == CameraLensDirection.front);
 
     return CameraController(camera, ResolutionPreset.low, enableAudio: false);

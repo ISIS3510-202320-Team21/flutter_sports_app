@@ -238,7 +238,7 @@ class _IndividualMatchState extends State<IndividualMatch> {
                           color: Colors.amber,
                         ),
                         onRatingUpdate: (rating) {},
-                        ignoreGestures: true, // Add this line
+                        ignoreGestures: true,
                       ),
                     ]
                     else if (widget.state == "Finished") ...[

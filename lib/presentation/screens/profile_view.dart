@@ -40,7 +40,7 @@ final ButtonStyle profileButtonStyle = ButtonStyle(
   surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.onPrimary),
   foregroundColor: MaterialStateProperty.all(colorTheme.onError),
   shape: MaterialStateProperty.all(RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(10), // Ajusta el radio aquí
+    borderRadius: BorderRadius.circular(10),
   )),
   padding: MaterialStateProperty.all(const EdgeInsets.all(16.0)),
 );
@@ -50,7 +50,7 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
   elevation: MaterialStateProperty.all(2),
   surfaceTintColor: MaterialStateProperty.all(Theme.of(context).colorScheme.onPrimary),
   shape: MaterialStateProperty.all(RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(10), // Ajusta el radio aquí
+    borderRadius: BorderRadius.circular(10),
   )),
   padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 15.0)),
 );
