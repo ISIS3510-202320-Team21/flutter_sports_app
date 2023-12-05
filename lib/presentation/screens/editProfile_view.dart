@@ -364,25 +364,5 @@ Widget _buildTextField(
         ),
       );
     }
-
-    // var connectivityResult = await (Connectivity().checkConnectivity());
-    // if (connectivityResult == ConnectivityResult.none) {
-    //   editProfileBloc.add(NoInternetEvent());
-    // } else {
-    //   if (_formKey.currentState!.validate()) {
-    //     editProfileBloc.add(
-    //       SubmitUserEvent(
-    //         email: _emailController.text,
-    //         name: _nameController.text,
-    //         phoneNumber: _phoneNumberController.text,
-    //         role: _roleController.text,
-    //         university: _universityController.text,
-    //         gender: _genderController.text,
-    //         bornDate: _bornDate,
-    //         userId: user.id,
-    //       ),
-    //     );
-    //   }
-    // }
   }
 }

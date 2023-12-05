@@ -81,9 +81,6 @@ final ButtonStyle iconButtonStyle = ButtonStyle(
         }
       },
       builder: (context, state) {
-        // String? profileImagePath =
-        //     state is ProfileLoadedSuccessState ? state.profileImagePath : null;
-       
           String base64String = "data:image/png;base64,$userImage";
 
           // Elimina el encabezado
