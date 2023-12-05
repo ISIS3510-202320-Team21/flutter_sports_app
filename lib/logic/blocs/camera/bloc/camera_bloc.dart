@@ -42,13 +42,11 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   }
 
   FutureOr<void> notificationClickedEvent(CameraClickedEvent event, Emitter<CameraState> emit) {
-    print('Camera clicked');
     emit(CameraClickActionState());
   }
 
   Future<FutureOr<void>> savedPhotoEvent(SavePhotoEvent event, Emitter<CameraState> emit) async {
     emit(CameraLoadingState());
-    print('You saved the photo!');
     String imagePath = event.imagePath;
 
     File fileData = File(imagePath);
@@ -66,7 +64,6 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   Future<CameraController> getCameraController() async {
     final cameras = await availableCameras();
-    //final camera = cameras.first;
     final camera = cameras.firstWhere((description) => description.lensDirection == CameraLensDirection.front);
 
     return CameraController(camera, ResolutionPreset.low, enableAudio: false);

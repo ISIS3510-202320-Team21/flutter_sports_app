@@ -128,7 +128,4 @@ class AuthRepository {
       throw Exception('Failed to fetch sports: ${response.statusCode}');
     }
   }
-
-
-  
 }

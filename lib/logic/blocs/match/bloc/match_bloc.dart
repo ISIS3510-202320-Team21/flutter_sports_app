@@ -49,7 +49,6 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
       FetchMatchesUserStorageRecent event, Emitter<MatchState> emit) async {
     emit(MatchLoadingState());
     try {
-      print("Fetching recent matches");
       List<Match> matches =
           await MatchRepository(userRepository: UserRepository())
               .getMatchesForUserStorageRecent();
@@ -62,7 +61,6 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
   FutureOr<void> saveMatchesUserStorageRecent(
       SaveMatchesUserStorageRecent event, Emitter<MatchState> emit) async {
     try {
-      print("Saving matches");
       await MatchRepository(userRepository: UserRepository())
           .saveMatchesForUserStorageRecent(event.matches);
     } catch (e) {
@@ -100,13 +98,11 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
 
   FutureOr<void> matchClickedEvent(
       MatchClickedEvent event, Emitter<MatchState> emit) {
-    print('Match clicked');
     emit(MatchClickActionState());
   }
 
   FutureOr<void> newMatchNavigateEvent(
       NewMatchNavigateEvent event, Emitter<MatchState> emit) {
-    print('New match navigate');
     emit(NewMatchNavigateActionState());
   }
 
