@@ -44,14 +44,6 @@ Future<void> _requestCameraPermission() async {
   if (!cameraStatus.isGranted) {
     await Permission.camera.request();
   }
-
-  // Opcional: Vuelve a comprobar si se otorgaron los permisos y maneja la lógica en consecuencia
-  cameraStatus = await Permission.camera.status;
-  if (!cameraStatus.isGranted) {
-    // Manejar la lógica si los permisos no se otorgan (por ejemplo, mostrar un mensaje)
-  } else {
-    // Los permisos se otorgaron, continua con la inicialización de la cámara
-  }
 }
 
 
@@ -96,7 +88,6 @@ Future<void> _requestCameraPermission() async {
               // body: CameraPreview(cameraBloc.getController()),
               floatingActionButton: FloatingActionButton(
                 heroTag: "cameraBtn",
-                
                 // Provide an onPressed callback.
                 onPressed: () async {
                   try {

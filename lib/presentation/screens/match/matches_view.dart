@@ -23,18 +23,9 @@ class _MatchesViewState extends State<MatchesView> {
     matchBloc.add(MatchInitialEvent(userId: userId!));
     super.initState();
   }
-  void checkInitialConnectivity() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-
-    } else {
-      
-    }
-  }
   
   @override
   Widget build(BuildContext context) {
-    checkInitialConnectivity();	
     return BlocConsumer<MatchBloc,MatchState>(
       bloc: matchBloc,
       listenWhen: (previous, current) => current is MatchActionState,
