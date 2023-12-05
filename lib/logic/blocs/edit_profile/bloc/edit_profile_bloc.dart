@@ -66,12 +66,10 @@ class EditProfileBloc extends Bloc<EditProfileEvent, EditProfileState> {
   }
 
   FutureOr<void> profileNavigateEvent(ProfileNavigateEvent event, Emitter<EditProfileState> emit) {
-    print('Go to profile');
     emit(ProfileNavigateActionState());
   }
 
   FutureOr<void> noInternetEvent(NoInternetEvent event, Emitter<EditProfileState> emit) {
-    print('There is no internet');
     emit(NoInternetActionState());
   }
 }
