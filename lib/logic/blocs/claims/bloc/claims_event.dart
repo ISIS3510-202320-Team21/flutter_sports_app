@@ -5,8 +5,8 @@ abstract class ClaimsEvent {}
 
 class ClaimsSubmitButtonPressedEvent extends ClaimsEvent {
   final String claimContent;
-
-  ClaimsSubmitButtonPressedEvent({required this.claimContent});
+  final int userId;
+  ClaimsSubmitButtonPressedEvent({required this.claimContent, required this.userId});
 }
 
 class ClaimsSubmitSuccessEvent extends ClaimsEvent {}

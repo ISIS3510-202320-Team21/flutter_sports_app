@@ -85,7 +85,7 @@ class _MyAppState extends State<MyApp> {
                 ConnectivityBloc(connectivity: Connectivity())),
         BlocProvider(create: (context) => FetchBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
-        // BlocProvider<ClaimsBloc>(create: (context) => ClaimsBloc())
+        BlocProvider<ClaimsBloc>(create: (context) => ClaimsBloc()),
         RepositoryProvider<UserRepository>(
           create: (context) => widget.userRepository,
         ),

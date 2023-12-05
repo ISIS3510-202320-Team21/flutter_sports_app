@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter_app_sports/data/repositories/claims_repository.dart';
+import 'package:flutter_app_sports/logic/blocs/authentication/bloc/authentication_bloc.dart';
 import 'package:meta/meta.dart';
 import 'dart:async'; 
 
@@ -6,25 +8,24 @@ part 'claims_event.dart';
 part 'claims_state.dart';
 
 class ClaimsBloc extends Bloc<ClaimsEvent, ClaimsState> {
-  ClaimsBloc() : super(ClaimsInitial());
+  ClaimsBloc() : super(ClaimsInitial()) {
+    on<ClaimsSubmitButtonPressedEvent>(_onSubmitted);
+  }
 
-  @override
-  Stream<ClaimsState> mapEventToState(
-    ClaimsEvent event,
-  ) async* {
-    if (event is ClaimsSubmitButtonPressedEvent) {
-      // Aquí deberías poner la lógica para enviar el reclamo al backend
-      // Puedes acceder al contenido del reclamo con event.claimContent
-      try {
-        // Lógica de envío al backend aquí
-        // Puedes emitir un nuevo estado de éxito si es necesario
-        yield ClaimsSubmitSuccessState();
-      } catch (error) {
-        // Manejo de errores aquí
-        // Puedes emitir un nuevo estado de error si es necesario
-        yield ClaimsSubmitErrorState(error: error.toString());
-      }
+  Future<void> _onSubmitted(
+    ClaimsSubmitButtonPressedEvent event,
+    Emitter<ClaimsState> emit,
+  ) async {
+    emit(ClaimsSubmitButtonPressedState(isSubmitting: true));
+
+    try {
+      await ClaimsRepository().submitClaim(
+        userId: event.userId,
+        claimContent: event.claimContent,
+      );
+      emit(ClaimsSubmitSuccessState());
+    } catch (e) {
+      emit(ClaimsSubmitErrorState(error: e.toString()));
     }
   }
 }
-
