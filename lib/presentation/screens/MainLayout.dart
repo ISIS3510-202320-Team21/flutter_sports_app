@@ -20,8 +20,9 @@ import 'package:flutter_app_sports/presentation/widgets/CustomBottomNavigationBa
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:flutter_app_sports/data/models/notification.dart' as _notification;
 import 'camera_view.dart';
+import 'notification/detailed_notification.dart';
 
 enum AppScreens {
   Home,
@@ -35,7 +36,8 @@ enum AppScreens {
   CameraScreen,
   PreferedMatch,
   MatchDetails,
-  Claims
+  Claims,
+  NotificationDetail,
   // Agrega nuevas pantallas aquí
 }
 
@@ -51,7 +53,8 @@ final Map<AppScreens, String> screenTitles = {
   AppScreens.CameraScreen: "CAMERA",
   AppScreens.PreferedMatch: "PREFERRED MATCH",
   AppScreens.MatchDetails: "MATCH DETAILS",
-  AppScreens.Claims: "CLAIMS"
+  AppScreens.Claims: "CLAIMS",
+  AppScreens.NotificationDetail: "NOTIFICATION",
 
 };
 
@@ -97,7 +100,17 @@ final Map<AppScreens, Widget> screenViews = {
         court: "xd"),
     state: "",
   ),
-  AppScreens.Claims:  ClaimsView()
+  AppScreens.Claims:  ClaimsView(),
+  AppScreens.NotificationDetail: DetailedNotificationView(
+    notification: _notification.Notification(
+      id: 1,
+      name: "Notification",
+      type: "type",
+      redirectTo: "redirectTo",
+      seen: false,
+      creationDate: DateTime.now(),
+    )
+  ),
 };
 
 class MainLayout extends StatefulWidget {
@@ -215,6 +228,15 @@ Widget iconButtonWithRoundedSquare(
             _selectedScreen = AppScreens.MatchDetails;
             screenViews[AppScreens.MatchDetails] =
                 IndividualMatch(match: state.match, state: state.status);
+          }
+
+          if (state is NavigationNotificationState) {
+            if (_selectedScreen != AppScreens.NotificationDetail) {
+              _navigationHistory.add(_selectedScreen);
+            }
+            _selectedScreen = AppScreens.NotificationDetail;
+            screenViews[AppScreens.NotificationDetail] =
+                DetailedNotificationView(notification: state.notification);
           }
 
           return Scaffold(

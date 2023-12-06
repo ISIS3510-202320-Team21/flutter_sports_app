@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'global_event.dart';
 import 'global_state.dart';
 import 'package:flutter_app_sports/data/models/match.dart' as externals;
+import 'package:flutter_app_sports/data/models/notification.dart' as _notification;
 
 class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   GlobalBloc() : super(NavigationStateButtons(0)) {
@@ -9,6 +10,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<NavigateToSportEvent>(_navigateToSportEvent);
     on<NavigateToPrefferedMatchEvent>(_navigateToPrefferedMatchEvent);
     on<NavigateToMatchEvent>(_navigateToMatchEvent);
+    on<NavigateToNotificationEvent>(_navigateToNotificationEvent);
   }
 
   Future<void> _navigateToIndexEvent(
@@ -30,6 +32,12 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
       NavigateToMatchEvent event, Emitter<GlobalState> emit) async {
     externals.Match match = event.match;
     emit(NavigationMatchState(match, event.status));
+  }
+
+  Future<void> _navigateToNotificationEvent(
+      NavigateToNotificationEvent event, Emitter<GlobalState> emit) async {
+    _notification.Notification notification = event.notification;
+    emit(NavigationNotificationState(notification));
   }
   
 

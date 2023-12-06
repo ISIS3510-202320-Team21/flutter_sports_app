@@ -11,6 +11,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc() : super(NotificationInitial()) {
     on<NotificationInitialEvent>(notificationInitialEvent);
     on<NotificationClickedEvent>(notificationClickedEvent);
+    on<FetchNotificationsStorageRecent>(fetchNotificationsStorageRecent);
+    on<SaveNotificationsStorageRecent>(saveNotificationsStorageRecent);
   }
 
   FutureOr<void> notificationInitialEvent(NotificationInitialEvent event, Emitter<NotificationState> emit) async {
@@ -24,7 +26,38 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     }
   }
 
-  FutureOr<void> notificationClickedEvent(NotificationClickedEvent event, Emitter<NotificationState> emit) {
-    emit(NotificationClickActionState());
+  Future<FutureOr<void>> notificationClickedEvent(NotificationClickedEvent event, Emitter<NotificationState> emit) async {
+    event.notification.seen = true;
+    try {
+      await NotificationRepository().updateNotification(event.notification.id);
+      print("Notification updated");
+      emit(NotificationClickActionState());
+    } catch (e) {
+      print(e);
+      emit(NotificationErrorState());
+    }
+  }
+
+  FutureOr<void> fetchNotificationsStorageRecent(
+      FetchNotificationsStorageRecent event, Emitter<NotificationState> emit) async {
+    emit(NotificationLoadingState());
+    try {
+      List<_notification.Notification> notifications =
+      await NotificationRepository()
+          .getNotificationsStorageRecent();
+      emit(NotificationLoadedSuccessState(notifications: notifications!));
+    } catch (e) {
+      emit(NotificationErrorState());
+    }
+  }
+
+  FutureOr<void> saveNotificationsStorageRecent(
+      SaveNotificationsStorageRecent event, Emitter<NotificationState> emit) async {
+    try {
+      await NotificationRepository()
+          .saveNotificationsStorageRecent(event.notifications);
+    } catch (e) {
+      emit(NotificationErrorState());
+    }
   }
 }
