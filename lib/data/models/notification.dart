@@ -4,7 +4,7 @@ class Notification {
   final String name;
   final String type;
   final String redirectTo;
-  final bool seen;
+  bool seen;
   final DateTime creationDate;
   final int id;
 

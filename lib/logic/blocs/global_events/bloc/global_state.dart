@@ -1,6 +1,7 @@
 // global_state.dart
 import 'package:flutter_app_sports/data/models/sport.dart';
 import 'package:flutter_app_sports/data/models/match.dart' as externals;
+import 'package:flutter_app_sports/data/models/notification.dart' as _notification;
 
 abstract class GlobalState {}
 
@@ -27,4 +28,9 @@ class NavigationMatchState extends GlobalState {
   final externals.Match match;
   final String status;
   NavigationMatchState(this.match, this.status);
+}
+
+class NavigationNotificationState extends GlobalState {
+  final _notification.Notification notification;
+  NavigationNotificationState(this.notification);
 }

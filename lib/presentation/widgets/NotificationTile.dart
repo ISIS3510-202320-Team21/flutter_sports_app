@@ -1,7 +1,11 @@
 //implement stateless widget that returns a container to display a notification
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_event.dart';
 import 'package:flutter_app_sports/logic/blocs/notification/bloc/notification_bloc.dart';
 import 'package:flutter_app_sports/data/models/notification.dart' as _notification;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app_sports/logic/blocs/global_events/bloc/global_bloc.dart';
 
 class NotificationTile extends StatelessWidget {
   final _notification.Notification notification;
@@ -19,7 +23,9 @@ class NotificationTile extends StatelessWidget {
         margin: const EdgeInsets.only(top: 7.5, bottom:7.5),
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
         decoration: BoxDecoration(
-          color: colorScheme.background,
+          color: notification.seen ?
+          const Color(0xE9E9E9E9) :
+          const Color(0xF7F7F7F7),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,8 +49,17 @@ class NotificationTile extends StatelessWidget {
         ),
       ),
       onTap: () {
-        notificationBloc.add(NotificationClickedEvent(notification: notification));
-      },
+        _goToNotification(context);
+      }
     );
+  }
+
+  Future<void> _goToNotification(BuildContext context) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult != ConnectivityResult.none) {
+      notificationBloc.add(NotificationClickedEvent(notification: notification));
+    }
+    BlocProvider.of<GlobalBloc>(context)
+        .add(NavigateToNotificationEvent(notification));
   }
 }
